@@ -27,6 +27,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
@@ -36,6 +37,7 @@ import org.springframework.format.annotation.NumberFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -44,6 +46,7 @@ import lombok.NoArgsConstructor;
  * @author juanogtir
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -56,13 +59,13 @@ public class User extends NamedEntity {
 	private LocalDate	birthDate;
 
 	@Column(name = "phone")
-	@NotEmpty
+	@NotBlank
 	@Digits(fraction = 0, integer = 10)
 	private String		phone;
 
 	@Column(name = "email")
 	@Email
-	@NotEmpty
+	@NotBlank
 	private String		email;
 
 	@Column(name = "creation_date")
@@ -71,6 +74,7 @@ public class User extends NamedEntity {
 	
 	@Column(name = "membership_number")
 	@Pattern(regexp="\\b\\d{5}\\b")
+	@NotBlank
 	private String	membershipNumber;
 
 	@OneToOne(cascade = CascadeType.ALL)

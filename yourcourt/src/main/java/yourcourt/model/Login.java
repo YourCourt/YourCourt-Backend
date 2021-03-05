@@ -4,6 +4,7 @@ package yourcourt.model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 
 @Entity
@@ -11,9 +12,11 @@ import javax.persistence.Table;
 public class Login {
 
 	@Id
-
+	
+	@NotBlank
 	String	username;
-
+	
+	@NotBlank
 	String	password;
 
 	boolean	enabled;
