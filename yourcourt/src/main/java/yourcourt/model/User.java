@@ -18,6 +18,7 @@ package yourcourt.model;
 
 import java.time.LocalDate;
 
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,13 +29,14 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.NumberFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 /**
  *
@@ -66,6 +68,10 @@ public class User extends NamedEntity {
 	@Column(name = "creation_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate	creationDate;
+	
+	@Column(name = "membership_number")
+	@Pattern(regexp="\\b\\d{5}\\b")
+	private String	membershipNumber;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "username", referencedColumnName = "username")
