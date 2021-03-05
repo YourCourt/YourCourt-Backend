@@ -1,0 +1,33 @@
+{
+	"folders": {},
+	"connections": {
+		"mariaDB-177fcca5117-45157d69c588b886": {
+			"provider": "mysql",
+			"driver": "mariaDB",
+			"name": "yourcourtbd",
+			"save-password": true,
+			"show-system-objects": true,
+			"read-only": false,
+			"configuration": {
+				"host": "localhost",
+				"port": "3306",
+				"database": "yourcourtbd",
+				"url": "jdbc:mysql://localhost:3306/yourcourtbd",
+				"home": "MySQL Binaries",
+				"type": "dev",
+				"auth-model": "native",
+				"handlers": {}
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false
+		}
+	}
+}
