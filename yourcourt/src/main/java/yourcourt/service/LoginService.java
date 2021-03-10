@@ -60,6 +60,9 @@ public class LoginService {
 		return loginRepository.findAll();
 	}
 
-
+	@Transactional
+	public Boolean checkLoginAccount(String username, String password) {
+		return loginRepository.checkLoginAccount(username, password) == 1;
+	}
 
 }

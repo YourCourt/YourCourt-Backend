@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,68 +17,74 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+import yourcourt.exceptions.user.InexistentUser;
 import yourcourt.model.User;
 import yourcourt.service.UserService;
 
 @RestController
 @RequestMapping(value = "/api/users")
 @CrossOrigin("*")
+
 public class UserRestController {
+	static final String ID = "/{id}";
 
 	@Autowired
 	private UserService userServiceAPI;
 
-	@GetMapping(value = "/all")
+	@GetMapping
 	public List<User> getAll() {
 		return (List<User>) userServiceAPI.findUsers();
 	}
 
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = ID)
 	public ResponseEntity<?> getUser(@PathVariable Integer id) {
 
 		try {
 			User obj = userServiceAPI.findUserById(id);
 			return new ResponseEntity<>(obj, HttpStatus.OK);
-		} catch (NoSuchElementException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (InexistentUser e) {
+			
+		        
+		    return new ResponseEntity<>(
+		    	e.getMessage(), HttpStatus.NOT_FOUND);
+			
+			
+			//return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 		}
 	}
 
-	@PostMapping(value = "/new")
+	@PostMapping
 	public ResponseEntity<?> createUser(@RequestBody User user) {
 		try {
 			User obj = userServiceAPI.saveUser(user);
 			return new ResponseEntity<>(obj, HttpStatus.OK);
 		} catch (Exception e) {
-			e.getMessage();
-			System.out.println(e.getMessage());
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 
 	}
 
-	@PutMapping("/update/{id}")
+	@PutMapping(value = ID)
 	public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody User user) {
 		try {
 			User userToUpdate = userServiceAPI.findUserById(id);
-			System.out.println(userToUpdate);
-			System.out.println(user);
+
 			try {
 				User obj = userServiceAPI.updateUser(userToUpdate, user);
 
 				return new ResponseEntity<>(obj, HttpStatus.OK);
 			} catch (Exception e) {
-				e.getMessage();
-				System.out.println(e.getMessage());
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 			}
-		} catch (NoSuchElementException e) {
+		} catch (InexistentUser e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 
 	}
 
-	@DeleteMapping(value = "/delete/{id}")
+	@DeleteMapping(value = ID)
 	public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
 	
 		try {

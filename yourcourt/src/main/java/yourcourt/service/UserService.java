@@ -22,10 +22,12 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import yourcourt.exceptions.user.AttributeAlreadyExists;
+import yourcourt.exceptions.user.DateAttributeMustBePast;
+import yourcourt.exceptions.user.InexistentUser;
 import yourcourt.model.Login;
 import yourcourt.model.User;
 import yourcourt.repository.UserRepository;
@@ -58,31 +60,34 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public User findUserById(Integer id) throws NoSuchElementException{
+	public User findUserById(Integer id) throws InexistentUser {
 		User user;
 		try {
-			user=userRepository.findById(id).get();
-		}catch (NoSuchElementException e) {
-			throw new NoSuchElementException("Inexistent user");
+			user = userRepository.findById(id).get();
+		} catch (NoSuchElementException e) {
+			throw new InexistentUser();
 		}
 		return user;
 	}
 
 	@Transactional
-	public User saveUser(User user) throws Exception, DataIntegrityViolationException {
+	public User saveUser(User user) throws AttributeAlreadyExists, DateAttributeMustBePast {
 
 		if (user.getBirthDate().isAfter(LocalDate.now())) {
-			throw new Exception("Birth date must be a past date");
+			throw new DateAttributeMustBePast("Birth date");
 		}
 
 		user.setCreationDate(LocalDate.now());
 
-		
 		// creating user
-		
+
 		Optional<Login> loginExistence = loginService.findByUsername(user.getLogin().getUsername());
+		Optional<User> emailExistence = userRepository.findByEmail(user.getEmail());
 		if (!loginExistence.isEmpty()) {
-			throw new DataIntegrityViolationException("Username already exists");
+			throw new AttributeAlreadyExists("username");
+		}
+		if (!emailExistence.isEmpty()) {
+			throw new AttributeAlreadyExists("email");
 		}
 		userRepository.save(user);
 		loginService.saveLogin(user.getLogin());
@@ -91,28 +96,33 @@ public class UserService {
 
 		return user;
 	}
-	
+
 	@Transactional
-	public User updateUser(User userToUpdate, User userRequest) throws Exception  {
+	public User updateUser(User userToUpdate, User userRequest) throws DateAttributeMustBePast, AttributeAlreadyExists {
 		if (userRequest.getBirthDate().isAfter(LocalDate.now())) {
-			throw new Exception("Birth date must be a past date");
+			throw new DateAttributeMustBePast("Birth date");
 		}
-		BeanUtils.copyProperties(userRequest, userToUpdate, "id","creationDate", "login");
+
+		Integer emailExistence = userRepository.countByEmail(userRequest.getEmail());
+		// If exists once and its different from the previous one
+		if (emailExistence == 1 && !userRequest.getEmail().equals(userToUpdate.getEmail())) {
+			throw new AttributeAlreadyExists("email");
+		}
+		BeanUtils.copyProperties(userRequest, userToUpdate, "id", "creationDate", "login");
 		userRepository.save(userToUpdate);
 		return userToUpdate;
 	}
 
-
 	@Transactional
 	public User deleteUserById(Integer id) {
 
-		//userRepository.deleteById(id);
+		// userRepository.deleteById(id);
 		User user;
 		try {
-			user=userRepository.findById(id).get();
+			user = userRepository.findById(id).get();
 			user.getLogin().setEnabled(false);
-		}catch (NoSuchElementException e) {
-			throw new NoSuchElementException("Inexistent user");
+		} catch (NoSuchElementException e) {
+			throw new InexistentUser();
 		}
 		return user;
 	}
