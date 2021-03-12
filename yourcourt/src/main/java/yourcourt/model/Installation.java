@@ -16,34 +16,30 @@
 
 package yourcourt.model;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-
-import javax.validation.constraints.NotBlank;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  *
  * @author javvazzam
  * @author juanogtir
  */
-@MappedSuperclass
-public class Construction extends NamedEntity {
+@Data
+@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "installations")
+public class Installation extends Construction {
 
-    @NotBlank
-	@Column(name = "description", length = 512)
-	private String description;
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Override
-	public String toString() {
-		return this.getName();
-	}
+	@ManyToOne
+	@JoinColumn(name = "installation_type_id")
+	private InstallationType installationType;
 
 }
