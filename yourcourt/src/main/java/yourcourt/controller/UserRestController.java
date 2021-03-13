@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +25,6 @@ import yourcourt.service.UserService;
 @RestController
 @RequestMapping(value = "/api/users")
 @CrossOrigin("*")
-
 public class UserRestController {
 	static final String ID = "/{id}";
 
@@ -33,11 +32,11 @@ public class UserRestController {
 	private UserService userServiceAPI;
 
 	@GetMapping
-	public List<User> getAll() {
-		return (List<User>) userServiceAPI.findUsers();
+	public ResponseEntity<?> getAll() {
+		return new ResponseEntity<>((List<User>) userServiceAPI.findUsers(), HttpStatus.OK);
 	}
 
-	@GetMapping(value = ID)
+	@GetMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getUser(@PathVariable Integer id) {
 
 		try {
@@ -45,28 +44,26 @@ public class UserRestController {
 			return new ResponseEntity<>(obj, HttpStatus.OK);
 		} catch (InexistentUser e) {
 			
-		        
 		    return new ResponseEntity<>(
 		    	e.getMessage(), HttpStatus.NOT_FOUND);
 			
-			
-			//return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 		}
 	}
 
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createUser(@RequestBody User user) {
 		try {
 			User obj = userServiceAPI.saveUser(user);
-			return new ResponseEntity<>(obj, HttpStatus.OK);
+			return new ResponseEntity<>(obj, HttpStatus.CREATED);
 		} catch (Exception e) {
 
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+			return new ResponseEntity<>(
+			    	e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 
 	}
 
-	@PutMapping(value = ID)
+	@PutMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody User user) {
 		try {
 			User userToUpdate = userServiceAPI.findUserById(id);
@@ -76,22 +73,25 @@ public class UserRestController {
 
 				return new ResponseEntity<>(obj, HttpStatus.OK);
 			} catch (Exception e) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+				return new ResponseEntity<>(
+				    	e.getMessage(), HttpStatus.BAD_REQUEST);
 			}
 		} catch (InexistentUser e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+			return new ResponseEntity<>(
+			    	e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 
 	}
 
-	@DeleteMapping(value = ID)
+	@DeleteMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
 	
 		try {
 			User obj =	userServiceAPI.deleteUserById(id);
 			return new ResponseEntity<>(obj, HttpStatus.OK);
-		} catch (NoSuchElementException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (InexistentUser e) {
+			return new ResponseEntity<>(
+			    	e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 
