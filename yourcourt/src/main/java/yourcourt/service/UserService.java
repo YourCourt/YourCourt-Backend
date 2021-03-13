@@ -108,7 +108,7 @@ public class UserService {
 		if (emailExistence == 1 && !userRequest.getEmail().equals(userToUpdate.getEmail())) {
 			throw new AttributeAlreadyExists("email");
 		}
-		BeanUtils.copyProperties(userRequest, userToUpdate, "id", "creationDate", "login");
+		BeanUtils.copyProperties(userRequest, userToUpdate, "id", "creationDate", "login", "membershipNumber");
 		userRepository.save(userToUpdate);
 		return userToUpdate;
 	}
