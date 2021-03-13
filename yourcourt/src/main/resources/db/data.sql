@@ -18,12 +18,23 @@ INSERT INTO yourcourtdb.court_type (id,name) VALUES(2,'Clay');
 -- COURTS
 INSERT INTO yourcourtdb.courts (id,name,description,court_type_id) VALUES(1,'Fast Court','This is a fast court.',1);
 
--- INSTALLATION TYPES
-INSERT INTO yourcourtdb.court_type (id,name) VALUES(1,'Parking');
-INSERT INTO yourcourtdb.court_type (id,name) VALUES(2,'Cafe');
-INSERT INTO yourcourtdb.court_type (id,name) VALUES(3,'Pool');
-INSERT INTO yourcourtdb.court_type (id,name) VALUES(4,'Other');
+-- FACILITY TYPES
+INSERT INTO yourcourtdb.facility_type (id,name) VALUES(1,'Parking');
+INSERT INTO yourcourtdb.facility_type (id,name) VALUES(2,'Cafe');
+INSERT INTO yourcourtdb.facility_type (id,name) VALUES(3,'Pool');
+INSERT INTO yourcourtdb.facility_type (id,name) VALUES(4,'Other');
 
 
--- INSTALLATIONS
-INSERT INTO yourcourtdb.courts (id,name,description,installation_type_id) VALUES(1,'Pool','This is a private pool.',3);
+-- FACILITIES
+INSERT INTO yourcourtdb.facilities (id,name,description,facility_type_id) VALUES(1,'Pool','This is a private pool.',3);
+
+-- PRODUCT TYPES
+INSERT INTO yourcourtdb.product_type (id,name) VALUES(1,'Racket');
+INSERT INTO yourcourtdb.product_type (id,name) VALUES(2,'Textil');
+INSERT INTO yourcourtdb.product_type (id,name) VALUES(3,'Accesories');
+
+
+-- PRODUCTS
+INSERT INTO yourcourtdb.products (id,name,description,product_type_id) VALUES(1,'Grip','This is an accesory.',3);
+
+

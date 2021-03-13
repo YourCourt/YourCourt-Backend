@@ -24,8 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
 
-import yourcourt.model.InstallationType;
-import yourcourt.service.InstallationService;
+import yourcourt.model.ProductType;
+import yourcourt.service.ProductService;
 
 /**
  * Instructs Spring MVC on how to parse and print elements of type 'PetType'. Starting
@@ -43,25 +43,25 @@ import yourcourt.service.InstallationService;
  * @author Michael Isvy
  */
 @Component
-public class InstallationTypeFormatter implements Formatter<InstallationType> {
+public class ProductTypeFormatter implements Formatter<ProductType> {
 
-	private final InstallationService installationService;
+	private final ProductService productService;
 
 
 	@Autowired
-	public InstallationTypeFormatter(final InstallationService installationService) {
-		this.installationService = installationService;
+	public ProductTypeFormatter(final ProductService ProductService) {
+		this.productService = ProductService;
 	}
 
 	@Override
-	public String print(final InstallationType bookStatusType, final Locale locale) {
+	public String print(final ProductType bookStatusType, final Locale locale) {
 		return bookStatusType.getName();
 	}
 
 	@Override
-	public InstallationType parse(final String text, final Locale locale) throws ParseException {
-		Collection<InstallationType> findInstallationTypes = this.installationService.findInstallationTypes();
-		for (InstallationType type : findInstallationTypes) {
+	public ProductType parse(final String text, final Locale locale) throws ParseException {
+		Collection<ProductType> findProductTypes = this.productService.findProductTypes();
+		for (ProductType type : findProductTypes) {
 			if (type.getName().equals(text)) {
 				return type;
 			}

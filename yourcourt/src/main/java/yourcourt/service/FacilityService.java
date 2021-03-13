@@ -23,38 +23,38 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import yourcourt.model.Installation;
-import yourcourt.model.InstallationType;
-import yourcourt.repository.InstallationRepository;
+import yourcourt.model.Facility;
+import yourcourt.model.FacilityType;
+import yourcourt.repository.FacilityRepository;
 
 
 @Service
-public class InstallationService {
+public class FacilityService {
 	
-	private InstallationRepository installationRepository;
+	private FacilityRepository facilityRepository;
 
 	@Autowired
-	public InstallationService(InstallationRepository installationRepository) {
-		this.installationRepository = installationRepository;
+	public FacilityService(FacilityRepository facilityRepository) {
+		this.facilityRepository = facilityRepository;
 	}
 	
 	@Transactional(readOnly = true)
-	public Optional<Installation> findInstallationById(final int id) throws DataAccessException {
-		return this.installationRepository.findById(id);
+	public Optional<Facility> findFacilityById(final int id) throws DataAccessException {
+		return this.facilityRepository.findById(id);
 	}
 	
 	@Transactional
-	public void saveInstallation(final Installation installation) throws DataAccessException {
-		this.installationRepository.save(installation);
+	public void saveFacility(final Facility facility) throws DataAccessException {
+		this.facilityRepository.save(facility);
 	}
 	
 	@Transactional(readOnly = true)
-	public InstallationType findInstallationTypeById(final int installationTypeId) throws DataAccessException {
-		return this.installationRepository.findInstallationTypeById(installationTypeId);
+	public FacilityType findFacilityTypeById(final int facilityTypeId) throws DataAccessException {
+		return this.facilityRepository.findFacilityTypeById(facilityTypeId);
 	}
 
 	@Transactional(readOnly = true)
-	public List<InstallationType> findInstallationTypes() throws DataAccessException {
-		return this.installationRepository.findInstallationTypes();
+	public List<FacilityType> findFacilityTypes() throws DataAccessException {
+		return this.facilityRepository.findFacilityTypes();
 	}
 }

@@ -16,10 +16,13 @@
 
 package yourcourt.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,11 +38,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "installations")
-public class Installation extends Construction {
+@Table(name = "products")
+public class Product extends NamedEntity {
+
+	@NotBlank
+	@Column(name = "description", length = 512)
+	private String description;
 
 	@ManyToOne
-	@JoinColumn(name = "installation_type_id")
-	private InstallationType installationType;
+	@JoinColumn(name = "product_type_id")
+	private ProductType productType;
 
 }
