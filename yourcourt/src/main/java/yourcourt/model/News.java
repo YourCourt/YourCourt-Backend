@@ -16,34 +16,39 @@
 
 package yourcourt.model;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
  * @author javvazzam
  * @author juanogtir
  */
-@MappedSuperclass
-public class Construction extends NamedEntity {
+@Data
+@EqualsAndHashCode(callSuper=false)
+@Entity
+@Table(name = "news")
+public class News extends NamedEntity {
 
-    @NotBlank
+	@NotBlank
 	@Column(name = "description", length = 512)
 	private String description;
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Override
-	public String toString() {
-		return this.getName();
-	}
+	
+	@Column(name = "creation_date")
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private Date creationDate;
+	
+	@Column(name = "edition_date")
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private Date editionDate;
 
 }
