@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,13 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import io.swagger.annotations.Api;
 import yourcourt.exceptions.user.InexistentUser;
 import yourcourt.model.User;
 import yourcourt.service.UserService;
 
 @RestController
 @RequestMapping(value = "/api/users")
+@Api(tags = "User")
 @CrossOrigin("*")
 public class UserRestController {
 	static final String ID = "/{id}";
@@ -31,6 +33,7 @@ public class UserRestController {
 	@Autowired
 	private UserService userServiceAPI;
 
+	@PreAuthorize("hasAuthority('admin')")
 	@GetMapping
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<>((List<User>) userServiceAPI.findUsers(), HttpStatus.OK);

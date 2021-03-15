@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -25,16 +26,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private String	adminString	= "admin";
 	private String	userString	= "user";
 	
+	private String	apiUsers	= "api/users";
+	private String id_regex="{^[\\\\d]$}";
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.authorizeRequests()
 		
+		httpSecurity.authorizeRequests()
 		//Users
-		.antMatchers(HttpMethod.GET, "/users").hasAuthority(this.adminString)
-		.antMatchers(HttpMethod.GET, "/users/{^[\\d]$}").hasAuthority(this.adminString)
-		.antMatchers(HttpMethod.DELETE, "/users/{^[\\d]$}").hasAuthority(this.adminString)
-		.antMatchers(HttpMethod.POST, "/users").anonymous()
-		.antMatchers(HttpMethod.PUT, "/users/{^[\\d]$}").hasAuthority(this.userString);
+		.antMatchers(HttpMethod.GET, this.apiUsers).hasAuthority(this.adminString)
+		.antMatchers(HttpMethod.GET, this.apiUsers+this.id_regex).hasAnyAuthority(this.adminString,this.userString)
+		.antMatchers(HttpMethod.DELETE, this.apiUsers+this.id_regex).hasAuthority(this.adminString)
+		.antMatchers(HttpMethod.POST, this.apiUsers).anonymous()
+		.antMatchers(HttpMethod.PUT, this.apiUsers+this.id_regex).hasAuthority(this.userString);
 		
 		httpSecurity.csrf().disable().httpBasic()/*.and().addFilter(jwtAuthorizationFilter())*/;
 
@@ -49,8 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		//PasswordEncoder encoder = NoOpPasswordEncoder.getInstance();
-		//return encoder;
-		return new BCryptPasswordEncoder();
+		return NoOpPasswordEncoder.getInstance();
+		//return new BCryptPasswordEncoder();
 	}
 }
