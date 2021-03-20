@@ -1,9 +1,11 @@
--- LOGINS
-INSERT INTO yourcourtdb.login_users (username,password) VALUES('juanogtir','juanogtir');
-
 
 -- USERS
-INSERT INTO yourcourtdb.users (id,name,birth_date,creation_date, membership_number,email,phone,username) VALUES(1,'juan','1999-03-04','2021-01-01', '11111','juanogtir@alum.us.es','634964979','juanogtir');
+
+INSERT INTO yourcourtdb.roles(id, role_type) VALUES(1, 'ROLE_ADMIN');
+INSERT INTO yourcourtdb.roles(id, role_type) VALUES(2, 'ROLE_USER');
+
+
+INSERT INTO yourcourtdb.users (id,birth_date,creation_date, membership_number,email,phone,username, password) VALUES(1,'1999-03-04','2021-01-01', '11111','juanogtir@alum.us.es','634964979','juanogtir','usuario_prueba');
 
 -- COURT TYPES
 INSERT INTO yourcourtdb.court_type (id,name) VALUES(1,'Fast');
