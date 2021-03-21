@@ -12,7 +12,7 @@ import yourcourt.model.Product;
 import yourcourt.model.ProductType;
 
 @Repository
-public interface ProductRepository extends CrudRepository<Product, Integer>{
+public interface ProductRepository extends CrudRepository<Product, Long>{
 	
 	@Query("SELECT productTypes FROM ProductType productTypes")
 	List<ProductType> findProductTypes();

@@ -1,4 +1,4 @@
-package yourcourt.security;
+package yourcourt.security.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

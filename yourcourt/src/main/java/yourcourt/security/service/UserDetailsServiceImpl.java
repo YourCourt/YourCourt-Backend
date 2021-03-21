@@ -1,14 +1,14 @@
-package yourcourt.service;
+package yourcourt.security.service;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import yourcourt.security.PrincipalUser;
-import yourcourt.security.User;
+import yourcourt.security.model.PrincipalUser;
+import yourcourt.security.model.User;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userService.getByUsername(username).orElseThrow();
+		User user = userService.getByUsername(username).orElseThrow(() -> new UsernameNotFoundException("No se ha encontrado el usuario"));
 		return PrincipalUser.build(user);
 	}
 }

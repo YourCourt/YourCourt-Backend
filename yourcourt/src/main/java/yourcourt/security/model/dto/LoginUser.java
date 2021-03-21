@@ -1,13 +1,11 @@
-package yourcourt.security.jwt.dto;
+package yourcourt.security.model.dto;
 
-
-import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 
 @Data
-@Table(name = "login_users")
 public class LoginUser {
 
 	@NotBlank

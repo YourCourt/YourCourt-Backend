@@ -16,10 +16,12 @@
 
 package yourcourt.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,8 +40,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "courts")
 public class Court extends Construction {
 
-	@ManyToOne
-	@JoinColumn(name = "court_type_id")
+	@Column(name = "court_type")
+	@Enumerated(EnumType.STRING)
 	private CourtType courtType;
-
+	
 }

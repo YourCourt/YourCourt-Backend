@@ -39,7 +39,7 @@ public class FacilityService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Optional<Facility> findFacilityById(final int id) throws DataAccessException {
+	public Optional<Facility> findFacilityById(final Long id) throws DataAccessException {
 		return this.facilityRepository.findById(id);
 	}
 	

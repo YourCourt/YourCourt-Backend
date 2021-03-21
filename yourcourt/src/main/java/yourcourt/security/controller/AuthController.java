@@ -1,11 +1,6 @@
-package yourcourt.controller;
+package yourcourt.security.controller;
 
 import java.util.Collections;
-
-
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,69 +18,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
 import yourcourt.model.dto.Message;
-import yourcourt.model.dto.NewUser;
-import yourcourt.security.Role;
-import yourcourt.security.RoleType;
-import yourcourt.security.User;
 import yourcourt.security.jwt.JwtProvider;
-import yourcourt.security.jwt.dto.JwtDto;
-import yourcourt.security.jwt.dto.LoginUser;
-import yourcourt.service.RoleService;
-import yourcourt.service.UserService;
+import yourcourt.security.model.dto.JwtDto;
+import yourcourt.security.model.dto.LoginUser;
+
 
 @RestController
 @RequestMapping("/auth")
+@Api(tags = "Auth")
 @CrossOrigin
 public class AuthController {
 	
-	@Autowired
-	PasswordEncoder passwordEncoder;
 
 	@Autowired
     AuthenticationManager authenticationManager;
 	
-	@Autowired
-	UserService userService;
-	
-	@Autowired
-	RoleService roleService;
 	
 	@Autowired
 	JwtProvider jwtProvider;
 	
-	@PostMapping("/new")
-	public ResponseEntity<Object> newUser(@Valid @RequestBody NewUser newUser, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return new ResponseEntity<>(new Message("Error en el formato de la petición"), HttpStatus.BAD_REQUEST);
-		}
-		
-		if (userService.existsByUsername(newUser.getUsername())) {
-			return new ResponseEntity<>(new Message("El usuario indicado ya existe"), HttpStatus.BAD_REQUEST);
-		}
-		
-		if (userService.existsByEmail(newUser.getEmail())) {
-			return new ResponseEntity<>(new Message("El email indicado ya existe"), HttpStatus.BAD_REQUEST);
-		}
-		
-		User user = new User(newUser.getUsername(), passwordEncoder.encode(newUser.getPassword()), newUser.getEmail());
-		Set<Role> roles = new HashSet<Role>();
-		roles.add(roleService.getByRoleType(RoleType.ROLE_USER).get());
-		if (newUser.getRoles().contains("admin")) {
-			roles.add(roleService.getByRoleType(RoleType.ROLE_ADMIN).get());
-		}
-		
-		user.setRoles(roles);
-		userService.saveUser(user);
-		
-		return new ResponseEntity<>(new Message("Usuario creado correctamente"), HttpStatus.CREATED);
-	}
-	
-	
 	@PostMapping("/login")
 	public ResponseEntity<Object> login(@RequestBody @Valid LoginUser loginUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			return new ResponseEntity<>(new Message("El usuario o la contraseña es incorrecto"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Binding error"), HttpStatus.BAD_REQUEST);
 		}
 		
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword(), Collections.emptyList()));

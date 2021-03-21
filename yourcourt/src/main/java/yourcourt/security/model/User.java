@@ -1,4 +1,4 @@
-package yourcourt.security;
+package yourcourt.security.model;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
@@ -36,48 +36,49 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(unique = true, nullable = false)
 	private String username;
-	
+
 	@Column(nullable = false)
 	private String password;
-	
-	@Column(name = "birth_date")
-	@Past
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private LocalDate	birthDate;
-
-	@Column(name = "phone")
-	@NotBlank
-	@Digits(fraction = 0, integer = 10)
-	private String		phone;
 
 	@Column(name = "email")
 	@Email
 	@NotBlank
-	private String		email;
+	private String email;
+
+	@Column(name = "birth_date")
+	@Past
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private LocalDate birthDate;
+
+	@Column(name = "phone")
+	@NotBlank
+	@Digits(fraction = 0, integer = 10)
+	private String phone;
 
 	@Column(name = "creation_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private LocalDate	creationDate;
-	
+	private LocalDate creationDate;
+
 	@Column(name = "membership_number")
-	@Pattern(regexp="\\b\\d{5}\\b")
+	@Pattern(regexp = "\\b\\d{5}\\b")
 	@NotBlank
-	private String	membershipNumber;
-	
+	private String membershipNumber;
+
 	@ManyToMany
-	@JoinTable(
-			name = "users_roles",
-			joinColumns = @JoinColumn(name = "user_id"),
-			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
 
-	public User(String username, String password, String email) {
+	public User(String username, String password, String email, LocalDate birthDate, String phone,
+			String membershipNumber) {
 		this.username = username;
 		this.password = password;
 		this.email = email;
+		this.birthDate = birthDate;
+		this.phone = phone;
+		this.membershipNumber = membershipNumber;
 	}
-	
+
 }

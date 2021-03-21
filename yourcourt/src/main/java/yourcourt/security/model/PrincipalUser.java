@@ -1,4 +1,4 @@
-package yourcourt.security;
+package yourcourt.security.model;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +15,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class PrincipalUser implements UserDetails {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String username;
 	private String password;
 

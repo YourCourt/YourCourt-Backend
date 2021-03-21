@@ -11,7 +11,7 @@ import yourcourt.model.Court;
 import yourcourt.model.CourtType;
 
 @Repository
-public interface CourtRepository extends CrudRepository<Court, Integer>{
+public interface CourtRepository extends CrudRepository<Court, Long>{
 	/*
 	Court findById(int id) throws DataAccessException;
 	
@@ -20,9 +20,9 @@ public interface CourtRepository extends CrudRepository<Court, Integer>{
 	void deleteById(int id);
 
 	void save(Court court) throws DataAccessException;*/
-	
+	/*
 	@Query("SELECT courtTypes FROM CourtType courtTypes")
 	List<CourtType> findCourtTypes();
 
-	CourtType findCourtTypeById(int courtTypeId);
+	CourtType findCourtTypeById(int courtTypeId);*/
 }

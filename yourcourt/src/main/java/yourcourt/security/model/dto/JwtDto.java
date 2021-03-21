@@ -1,10 +1,9 @@
-package yourcourt.security.jwt.dto;
+package yourcourt.security.model.dto;
 
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

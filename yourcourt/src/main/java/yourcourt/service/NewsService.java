@@ -22,27 +22,27 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import yourcourt.model.New;
-import yourcourt.repository.NewRepository;
+import yourcourt.model.News;
+import yourcourt.repository.NewsRepository;
 
 @Service
-public class NewService {
+public class NewsService {
 	
-	private NewRepository newRepository;
+	private NewsRepository newsRepository;
 
 	@Autowired
-	public NewService(NewRepository newRepository) {
-		this.newRepository = newRepository;
+	public NewsService(NewsRepository newsRepository) {
+		this.newsRepository = newsRepository;
 	}
 	
 	@Transactional(readOnly = true)
-	public Optional<New> findNewsById(final int id) throws DataAccessException {
-		return this.newRepository.findById(id);
+	public Optional<News> findNewsById(final Long id) throws DataAccessException {
+		return this.newsRepository.findById(id);
 	}
 	
 	@Transactional
-	public void saveNew(final New news) throws DataAccessException {
-		this.newRepository.save(news);
+	public void saveNew(final News news) throws DataAccessException {
+		this.newsRepository.save(news);
 	}
 
 }

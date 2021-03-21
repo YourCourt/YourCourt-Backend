@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import yourcourt.model.Court;
-import yourcourt.model.CourtType;
 import yourcourt.repository.CourtRepository;
 
 
@@ -38,8 +37,12 @@ public class CourtService {
 		this.courtRepository = courtRepository;
 	}
 	
+	public Iterable<Court> findAllCourts() {
+        return courtRepository.findAll();
+    }
+	
 	@Transactional(readOnly = true)
-	public Optional<Court> findCourtById(final int id) throws DataAccessException {
+	public Optional<Court> findCourtById(final Long id) throws DataAccessException {
 		return this.courtRepository.findById(id);
 	}
 	
@@ -47,7 +50,7 @@ public class CourtService {
 	public void saveCourt(final Court court) throws DataAccessException {
 		this.courtRepository.save(court);
 	}
-	
+	/*
 	@Transactional(readOnly = true)
 	public CourtType findCourtTypeById(final int courtTypeId) throws DataAccessException {
 		return this.courtRepository.findCourtTypeById(courtTypeId);
@@ -56,5 +59,5 @@ public class CourtService {
 	@Transactional(readOnly = true)
 	public List<CourtType> findCourtTypes() throws DataAccessException {
 		return this.courtRepository.findCourtTypes();
-	}
+	}*/
 }

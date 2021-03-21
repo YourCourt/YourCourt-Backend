@@ -12,7 +12,7 @@ import yourcourt.model.Facility;
 import yourcourt.model.FacilityType;
 
 @Repository
-public interface FacilityRepository extends CrudRepository<Facility, Integer>{
+public interface FacilityRepository extends CrudRepository<Facility, Long>{
 	
 	@Query("SELECT facilityTypes FROM FacilityType facilityTypes")
 	List<FacilityType> findFacilityTypes();

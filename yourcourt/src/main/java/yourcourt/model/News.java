@@ -37,7 +37,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "news")
-public class New extends NamedEntity {
+public class News extends NamedEntity {
 
 	@NotBlank
 	@Column(name = "description", length = 512)

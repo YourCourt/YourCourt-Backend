@@ -1,58 +1,84 @@
 package yourcourt.configuration;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
+
+import yourcourt.security.jwt.JwtEntryPoint;
+import yourcourt.security.jwt.JwtTokenFilter;
+import yourcourt.security.service.UserDetailsServiceImpl;
+
+
+
+@Component
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
-	DataSource		dataSource;
+	UserDetailsServiceImpl userDetailsService;
+	
+	@Autowired
+	JwtEntryPoint jwtEntryPoint;
+	
+	@Bean
+	public JwtTokenFilter jwtTokenFilter() {
+		return new JwtTokenFilter();
+	}
+	
 
 	private String	adminString	= "admin";
 	private String	userString	= "user";
 	
 	private String	apiUsers	= "api/users";
 	private String id_regex="{^[\\\\d]$}";
-	@Override
-	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		
-		httpSecurity.authorizeRequests()
-		//Users
-		.antMatchers(HttpMethod.GET, this.apiUsers).hasAuthority(this.adminString)
-		.antMatchers(HttpMethod.GET, this.apiUsers+this.id_regex).hasAnyAuthority(this.adminString,this.userString)
-		.antMatchers(HttpMethod.DELETE, this.apiUsers+this.id_regex).hasAuthority(this.adminString)
-		.antMatchers(HttpMethod.POST, this.apiUsers).anonymous()
-		.antMatchers(HttpMethod.PUT, this.apiUsers+this.id_regex).hasAuthority(this.userString);
-		
-		httpSecurity.csrf().disable().httpBasic()/*.and().addFilter(jwtAuthorizationFilter())*/;
-
-    }
-	
 	
 	@Override
 	public void configure(final AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication().dataSource(this.dataSource).usersByUsernameQuery("select username,password,enabled " + "from logins " + "where username = ?")
-			.authoritiesByUsernameQuery("select username, authority " + "from authorities " + "where username = ?").passwordEncoder(this.passwordEncoder());
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
 		//return new BCryptPasswordEncoder();
+		return NoOpPasswordEncoder.getInstance();
+	}
+	
+	@Override
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+	
+	@Override
+	protected AuthenticationManager authenticationManager() throws Exception {
+		return super.authenticationManager();
+	}
+	
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.cors().and().csrf().disable()
+			.authorizeRequests()
+			.antMatchers("/**").permitAll()
+			.anyRequest().authenticated()
+			.and()
+			.exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
+			.and()
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		
+		//httpSecurity.authorizeRequests().antMatchers(HttpMethod.GET, this.apiUsers).hasAuthority(this.adminString)
+		
+		http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 }

@@ -7,6 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class Message {
 
-	private String text;
+	private String info_message;
 	
 }
