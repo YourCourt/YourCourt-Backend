@@ -34,8 +34,6 @@ public class NewUser {
 	@NotBlank
 	private String phone;
 	
-	private LocalDate creationDate;
-	
 	private Set<String> roles = new HashSet<>();
 	
 }

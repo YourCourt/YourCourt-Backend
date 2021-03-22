@@ -2,6 +2,8 @@ package yourcourt.security.controller;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -12,12 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import yourcourt.exceptions.user.InexistentUser;
 import yourcourt.model.dto.Message;
 import yourcourt.security.model.Role;
 import yourcourt.security.model.RoleType;
@@ -42,6 +49,27 @@ public class UserController {
 	
 	@Autowired
 	RoleService roleService;
+	
+	@GetMapping()
+	public ResponseEntity<List<User>> users() {
+		List<User> users = userService.findAllUsers();
+		return new ResponseEntity<>(users, HttpStatus.OK);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Object> users(@PathVariable Long id) {
+		try {
+		User user = userService.findUserById(id);
+		return new ResponseEntity<>(user, HttpStatus.OK);
+		} catch (InexistentUser e) {
+			return new ResponseEntity<>(
+			    	e.getMessage(), HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			return new ResponseEntity<>(
+			    	e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	
 	@PostMapping()
 	public ResponseEntity<Object> newUser(@Valid @RequestBody NewUser newUser, BindingResult bindingResult) {
@@ -72,5 +100,37 @@ public class UserController {
 		
 		return new ResponseEntity<>(new Message("Created user"), HttpStatus.CREATED);
 	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody NewUser user) {
+		try {
+			User userToUpdate = userService.findUserById(id);
+
+			try {
+				User obj = userService.updateUser(userToUpdate, user);
+
+				return new ResponseEntity<>(obj, HttpStatus.OK);
+			} catch (Exception e) {
+				return new ResponseEntity<>(
+				    	e.getMessage(), HttpStatus.BAD_REQUEST);
+			}
+		} catch (InexistentUser e) {
+			return new ResponseEntity<>(
+			    	e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
+		try {
+			userService.deleteUserById(id);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch (InexistentUser e) {
+			return new ResponseEntity<>(
+			    	e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+	}
+	
 	
 }
