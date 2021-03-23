@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,6 +31,7 @@ import yourcourt.security.model.Role;
 import yourcourt.security.model.RoleType;
 import yourcourt.security.model.User;
 import yourcourt.security.model.dto.NewUser;
+import yourcourt.security.model.dto.UpdateUser;
 import yourcourt.security.service.RoleService;
 import yourcourt.security.service.UserService;
 
@@ -50,6 +52,7 @@ public class UserController {
 	@Autowired
 	RoleService roleService;
 	
+	//@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping()
 	public ResponseEntity<List<User>> users() {
 		List<User> users = userService.findAllUsers();
@@ -63,10 +66,10 @@ public class UserController {
 		return new ResponseEntity<>(user, HttpStatus.OK);
 		} catch (InexistentUser e) {
 			return new ResponseEntity<>(
-			    	e.getMessage(), HttpStatus.NOT_FOUND);
+					new Message(e.getMessage()), HttpStatus.NOT_FOUND);
 		} catch (Exception e) {
 			return new ResponseEntity<>(
-			    	e.getMessage(), HttpStatus.BAD_REQUEST);
+					new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -102,7 +105,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody NewUser user) {
+	public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody UpdateUser user) {
 		try {
 			User userToUpdate = userService.findUserById(id);
 
@@ -112,11 +115,11 @@ public class UserController {
 				return new ResponseEntity<>(obj, HttpStatus.OK);
 			} catch (Exception e) {
 				return new ResponseEntity<>(
-				    	e.getMessage(), HttpStatus.BAD_REQUEST);
+						new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 			}
 		} catch (InexistentUser e) {
 			return new ResponseEntity<>(
-			    	e.getMessage(), HttpStatus.NOT_FOUND);
+					new Message(e.getMessage()), HttpStatus.NOT_FOUND);
 		}
 	}
 	
@@ -124,11 +127,11 @@ public class UserController {
 	public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
 		try {
 			userService.deleteUserById(id);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(new Message("Deleted user"),HttpStatus.OK);
 		}
 		catch (InexistentUser e) {
 			return new ResponseEntity<>(
-			    	e.getMessage(), HttpStatus.NOT_FOUND);
+					new Message(e.getMessage()), HttpStatus.NOT_FOUND);
 		}
 	}
 	
