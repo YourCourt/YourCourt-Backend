@@ -15,15 +15,16 @@
  */
 package yourcourt.service;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import yourcourt.model.Court;
+import yourcourt.model.dto.CourtDto;
 import yourcourt.repository.CourtRepository;
 
 
@@ -50,6 +51,24 @@ public class CourtService {
 	public void saveCourt(final Court court) throws DataAccessException {
 		this.courtRepository.save(court);
 	}
+	
+	@Transactional
+	public Court updateCourt(Court courtToUpdate, CourtDto courtRequest) {
+		
+		
+		BeanUtils.copyProperties(courtRequest, courtToUpdate, "courtType");
+		courtRepository.save(courtToUpdate);
+		return courtToUpdate;
+	}
+	
+	public void deleteCourtById(long id) {
+		courtRepository.deleteById(id);
+    }
+	
+	public boolean existsCourtById(long id) {
+		return courtRepository.existsById(id);
+    }
+	
 	/*
 	@Transactional(readOnly = true)
 	public CourtType findCourtTypeById(final int courtTypeId) throws DataAccessException {
