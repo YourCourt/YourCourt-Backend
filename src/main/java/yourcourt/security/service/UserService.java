@@ -17,6 +17,7 @@ import yourcourt.exceptions.user.DateAttributeMustBePast;
 import yourcourt.exceptions.user.InexistentUser;
 import yourcourt.security.model.User;
 import yourcourt.security.model.dto.NewUser;
+import yourcourt.security.model.dto.UpdateUser;
 import yourcourt.security.repository.UserRepository;
 
 
@@ -61,7 +62,7 @@ public class UserService {
 	}
 	
 	@Transactional
-	public User updateUser(User userToUpdate, NewUser userRequest) throws DateAttributeMustBePast, AttributeAlreadyExists {
+	public User updateUser(User userToUpdate, UpdateUser userRequest) throws DateAttributeMustBePast, AttributeAlreadyExists {
 		
 		if (userRequest.getBirthDate().isAfter(LocalDate.now())) {
 			throw new DateAttributeMustBePast("Birth date");
