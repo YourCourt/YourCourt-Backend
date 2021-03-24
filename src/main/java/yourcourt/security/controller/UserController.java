@@ -1,9 +1,9 @@
 package yourcourt.security.controller;
 
 import java.time.LocalDate;
+
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
-import yourcourt.exceptions.user.InexistentUser;
+import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.dto.Message;
 import yourcourt.security.model.Role;
 import yourcourt.security.model.RoleType;
@@ -64,7 +64,7 @@ public class UserController {
 		try {
 		User user = userService.findUserById(id);
 		return new ResponseEntity<>(user, HttpStatus.OK);
-		} catch (InexistentUser e) {
+		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(
 					new Message(e.getMessage()), HttpStatus.NOT_FOUND);
 		} catch (Exception e) {
@@ -117,7 +117,7 @@ public class UserController {
 				return new ResponseEntity<>(
 						new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 			}
-		} catch (InexistentUser e) {
+		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(
 					new Message(e.getMessage()), HttpStatus.NOT_FOUND);
 		}
@@ -129,7 +129,7 @@ public class UserController {
 			userService.deleteUserById(id);
 			return new ResponseEntity<>(new Message("Deleted user"),HttpStatus.OK);
 		}
-		catch (InexistentUser e) {
+		catch (InexistentEntity e) {
 			return new ResponseEntity<>(
 					new Message(e.getMessage()), HttpStatus.NOT_FOUND);
 		}

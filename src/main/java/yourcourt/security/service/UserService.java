@@ -1,6 +1,7 @@
 package yourcourt.security.service;
 
 import java.time.LocalDate;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import yourcourt.exceptions.user.AttributeAlreadyExists;
 import yourcourt.exceptions.user.DateAttributeMustBePast;
-import yourcourt.exceptions.user.InexistentUser;
+import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.security.model.User;
 import yourcourt.security.model.dto.NewUser;
 import yourcourt.security.model.dto.UpdateUser;
@@ -32,9 +33,9 @@ public class UserService {
 		return (List<User>) userRepository.findAll();
 	}
 	@Transactional(readOnly = true)
-	public User findUserById(Long id) throws InexistentUser {
+	public User findUserById(Long id) throws InexistentEntity {
 
-		User user = userRepository.findById(id).orElseThrow(() -> new InexistentUser());
+		User user = userRepository.findById(id).orElseThrow(() -> new InexistentEntity("Usuario"));
 		return user;
 
 		
@@ -87,7 +88,7 @@ public class UserService {
 			user = userRepository.findById(id).get();
 			userRepository.delete(user);
 		} catch (NoSuchElementException e) {
-			throw new InexistentUser();
+			throw new InexistentEntity("Usuario");
 		}
 		return user;
 	}

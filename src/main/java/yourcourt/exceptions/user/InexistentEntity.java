@@ -2,14 +2,14 @@ package yourcourt.exceptions.user;
 
 import java.util.NoSuchElementException;
 
-public class InexistentUser extends NoSuchElementException {
+public class InexistentEntity extends NoSuchElementException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public InexistentUser() {
-		super("Inexistent user");
+	public InexistentEntity(String s) {
+		super(s + " inexistente");
 	}
 	
 
