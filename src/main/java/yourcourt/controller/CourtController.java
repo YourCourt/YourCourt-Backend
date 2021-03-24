@@ -4,8 +4,9 @@ package yourcourt.controller;
 
 import java.util.Optional;
 
+
 import io.swagger.annotations.Api;
-import yourcourt.exceptions.user.InexistentCourt;
+import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Court;
 import yourcourt.model.dto.CourtDto;
 import yourcourt.model.dto.Message;
@@ -48,15 +49,15 @@ public class CourtController {
     }
     
     @PostMapping
-	public ResponseEntity<?> createItinerary(@RequestBody CourtDto courtDto) {
+	public ResponseEntity<?> createCourt(@RequestBody CourtDto courtDto) {
 		String username = userService.getCurrentUsername();
-		
-		if(!username.equals("adminUser")){
+		System.out.println(username);
+		if(!username.equals("admin")){
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de creación."));
 		}
 		
 		Court newCourt = new Court();
-		BeanUtils.copyProperties(courtDto, newCourt, "courtType");
+		BeanUtils.copyProperties(courtDto, newCourt);
 		
 		courtService.saveCourt(newCourt);
 		
@@ -66,40 +67,37 @@ public class CourtController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Object> updateCourt(@PathVariable Long id, @RequestBody CourtDto courtDto) {
 		String username = userService.getCurrentUsername();
-		if(!username.equals("adminUser")){
+		if(!username.equals("admin")){
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de actualización."));
 		}
 		
-		try {
-			Optional<Court> courtToUpdate = courtService.findCourtById(id);
+		Optional<Court> courtToUpdate = courtService.findCourtById(id);
 			
-			try {
-				Court obj = courtService.updateCourt(courtToUpdate.get(), courtDto);
+		try {
+			Court obj = courtService.updateCourt(courtToUpdate.get(), courtDto);
 
-				return new ResponseEntity<>(obj, HttpStatus.OK);
-			} catch (Exception e) {
-				return new ResponseEntity<>(
-				    	e.getMessage(), HttpStatus.BAD_REQUEST);
-			}
-		} catch (InexistentCourt e) {
+			return new ResponseEntity<>(obj, HttpStatus.OK);
+			
+		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(
-			    	e.getMessage(), HttpStatus.NOT_FOUND);
+				    	new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
+
 	}
 	
 	@DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteItinerary(@PathVariable("id") long id) {
+    public ResponseEntity<?> deleteCourt(@PathVariable("id") long id) {
         if (!courtService.existsCourtById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el court indicado"));
         } else {
 			
 			String username = userService.getCurrentUsername();
-			if(!username.equals("adminUser")){
+			if(!username.equals("admin")){
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de eliminación."));
 			}
 			courtService.deleteCourtById(id);
 		}	
-        return ResponseEntity.ok(new Message("Itinerario eliminado correctamente"));
+        return ResponseEntity.ok(new Message("Court eliminada correctamente"));
     }
 
 }

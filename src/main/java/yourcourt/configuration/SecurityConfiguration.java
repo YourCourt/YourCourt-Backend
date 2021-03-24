@@ -75,7 +75,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.and()
 			.exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
 			.and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
 		
 		//httpSecurity.authorizeRequests().antMatchers(HttpMethod.GET, this.apiUsers).hasAuthority(this.adminString)
 		

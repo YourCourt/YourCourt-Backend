@@ -15,6 +15,7 @@
  */
 package yourcourt.service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -23,6 +24,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Court;
 import yourcourt.model.dto.CourtDto;
 import yourcourt.repository.CourtRepository;
@@ -53,11 +55,14 @@ public class CourtService {
 	}
 	
 	@Transactional
-	public Court updateCourt(Court courtToUpdate, CourtDto courtRequest) {
+	public Court updateCourt(Court courtToUpdate, CourtDto courtRequest) throws InexistentEntity {
 		
-		
-		BeanUtils.copyProperties(courtRequest, courtToUpdate, "courtType");
-		courtRepository.save(courtToUpdate);
+		try {
+			BeanUtils.copyProperties(courtRequest, courtToUpdate, "id");
+			courtRepository.save(courtToUpdate);
+		} catch (NoSuchElementException e) {
+			throw new InexistentEntity("Court");
+		}
 		return courtToUpdate;
 	}
 	
