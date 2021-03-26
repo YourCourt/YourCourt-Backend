@@ -15,14 +15,18 @@
  */
 package yourcourt.service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.News;
+import yourcourt.model.dto.NewsDto;
 import yourcourt.repository.NewsRepository;
 
 @Service
@@ -35,14 +39,42 @@ public class NewsService {
 		this.newsRepository = newsRepository;
 	}
 	
+	public Iterable<News> findAllNews() {
+		
+		return newsRepository.findAll();
+	}
+	
 	@Transactional(readOnly = true)
 	public Optional<News> findNewsById(final Long id) throws DataAccessException {
 		return this.newsRepository.findById(id);
 	}
 	
 	@Transactional
-	public void saveNew(final News news) throws DataAccessException {
+	public void saveNews(final News news) throws DataAccessException {
 		this.newsRepository.save(news);
 	}
+
+	public News updateNews(News newsToUpdate, NewsDto newsRequest) {
+		
+		try {
+			BeanUtils.copyProperties(newsRequest, newsToUpdate, "id");
+			newsRepository.save(newsToUpdate);
+		
+		} catch (NoSuchElementException e) {
+			throw new InexistentEntity("Noticia");
+		}
+		
+		return newsToUpdate;
+	}
+
+	public boolean existsNewsById(long id) {
+		return newsRepository.existsById(id);
+    }
+
+	public void deleteNewsById(long id) {
+		newsRepository.deleteById(id);
+		
+	}
+	
 
 }
