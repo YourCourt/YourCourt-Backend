@@ -20,7 +20,6 @@ import yourcourt.security.jwt.JwtTokenFilter;
 import yourcourt.security.service.UserDetailsServiceImpl;
 
 
-
 @Component
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -75,7 +74,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.and()
 			.exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
 			.and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
 		//httpSecurity.authorizeRequests().antMatchers(HttpMethod.GET, this.apiUsers).hasAuthority(this.adminString)
 		
