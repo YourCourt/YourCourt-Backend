@@ -7,10 +7,12 @@ import java.util.Set;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
@@ -23,15 +25,19 @@ public class NewUser {
 	private String password;
 	
 	@Email
+	@NotEmpty
 	private String email;
 	
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	@Past(message = "La fecha debe ser pasada.")
 	private LocalDate birthDate;
 	
 	@NotBlank
+	@Pattern(regexp = "\\b\\d{5}\\b",message = "Debe ser de 5 dígitos exactos.")
 	private String	membershipNumber;
 	
 	@NotBlank
+	@Digits(fraction = 0, integer = 10)
 	private String phone;
 	
 	private Set<String> roles = new HashSet<>();
