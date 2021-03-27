@@ -9,15 +9,20 @@ INSERT INTO users (email,password,username, birth_date,creation_date, membership
 	 ('test224@ewfwef.com','$2y$12$ewuFroLzks6thFWxZVa7EuJ/OQy2ECyLO.kMTjWe4el7kBjlzLEYK','test_username2','1999-03-04','2021-01-01', '22222','654987331'),
 	 ('test225@ewfwef.com','$2y$12$ycBsosY.gzUhlYwvEv1HcORck.zjAGalYOanA36x4wWHlqqn.u7ZW','test_username3','1999-03-04','2021-01-01', '33333','654987341');
 
-INSERT INTO users_roles(user_id, role_id) VALUES
-	(1,1),
-	(1,2),
-	(2,2),
-	(3,2),
-	(4,2);
+INSERT
+	INTO
+	users_roles(user_id, role_id)
+VALUES (1, 1),
+(1, 2),
+(2, 2),
+(3, 2),
+(4, 2);
 
 -- COURTS
-INSERT INTO courts (name,description,court_type) VALUES('Fast Court','This is a fast court.','FAST');
+INSERT INTO courts (name,description,court_type) VALUES('Primera pista rapida','Esta es nuestra primera pista rapida.','FAST');
+INSERT INTO courts (name,description,court_type) VALUES('Primera pista de tierra batida','Esta es nuestra primera pista de tierra batida.','CLAY');
+INSERT INTO courts (name,description,court_type) VALUES('Segunda pista rapida','Esta es nuestra segunda pista rapida.','FAST');
+INSERT INTO courts (name,description,court_type) VALUES('Segunda pista de tierra batida','Esta es nuestra segunda pista de tierra batida.','CLAY');
 
 -- FACILITY TYPES
 INSERT INTO facility_type (id,name) VALUES(1,'Parking');

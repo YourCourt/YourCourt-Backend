@@ -1,23 +1,14 @@
 package yourcourt.controller;
 
-
-
-import java.util.Optional;
-
-
-
 import io.swagger.annotations.Api;
-import yourcourt.exceptions.user.InexistentEntity;
-import yourcourt.model.News;
-import yourcourt.model.dto.Message;
-import yourcourt.model.dto.NewsDto;
-import yourcourt.security.service.UserService;
-import yourcourt.service.NewsService;
-
+import java.time.LocalDate;
+import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,79 +17,93 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import yourcourt.exceptions.user.InexistentEntity;
+import yourcourt.model.News;
+import yourcourt.model.ValidationUtils;
+import yourcourt.model.dto.Message;
+import yourcourt.model.dto.NewsDto;
+import yourcourt.service.NewsService;
 
 @RestController
 @Api(tags = "News")
 @RequestMapping("/news")
+@CrossOrigin
 public class NewsController {
-    
-	@Autowired
-	private UserService userService;
-	
-    @Autowired
-    private NewsService newsService;
-    
-    @GetMapping
-	public ResponseEntity<?> getAll() {
-		return new ResponseEntity<>(newsService.findAllNews(), HttpStatus.OK);
-	}
+  @Autowired
+  private NewsService newsService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getNews(@PathVariable("id") long id) {
-    	return new ResponseEntity<>(newsService.findNewsById(id), HttpStatus.OK);
+  @GetMapping
+  public ResponseEntity<?> getAllNews() {
+    return new ResponseEntity<>(newsService.findAllNews(), HttpStatus.OK);
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getNews(@PathVariable("id") long id) {
+    try {
+      News news = newsService.findNewsById(id);
+      return new ResponseEntity<>(news, HttpStatus.OK);
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
-    
-    @PostMapping
-	public ResponseEntity<?> createNews(@RequestBody NewsDto newsDto) {
-		String username = userService.getCurrentUsername();
-		System.out.println(username);
-		if(!username.equals("admin")){
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de creación."));
-		}
-		
-		News newNews = new News();
-		BeanUtils.copyProperties(newsDto, newNews);
-		
-		newsService.saveNews(newNews);
-		
-		return ResponseEntity.ok(newsService.findNewsById(newNews.getId()));
-	}	
-    
-	@PutMapping("/{id}")
-	public ResponseEntity<Object> updateNews(@PathVariable Long id, @RequestBody NewsDto newsDto) {
-		String username = userService.getCurrentUsername();
-		if(!username.equals("admin")){
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de actualización."));
-		}
-		
-		Optional<News> newsToUpdate = newsService.findNewsById(id);
-			
-		try {
-			News obj = newsService.updateNews(newsToUpdate.get(), newsDto);
+  }
 
-			return new ResponseEntity<>(obj, HttpStatus.OK);
-			
-		} catch (InexistentEntity e) {
-			return new ResponseEntity<>(
-				    	new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
-		}
-
-	}
-	
-	@DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteNews(@PathVariable("id") long id) {
-        if (!newsService.existsNewsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe la noticia indicada"));
-        } else {
-			
-			String username = userService.getCurrentUsername();
-			if(!username.equals("admin")){
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de eliminación."));
-			}
-			newsService.deleteNewsById(id);
-		}	
-        return ResponseEntity.ok(new Message("Noticia eliminada correctamente"));
+  @PostMapping
+  public ResponseEntity<?> createNews(
+    @Valid @RequestBody NewsDto newsDto,
+    BindingResult bindingResult
+  ) {
+    if (bindingResult.hasErrors()) {
+      return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body(ValidationUtils.validateDto(bindingResult));
     }
 
+    LocalDate creationDate = LocalDate.now();
+    LocalDate editionDate = LocalDate.now();
+
+    News newNews = new News();
+    BeanUtils.copyProperties(newsDto, newNews);
+    newNews.setCreationDate(creationDate);
+    newNews.setEditionDate(editionDate);
+
+    News newsCreated = newsService.saveNews(newNews);
+
+    return new ResponseEntity<>(newsCreated, HttpStatus.CREATED);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Object> updateNews(
+    @PathVariable Long id,
+    @RequestBody NewsDto newsDto,
+    BindingResult bindingResult
+  ) {
+    if (bindingResult.hasErrors()) {
+      return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body(ValidationUtils.validateDto(bindingResult));
+    }
+
+    try {
+      News newsToUpdate = newsService.findNewsById(id);
+      News newsUpdated = newsService.updateNews(newsToUpdate, newsDto);
+
+      return new ResponseEntity<>(newsUpdated, HttpStatus.OK);
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteNews(@PathVariable("id") Long id) {
+    try {
+      newsService.deleteNewsById(id);
+      return new ResponseEntity<>(new Message("Noticia eliminada"), HttpStatus.OK);
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
 }

@@ -1,6 +1,8 @@
 package yourcourt.model.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,11 +13,16 @@ import yourcourt.model.CourtType;
 import yourcourt.model.Facility;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourtDto extends Construction{
+public class CourtDto{
+	
+	@NotBlank
+	private String name;
 
-	@NotEmpty
+	@NotBlank
+	private String description;
+
+	@NotNull
 	private CourtType courtType;
 }

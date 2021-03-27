@@ -15,73 +15,64 @@
  */
 package yourcourt.service;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Court;
 import yourcourt.model.dto.CourtDto;
 import yourcourt.repository.CourtRepository;
 
-
 @Service
 public class CourtService {
-	
-	private CourtRepository courtRepository;
+  private CourtRepository courtRepository;
 
-	@Autowired
-	public CourtService(CourtRepository courtRepository) {
-		this.courtRepository = courtRepository;
-	}
-	
-	public Iterable<Court> findAllCourts() {
-        return courtRepository.findAll();
-    }
-	
-	@Transactional(readOnly = true)
-	public Optional<Court> findCourtById(final Long id) throws DataAccessException {
-		return this.courtRepository.findById(id);
-	}
-	
-	@Transactional
-	public void saveCourt(final Court court) throws DataAccessException {
-		this.courtRepository.save(court);
-	}
-	
-	@Transactional
-	public Court updateCourt(Court courtToUpdate, CourtDto courtRequest) throws InexistentEntity {
-		
-		try {
-			BeanUtils.copyProperties(courtRequest, courtToUpdate, "id");
-			courtRepository.save(courtToUpdate);
-		} catch (NoSuchElementException e) {
-			throw new InexistentEntity("Court");
-		}
-		return courtToUpdate;
-	}
-	
-	public void deleteCourtById(long id) {
-		courtRepository.deleteById(id);
-    }
-	
-	public boolean existsCourtById(long id) {
-		return courtRepository.existsById(id);
-    }
-	
-	/*
-	@Transactional(readOnly = true)
-	public CourtType findCourtTypeById(final int courtTypeId) throws DataAccessException {
-		return this.courtRepository.findCourtTypeById(courtTypeId);
-	}
+  @Autowired
+  public CourtService(CourtRepository courtRepository) {
+    this.courtRepository = courtRepository;
+  }
 
-	@Transactional(readOnly = true)
-	public List<CourtType> findCourtTypes() throws DataAccessException {
-		return this.courtRepository.findCourtTypes();
-	}*/
+  public Iterable<Court> findAllCourts() {
+    return courtRepository.findAll();
+  }
+
+  @Transactional(readOnly = true)
+  public Court findCourtById(final Long id) throws DataAccessException {
+    return this.courtRepository.findById(id)
+      .orElseThrow(() -> new InexistentEntity("Pista"));
+  }
+
+  @Transactional
+  public Court saveCourt(final Court court) throws DataAccessException {
+    this.courtRepository.save(court);
+    return court;
+  }
+
+  @Transactional
+  public Court updateCourt(Court courtToUpdate, CourtDto courtRequest) {
+    BeanUtils.copyProperties(courtRequest, courtToUpdate);
+    Court courtUpdated = courtRepository.save(courtToUpdate);
+    return courtUpdated;
+  }
+
+  public void deleteCourtById(Long id) {
+    Court court = courtRepository
+      .findById(id)
+      .orElseThrow(() -> new InexistentEntity("Pista"));
+    courtRepository.delete(court);
+  }
+
+  public boolean existsCourtById(Long id) {
+    return courtRepository.existsById(id);
+  }
+  /*
+   * @Transactional(readOnly = true) public CourtType findCourtTypeById(final int
+   * courtTypeId) throws DataAccessException { return
+   * this.courtRepository.findCourtTypeById(courtTypeId); }
+   *
+   * @Transactional(readOnly = true) public List<CourtType> findCourtTypes()
+   * throws DataAccessException { return this.courtRepository.findCourtTypes(); }
+   */
 }

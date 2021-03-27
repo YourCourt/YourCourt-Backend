@@ -1,30 +1,28 @@
 package yourcourt.security.model.dto;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 public class UpdateUser {
-
-
 	
 	@Email
+	@NotBlank
 	private String email;
 	
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	@Past(message = "La fecha debe ser pasada.")
 	private LocalDate birthDate;
 	
 	@NotBlank
+	@Digits(fraction = 0, integer = 10)
 	private String phone;
 
 	

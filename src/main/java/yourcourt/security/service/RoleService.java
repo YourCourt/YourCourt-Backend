@@ -10,14 +10,13 @@ import yourcourt.security.model.Role;
 import yourcourt.security.model.RoleType;
 import yourcourt.security.repository.RoleRepository;
 
-
 @Service
 @Transactional
 public class RoleService {
 
 	@Autowired
 	RoleRepository roleRepository;
-	
+
 	public Optional<Role> getByRoleType(RoleType roleType) {
 		return roleRepository.findByRoleType(roleType);
 	}

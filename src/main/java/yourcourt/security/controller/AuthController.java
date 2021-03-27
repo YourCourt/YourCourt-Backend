@@ -45,10 +45,10 @@ public class AuthController {
 			return new ResponseEntity<>(new Message("Binding error"), HttpStatus.BAD_REQUEST);
 		}
 		
-		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword(), Collections.emptyList()));
+		Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword(), Collections.emptyList()));
 		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtProvider.generateToken(authentication);
+		String jwt = this.jwtProvider.generateToken(authentication);
 		
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		
