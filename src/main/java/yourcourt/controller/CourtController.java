@@ -1,22 +1,13 @@
 package yourcourt.controller;
 
-
-
-import java.util.Optional;
-
-
 import io.swagger.annotations.Api;
-import yourcourt.exceptions.user.InexistentEntity;
-import yourcourt.model.Court;
-import yourcourt.model.dto.CourtDto;
-import yourcourt.model.dto.Message;
-import yourcourt.security.service.UserService;
-import yourcourt.service.CourtService;
-
+import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,79 +16,89 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import yourcourt.exceptions.user.InexistentEntity;
+import yourcourt.model.Court;
+import yourcourt.model.ValidationUtils;
+import yourcourt.model.dto.CourtDto;
+import yourcourt.model.dto.Message;
+import yourcourt.service.CourtService;
 
 @RestController
 @Api(tags = "Court")
 @RequestMapping("/courts")
+@CrossOrigin
 public class CourtController {
-    
-	@Autowired
-	private UserService userService;
-	
-    @Autowired
-    private CourtService courtService;
-    
-    @GetMapping
-	public ResponseEntity<?> getAll() {
-		return new ResponseEntity<>(courtService.findAllCourts(), HttpStatus.OK);
-	}
+  @Autowired
+  private CourtService courtService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getCourt(@PathVariable("id") long id) {
-    	return new ResponseEntity<>(courtService.findCourtById(id), HttpStatus.OK);
+  @GetMapping
+  public ResponseEntity<?> getAllCourts() {
+    return new ResponseEntity<>(courtService.findAllCourts(), HttpStatus.OK);
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getCourt(@PathVariable("id") Long id) {
+    try {
+      Court court = courtService.findCourtById(id);
+      return new ResponseEntity<>(court, HttpStatus.OK);
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
-    
-    @PostMapping
-	public ResponseEntity<?> createCourt(@RequestBody CourtDto courtDto) {
-		String username = userService.getCurrentUsername();
-		System.out.println(username);
-		if(!username.equals("admin")){
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de creación."));
-		}
-		
-		Court newCourt = new Court();
-		BeanUtils.copyProperties(courtDto, newCourt);
-		
-		courtService.saveCourt(newCourt);
-		
-		return ResponseEntity.ok(courtService.findCourtById(newCourt.getId()));
-	}	
-    
-	@PutMapping("/{id}")
-	public ResponseEntity<Object> updateCourt(@PathVariable Long id, @RequestBody CourtDto courtDto) {
-		String username = userService.getCurrentUsername();
-		if(!username.equals("admin")){
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de actualización."));
-		}
-		
-		Optional<Court> courtToUpdate = courtService.findCourtById(id);
-			
-		try {
-			Court obj = courtService.updateCourt(courtToUpdate.get(), courtDto);
+  }
 
-			return new ResponseEntity<>(obj, HttpStatus.OK);
-			
-		} catch (InexistentEntity e) {
-			return new ResponseEntity<>(
-				    	new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
-		}
-
-	}
-	
-	@DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCourt(@PathVariable("id") long id) {
-        if (!courtService.existsCourtById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("No existe el court indicado"));
-        } else {
-			
-			String username = userService.getCurrentUsername();
-			if(!username.equals("admin")){
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Message("El usuario no tiene permiso de eliminación."));
-			}
-			courtService.deleteCourtById(id);
-		}	
-        return ResponseEntity.ok(new Message("Court eliminada correctamente"));
+  @PostMapping
+  public ResponseEntity<?> createCourt(
+    @Valid @RequestBody CourtDto courtDto,
+    BindingResult bindingResult
+  ) {
+    if (bindingResult.hasErrors()) {
+      return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body(ValidationUtils.validateDto(bindingResult));
     }
 
+    Court newCourt = new Court();
+    BeanUtils.copyProperties(courtDto, newCourt);
+
+    Court courtCreated = courtService.saveCourt(newCourt);
+
+    return new ResponseEntity<>(courtCreated, HttpStatus.CREATED);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Object> updateCourt(
+    @PathVariable Long id,
+    @RequestBody CourtDto courtDto,
+    BindingResult bindingResult
+  ) {
+    if (bindingResult.hasErrors()) {
+      return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body(ValidationUtils.validateDto(bindingResult));
+    }
+
+    try {
+      Court courtToUpdate = courtService.findCourtById(id);
+      Court courtUpdated = courtService.updateCourt(courtToUpdate, courtDto);
+      return new ResponseEntity<>(courtUpdated, HttpStatus.OK);
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteCourt(@PathVariable("id") Long id) {
+    try {
+      courtService.deleteCourtById(id);
+      return new ResponseEntity<>(new Message("Pista eliminada"), HttpStatus.OK);
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
 }

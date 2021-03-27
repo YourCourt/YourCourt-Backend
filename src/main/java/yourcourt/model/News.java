@@ -16,6 +16,7 @@
 
 package yourcourt.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -25,8 +26,10 @@ import javax.validation.constraints.NotBlank;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  *
@@ -35,6 +38,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper=false)
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "news")
 public class News extends NamedEntity {
@@ -45,10 +50,10 @@ public class News extends NamedEntity {
 	
 	@Column(name = "creation_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private Date creationDate;
+	private LocalDate creationDate;
 	
 	@Column(name = "edition_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private Date editionDate;
+	private LocalDate editionDate;
 
 }

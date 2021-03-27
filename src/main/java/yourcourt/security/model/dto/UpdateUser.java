@@ -12,8 +12,6 @@ import lombok.Data;
 
 @Data
 public class UpdateUser {
-
-
 	
 	@Email
 	@NotBlank

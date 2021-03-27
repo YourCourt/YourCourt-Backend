@@ -53,14 +53,14 @@ public class UserController {
 
 	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping()
-	public ResponseEntity<List<User>> users() {
+	public ResponseEntity<List<User>> getAllUsers() {
 
 		List<User> users = userService.findAllUsers();
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Object> user(@PathVariable Long id) {
+	public ResponseEntity<Object> getUser(@PathVariable Long id) {
 		try {
 			User user = userService.findUserById(id);
 			return new ResponseEntity<>(user, HttpStatus.OK);
@@ -72,17 +72,23 @@ public class UserController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<Object> newUser(@Valid @RequestBody NewUser newUser, BindingResult bindingResult) {
+	public ResponseEntity<Object> createUser(@Valid @RequestBody NewUser newUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(bindingResult));
 		}
 
+		System.out.println(userService.existsByMembershipNumber(newUser.getMembershipNumber()));
+
 		if (userService.existsByUsername(newUser.getUsername())) {
-			return new ResponseEntity<>(new Message("Existing username"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Username existente"), HttpStatus.BAD_REQUEST);
 		}
 
 		if (userService.existsByEmail(newUser.getEmail())) {
-			return new ResponseEntity<>(new Message("Existing email"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Email existente"), HttpStatus.BAD_REQUEST);
+		}
+
+		if (userService.existsByMembershipNumber(newUser.getMembershipNumber())) {
+			return new ResponseEntity<>(new Message("Numero de miembro existente"), HttpStatus.BAD_REQUEST);
 		}
 
 		User user = new User(newUser.getUsername(), passwordEncoder.encode(newUser.getPassword()), newUser.getEmail(),
@@ -90,16 +96,16 @@ public class UserController {
 
 		user.setCreationDate(LocalDate.now());
 
-		Set<Role> roles = new HashSet();
+		Set<Role> roles = new HashSet<Role>();
 		roles.add(roleService.getByRoleType(RoleType.ROLE_USER).get());
 		if (newUser.getRoles().contains("admin")) {
 			roles.add(roleService.getByRoleType(RoleType.ROLE_ADMIN).get());
 		}
 
 		user.setRoles(roles);
-		userService.save(user);
+		User userCreated = userService.saveUser(user);
 
-		return new ResponseEntity<>(new Message("Usuario creado"), HttpStatus.CREATED);
+		return new ResponseEntity<>(userCreated, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
@@ -111,11 +117,15 @@ public class UserController {
 
 		try {
 			User userToUpdate = userService.findUserById(id);
-
+			boolean emailExistence = userService.existsByEmail(user.getEmail());
+			// If exists once and its different from the previous one
+			if (emailExistence && !user.getEmail().equals(userToUpdate.getEmail())) {
+				return new ResponseEntity<>(new Message("Email existente"), HttpStatus.BAD_REQUEST);
+			}
 			try {
-				User obj = userService.updateUser(userToUpdate, user);
+				User userUpdated = userService.updateUser(userToUpdate, user);
 
-				return new ResponseEntity<>(obj, HttpStatus.OK);
+				return new ResponseEntity<>(userUpdated, HttpStatus.OK);
 			} catch (Exception e) {
 				return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 			}
@@ -128,7 +138,7 @@ public class UserController {
 	public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
 		try {
 			userService.deleteUserById(id);
-			return new ResponseEntity<>(new Message("Usuario borrado"), HttpStatus.OK);
+			return new ResponseEntity<>(new Message("Usuario eliminado"), HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
 		}
