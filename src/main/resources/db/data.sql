@@ -24,26 +24,13 @@ INSERT INTO courts (name,description,court_type) VALUES('Primera pista de tierra
 INSERT INTO courts (name,description,court_type) VALUES('Segunda pista rapida','Esta es nuestra segunda pista rapida.','FAST');
 INSERT INTO courts (name,description,court_type) VALUES('Segunda pista de tierra batida','Esta es nuestra segunda pista de tierra batida.','CLAY');
 
--- FACILITY TYPES
-INSERT INTO facility_type (id,name) VALUES(1,'Parking');
-INSERT INTO facility_type (id,name) VALUES(2,'Cafe');
-INSERT INTO facility_type (id,name) VALUES(3,'Pool');
-INSERT INTO facility_type (id,name) VALUES(4,'Other');
-
-
 -- FACILITIES
-INSERT INTO facilities (name,description,facility_type_id) VALUES('Pool','This is a private pool.',3);
+INSERT INTO facilities (name,description,facility_type) VALUES('Pool','This is a private pool.','POOL');
 
 -- NEWS
 INSERT INTO news(name, description, creation_date, edition_date) VALUES('Noticia 1', 'Esto es una noticia', '2021-03-04', '2021-03-04');
 
--- PRODUCT TYPES
-INSERT INTO product_type (id,name) VALUES(1,'Racket');
-INSERT INTO product_type (id,name) VALUES(2,'Textil');
-INSERT INTO product_type (id,name) VALUES(3,'Accesories');
-
-
 -- PRODUCTS
-INSERT INTO products (name,description,product_type_id) VALUES('Grip','This is an accesory.',3);
+INSERT INTO products (name,description,product_type) VALUES('Grip','Esto es un accesorio.','ACCESORIES');
 
 

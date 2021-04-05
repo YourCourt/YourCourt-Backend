@@ -17,19 +17,15 @@
 package yourcourt.model;
 
 import java.time.LocalDate;
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -37,23 +33,21 @@ import lombok.NoArgsConstructor;
  * @author juanogtir
  */
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "news")
 public class News extends NamedEntity {
+  @NotBlank
+  @Column(name = "description", length = 512)
+  private String description;
 
-	@NotBlank
-	@Column(name = "description", length = 512)
-	private String description;
-	
-	@Column(name = "creation_date")
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private LocalDate creationDate;
-	
-	@Column(name = "edition_date")
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private LocalDate editionDate;
+  @Column(name = "creation_date")
+  @DateTimeFormat(pattern = "yyyy/MM/dd")
+  private LocalDate creationDate;
 
+  @Column(name = "edition_date")
+  @DateTimeFormat(pattern = "yyyy/MM/dd")
+  private LocalDate editionDate;
 }
