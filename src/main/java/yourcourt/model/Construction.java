@@ -18,7 +18,6 @@ package yourcourt.model;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -28,22 +27,20 @@ import javax.validation.constraints.NotBlank;
  */
 @MappedSuperclass
 public class Construction extends NamedEntity {
+  @NotBlank
+  @Column(name = "description", length = 512)
+  private String description;
 
-    @NotBlank
-	@Column(name = "description", length = 512)
-	private String description;
+  public String getDescription() {
+    return this.description;
+  }
 
-	public String getDescription() {
-		return this.description;
-	}
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Override
-	public String toString() {
-		return this.getName();
-	}
-
+  @Override
+  public String toString() {
+    return this.getName();
+  }
 }
