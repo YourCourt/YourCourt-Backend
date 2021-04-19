@@ -2,6 +2,8 @@ package yourcourt.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -27,7 +29,7 @@ public class Product extends NamedEntity {
   @Column(name = "description", length = 512)
   private String description;
 
-  @ManyToOne
-  @JoinColumn(name = "product_type_id")
+  @Column(name = "product_type") 
+  @Enumerated(EnumType.STRING)
   private ProductType productType;
 }

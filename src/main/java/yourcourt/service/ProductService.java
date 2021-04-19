@@ -48,13 +48,5 @@ public class ProductService {
 		this.productRepository.save(product);
 	}
 	
-	@Transactional(readOnly = true)
-	public ProductType findProductTypeById(final int productTypeId) throws DataAccessException {
-		return this.productRepository.findProductTypeById(productTypeId);
-	}
 
-	@Transactional(readOnly = true)
-	public List<ProductType> findProductTypes() throws DataAccessException {
-		return this.productRepository.findProductTypes();
-	}
 }

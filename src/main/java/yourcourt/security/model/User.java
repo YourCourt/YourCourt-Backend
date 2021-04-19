@@ -53,7 +53,6 @@ public class User {
 
 	@Column(name = "phone")
 	@NotBlank
-	@Digits(fraction = 0, integer = 10)
 	private String phone;
 
 	@Column(name = "creation_date")
