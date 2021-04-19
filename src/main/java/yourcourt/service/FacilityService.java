@@ -47,14 +47,5 @@ public class FacilityService {
 	public void saveFacility(final Facility facility) throws DataAccessException {
 		this.facilityRepository.save(facility);
 	}
-	
-	@Transactional(readOnly = true)
-	public FacilityType findFacilityTypeById(final int facilityTypeId) throws DataAccessException {
-		return this.facilityRepository.findFacilityTypeById(facilityTypeId);
-	}
 
-	@Transactional(readOnly = true)
-	public List<FacilityType> findFacilityTypes() throws DataAccessException {
-		return this.facilityRepository.findFacilityTypes();
-	}
 }

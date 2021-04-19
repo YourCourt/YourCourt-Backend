@@ -14,8 +14,5 @@ import yourcourt.model.ProductType;
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Long>{
 	
-	@Query("SELECT productTypes FROM ProductType productTypes")
-	List<ProductType> findProductTypes();
 
-	ProductType findProductTypeById(int productTypeId);
 }

@@ -72,15 +72,14 @@ public class UserController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<Object> createUser(@Valid @RequestBody NewUser newUser, BindingResult bindingResult) {
+	public ResponseEntity<Object> createUser(@Valid @RequestBody final NewUser newUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(bindingResult));
 		}
 
-		System.out.println(userService.existsByMembershipNumber(newUser.getMembershipNumber()));
 
 		if (userService.existsByUsername(newUser.getUsername())) {
-			return new ResponseEntity<>(new Message("Username existente"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Message("Nombre de usuario existente"), HttpStatus.BAD_REQUEST);
 		}
 
 		if (userService.existsByEmail(newUser.getEmail())) {

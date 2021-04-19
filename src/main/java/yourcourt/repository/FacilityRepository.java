@@ -14,8 +14,5 @@ import yourcourt.model.FacilityType;
 @Repository
 public interface FacilityRepository extends CrudRepository<Facility, Long>{
 	
-	@Query("SELECT facilityTypes FROM FacilityType facilityTypes")
-	List<FacilityType> findFacilityTypes();
-
-	FacilityType findFacilityTypeById(int facilityTypeId);
+	
 }

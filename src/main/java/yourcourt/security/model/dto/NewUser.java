@@ -37,7 +37,6 @@ public class NewUser {
 	private String	membershipNumber;
 	
 	@NotBlank
-	@Digits(fraction = 0, integer = 10)
 	private String phone;
 	
 	private Set<String> roles = new HashSet<>();
