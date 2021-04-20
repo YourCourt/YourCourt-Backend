@@ -97,7 +97,7 @@
 				<artifactId>heroku-maven-plugin</artifactId>
 				<version>3.0.3</version>
 				<configuration>
-					<appName>be-dev-yourcourt</appName>
+					<appName>be-develop-yourcourt</appName>
 					<jdkVersion>11.0.10</jdkVersion>
 					<processTypes>
      					<web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
