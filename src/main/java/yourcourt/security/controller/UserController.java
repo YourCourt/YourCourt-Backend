@@ -51,7 +51,7 @@ public class UserController {
 	@Autowired
 	RoleService roleService;
 
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping()
 	public ResponseEntity<List<User>> getAllUsers() {
 

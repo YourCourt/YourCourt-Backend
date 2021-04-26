@@ -4,8 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -29,7 +27,7 @@ public class Product extends NamedEntity {
   @Column(name = "description", length = 512)
   private String description;
 
-  @Column(name = "product_type") 
+  @Column(name = "product_type")
   @Enumerated(EnumType.STRING)
   private ProductType productType;
 }
