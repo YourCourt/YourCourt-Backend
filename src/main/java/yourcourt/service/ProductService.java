@@ -21,7 +21,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yourcourt.exceptions.user.InexistentEntity;
-import yourcourt.model.News;
 import yourcourt.model.Product;
 import yourcourt.model.dto.ProductDto;
 import yourcourt.repository.ProductRepository;

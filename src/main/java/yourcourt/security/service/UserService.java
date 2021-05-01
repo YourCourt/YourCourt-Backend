@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.security.model.User;
 import yourcourt.security.model.dto.UpdateUser;
+import yourcourt.security.model.projections.UserProjection;
 import yourcourt.security.repository.UserRepository;
 
 @Service
@@ -24,11 +25,23 @@ public class UserService {
   public List<User> findAllUsers() {
     return (List<User>) userRepository.findAll();
   }
+  
+  public List<UserProjection> findAllUserUserProjections() {
+	    return userRepository.findAllUserUserProjections();
+	  }
 
   @Transactional(readOnly = true)
   public User findUserById(Long id) throws InexistentEntity {
     User user = userRepository
       .findById(id)
+      .orElseThrow(() -> new InexistentEntity("Usuario"));
+    return user;
+  }
+  
+  @Transactional(readOnly = true)
+  public UserProjection findUserProjectionById(Long id) throws InexistentEntity {
+	  UserProjection user = userRepository
+      .findUserProjectionById(id)
       .orElseThrow(() -> new InexistentEntity("Usuario"));
     return user;
   }

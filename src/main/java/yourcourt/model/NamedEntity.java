@@ -15,9 +15,12 @@
  */
 package yourcourt.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.Formula;
 
 @MappedSuperclass
 public class NamedEntity extends BaseEntity {
@@ -25,12 +28,26 @@ public class NamedEntity extends BaseEntity {
   @Column(name = "name")
   private String name;
 
+  @OneToOne(cascade = CascadeType.DETACH)
+  private Image image;
+
+  @Formula("(SELECT image.image_url FROM images image WHERE image.id=image_id)")
+  private String imageUrl;
+
   public String getName() {
     return this.name;
   }
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public Image getImage() {
+    return image;
+  }
+
+  public void setImage(Image image) {
+    this.image = image;
   }
 
   @Override
