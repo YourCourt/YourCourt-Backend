@@ -67,12 +67,4 @@ public class CourtService {
   public boolean existsCourtById(Long id) {
     return courtRepository.existsById(id);
   }
-  /*
-   * @Transactional(readOnly = true) public CourtType findCourtTypeById(final int
-   * courtTypeId) throws DataAccessException { return
-   * this.courtRepository.findCourtTypeById(courtTypeId); }
-   *
-   * @Transactional(readOnly = true) public List<CourtType> findCourtTypes()
-   * throws DataAccessException { return this.courtRepository.findCourtTypes(); }
-   */
 }

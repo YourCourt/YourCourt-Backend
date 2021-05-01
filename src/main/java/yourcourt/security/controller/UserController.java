@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import yourcourt.exceptions.user.InexistentEntity;
+import yourcourt.model.Image;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.Message;
 import yourcourt.security.model.Role;
@@ -33,8 +35,10 @@ import yourcourt.security.model.RoleType;
 import yourcourt.security.model.User;
 import yourcourt.security.model.dto.NewUser;
 import yourcourt.security.model.dto.UpdateUser;
+import yourcourt.security.model.projections.UserProjection;
 import yourcourt.security.service.RoleService;
 import yourcourt.security.service.UserService;
+import yourcourt.service.ImageService;
 
 @RestController
 @RequestMapping("users")
@@ -50,12 +54,14 @@ public class UserController {
 
 	@Autowired
 	RoleService roleService;
+	
+	@Autowired
+	  private ImageService imageService;
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping()
-	public ResponseEntity<List<User>> getAllUsers() {
-
-		List<User> users = userService.findAllUsers();
+	public ResponseEntity<List<UserProjection>> getAllUsers() {
+		List<UserProjection> users = userService.findAllUserUserProjections();
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
@@ -63,7 +69,8 @@ public class UserController {
 	public ResponseEntity<Object> getUser(@PathVariable Long id) {
 		try {
 			User user = userService.findUserById(id);
-			return new ResponseEntity<>(user, HttpStatus.OK);
+			UserProjection userProjection = userService.findUserProjectionById(user.getId());
+			return new ResponseEntity<>(userProjection, HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
 		} catch (Exception e) {
@@ -102,9 +109,17 @@ public class UserController {
 		}
 
 		user.setRoles(roles);
+		
+		Optional<Image> defaultImage = imageService.findById(1);
+		if (!defaultImage.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+		}
+		user.setImage(defaultImage.get());
+		
 		User userCreated = userService.saveUser(user);
-
-		return new ResponseEntity<>(userCreated, HttpStatus.CREATED);
+		UserProjection userProjection = userService.findUserProjectionById(userCreated.getId());
+		return new ResponseEntity<>(userProjection, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
@@ -124,7 +139,8 @@ public class UserController {
 			try {
 				User userUpdated = userService.updateUser(userToUpdate, user);
 
-				return new ResponseEntity<>(userUpdated, HttpStatus.OK);
+				UserProjection userProjection = userService.findUserProjectionById(userUpdated.getId());
+				return new ResponseEntity<>(userProjection, HttpStatus.OK);
 			} catch (Exception e) {
 				return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 			}

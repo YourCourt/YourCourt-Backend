@@ -15,16 +15,13 @@
  */
 package yourcourt.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Facility;
-import yourcourt.model.FacilityType;
 import yourcourt.repository.FacilityRepository;
 
 
@@ -39,13 +36,14 @@ public class FacilityService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Optional<Facility> findFacilityById(final Long id) throws DataAccessException {
-		return this.facilityRepository.findById(id);
+	public Facility findFacilityById(final Long id) throws DataAccessException {
+		return this.facilityRepository.findById(id).orElseThrow(() -> new InexistentEntity("Instalacion"));
 	}
 	
 	@Transactional
-	public void saveFacility(final Facility facility) throws DataAccessException {
+	public Facility saveFacility(final Facility facility) throws DataAccessException {
 		this.facilityRepository.save(facility);
+		return facility;
 	}
 
 }

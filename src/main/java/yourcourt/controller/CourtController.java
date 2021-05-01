@@ -1,6 +1,9 @@
 package yourcourt.controller;
 
 import io.swagger.annotations.Api;
+
+import java.util.Optional;
+
 import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +19,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+
 import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Court;
+import yourcourt.model.Image;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.CourtDto;
 import yourcourt.model.dto.Message;
 import yourcourt.service.CourtService;
+import yourcourt.service.ImageService;
 
 @RestController
 @Api(tags = "Court")
@@ -30,6 +37,9 @@ import yourcourt.service.CourtService;
 public class CourtController {
   @Autowired
   private CourtService courtService;
+  
+  @Autowired
+  private ImageService imageService;
 
   @GetMapping
   public ResponseEntity<?> getAllCourts() {
@@ -61,6 +71,13 @@ public class CourtController {
 
     Court newCourt = new Court();
     BeanUtils.copyProperties(courtDto, newCourt);
+    
+    Optional<Image> defaultImage = imageService.findById(1);
+	if (!defaultImage.isPresent()) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new Message("La imagen seleccionada no ha sido encontrada."));
+	}
+	newCourt.setImage(defaultImage.get());
 
     Court courtCreated = courtService.saveCourt(newCourt);
 
