@@ -16,11 +16,11 @@
 
 package yourcourt.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,7 +39,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "facilities")
 public class Facility extends Construction {
 	
-  @Column(name = "facility_type")
-  @Enumerated(EnumType.STRING)
+  @ManyToOne
+  @OrderBy("facility_name")
   private FacilityType facilityType;
+
 }

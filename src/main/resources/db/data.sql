@@ -1,3 +1,4 @@
+
 -- IMAGES
  INSERT
 	INTO
@@ -39,17 +40,23 @@ VALUES('Primera pista rapida', 'Esta es nuestra primera pista rapida.', 'FAST', 
 -- FACILITIES
  INSERT
 	INTO
-	facilities (name, description, facility_type, image_id)
-VALUES('Pool', 'This is a private pool.', 'POOL',1);
+	facility_type (facility_name)
+VALUES ('Parking'),
+('Cafe'),
+('Piscina'),
+('Otro');
 
+INSERT
+	INTO
+	facilities (name, description, facility_type_id, image_id)
+VALUES('Pool', 'This is a private pool.', 1, 1);
 -- NEWS
  INSERT
 	INTO
 	news(name, description, creation_date, edition_date, image_id)
-VALUES('Noticia 1', 'Esto es una noticia', '2021-03-04', '2021-03-04',1);
-
+VALUES('Noticia 1', 'Esto es una noticia', '2021-03-04', '2021-03-04', 1);
 -- PRODUCTS
  INSERT
 	INTO
 	products (name, description, product_type, image_id)
-VALUES('Grip', 'Esto es un accesorio.', 'ACCESORIES',1);
+VALUES('Grip', 'Esto es un accesorio.', 'ACCESORIES', 1);
