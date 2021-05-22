@@ -1,25 +1,30 @@
 package yourcourt.model.dto;
 
+import java.time.LocalDate;
+
+
 import javax.validation.constraints.NotBlank;
 
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import yourcourt.model.CourtType;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourtDto{
-	
-	@NotBlank
-	private String name;
+public class CourseDto {
+
+	@NotBlank(message = "El título es obligatorio")
+	private String title;
 
 	@NotBlank
 	private String description;
 
-	@NotNull
-	private CourtType courtType;
+	@NotBlank
+	private LocalDate startDate;
+
+	@NotBlank
+	private LocalDate endDate;
+
 }
