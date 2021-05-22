@@ -53,3 +53,15 @@ VALUES('Noticia 1', 'Esto es una noticia', '2021-03-04', '2021-03-04',1);
 	INTO
 	products (name, description, product_type, image_id)
 VALUES('Grip', 'Esto es un accesorio.', 'ACCESORIES',1);
+
+-- COURSES
+ INSERT
+	INTO
+	courses (title, description, start_date, end_date)
+VALUES('Campus de verano', 'Inscripción para el campus de vernao de nuestra escuela técnica', '2021-07-01', '2021-07-30'); --1
+
+-- INSCRIPTIONS
+ INSERT
+	INTO
+	inscriptions (name, surnames, email, phone, user_id, course_id)
+VALUES('Juan', 'Noguerol Tirado', 'ejemplo@gmail.com', '612934234', 1, 1); --1

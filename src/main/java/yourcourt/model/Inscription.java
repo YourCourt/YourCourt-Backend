@@ -23,7 +23,7 @@ import yourcourt.security.model.User;
 @NoArgsConstructor
 @Entity
 @Table(name = "inscriptions")
-public class Inscription extends NamedEntity {
+public class Inscription extends BaseEntity {
 	
   @NotBlank
   @Column(name = "name", length = 512)
@@ -50,5 +50,9 @@ public class Inscription extends NamedEntity {
   
   @ManyToOne
   private Course course;
+  
+  public String getUsername() {
+		return this.user.getUsername();
+	}
   
 }

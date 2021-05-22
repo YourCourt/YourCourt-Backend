@@ -36,6 +36,10 @@ public class InscriptionService {
   public InscriptionService(InscriptionRepository inscriptionRepository) {
     this.inscriptionRepository = inscriptionRepository;
   }
+  
+  public Iterable<Inscription> findAllInscriptions() {
+	    return this.inscriptionRepository.findAll();
+	  }
 
   @Transactional(readOnly = true)
   public Inscription findInscriptionById(final Long id) throws DataAccessException {
@@ -43,8 +47,8 @@ public class InscriptionService {
       .orElseThrow(() -> new InexistentEntity("Inscription"));
   }
 
-  public Iterable<Inscription> findAllInscriptions() {
-    return this.inscriptionRepository.findAll();
+  public Iterable<Inscription> findAllInscriptionsByUser(String username) {
+    return this.inscriptionRepository.findAllInscriptionsByUser(username);
   }
 
   @Transactional
@@ -65,4 +69,5 @@ public class InscriptionService {
       .orElseThrow(() -> new InexistentEntity("Inscription"));
     inscriptionRepository.delete(inscription);
   }
+
 }

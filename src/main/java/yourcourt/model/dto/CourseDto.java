@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,10 +22,10 @@ public class CourseDto {
 	@NotBlank
 	private String description;
 
-	@NotBlank
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate startDate;
 
-	@NotBlank
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate endDate;
 
 }

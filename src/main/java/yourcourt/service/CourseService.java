@@ -47,7 +47,7 @@ public class CourseService {
   }
 
   @Transactional
-  public Course saveInscription(final Course course) throws DataAccessException {
+  public Course saveCourse(final Course course) throws DataAccessException {
 	  Course newCourse = this.courseRepository.save(course);
     return newCourse;
   }
