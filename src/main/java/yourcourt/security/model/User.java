@@ -52,6 +52,7 @@ public class User {
 
   @Column(name = "phone")
   @NotBlank
+  @Pattern(regexp = "^(([+][(][0-9]{1,3}[)][ ])?([0-9]{6,12}))$")
   private String phone;
 
   @Column(name = "creation_date")

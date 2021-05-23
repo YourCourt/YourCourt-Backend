@@ -1,14 +1,10 @@
 package yourcourt.repository;
 
 
-import java.util.List;
-
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import yourcourt.model.Court;
-import yourcourt.model.CourtType;
 
 @Repository
 public interface CourtRepository extends CrudRepository<Court, Long>{

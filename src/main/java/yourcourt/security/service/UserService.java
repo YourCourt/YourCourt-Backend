@@ -68,10 +68,12 @@ public class UserService {
   }
 
   public String getCurrentUsername() {
+	System.out.println("hola");
     Authentication authentication = SecurityContextHolder
       .getContext()
       .getAuthentication();
     String currentPrincipalName = authentication.getName();
+    System.out.println(currentPrincipalName);
     return currentPrincipalName;
   }
 
