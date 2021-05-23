@@ -36,11 +36,14 @@ import yourcourt.service.InscriptionService;
 @RequestMapping("/inscriptions")
 @CrossOrigin
 public class InscriptionController {
+	
   @Autowired
   private InscriptionService inscriptionService;
   
+  @Autowired
   private UserService userService;
   
+  @Autowired
   private CourseService courseService;
 
   @GetMapping()
@@ -70,19 +73,7 @@ public class InscriptionController {
   @GetMapping("/user/{username}")
   public ResponseEntity<?> getAllInscriptionsFromUserUsername(@PathVariable("username") String username) {
     try {
-    	Iterable<Inscription> inscriptions = inscriptionService.findAllInscriptionsByUser(username);
-      return new ResponseEntity<>(inscriptions, HttpStatus.OK);
-    } catch (InexistentEntity e) {
-      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
-    } catch (Exception e) {
-      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-  }
-  
-  @GetMapping("/user/{id}")
-  public ResponseEntity<?> getAllInscriptionsFromUserId(@PathVariable("id") String username) {
-    try {
-    	Iterable<Inscription> inscriptions = inscriptionService.findAllInscriptionsByUser(username);
+    	Iterable<Inscription> inscriptions = inscriptionService.findAllInscriptionsByUserUsername(username);
       return new ResponseEntity<>(inscriptions, HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -99,9 +90,10 @@ public class InscriptionController {
         .status(HttpStatus.BAD_REQUEST)
         .body(ValidationUtils.validateDto(bindingResult));
     }
-
+    System.out.println("hola");
     String username = userService.getCurrentUsername();
     
+    System.out.println(username);
     Optional<User> usuario = userService.findByUsername(username);
     Course course = courseService.findCourseById(courseId);
     
@@ -112,7 +104,14 @@ public class InscriptionController {
 
     Inscription inscriptionCreated = inscriptionService.saveInscription(newInscription);
 
-    return new ResponseEntity<>(inscriptionCreated, HttpStatus.CREATED);
+    if (inscriptionCreated == null) {
+		return ResponseEntity.status(HttpStatus.NOT_MODIFIED)
+				.body(new Message("Ha ocurrido un error a la hora de crear la inscripción."));
+	} else {
+		return new ResponseEntity<>(inscriptionCreated, HttpStatus.CREATED);
+	}
+    
+    
   }
 
   @PutMapping("/{id}")

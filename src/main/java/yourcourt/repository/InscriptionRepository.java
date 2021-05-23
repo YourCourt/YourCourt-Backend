@@ -11,6 +11,6 @@ import yourcourt.model.Inscription;
 public interface InscriptionRepository extends CrudRepository<Inscription, Long>{
 	
 	@Query("SELECT i FROM Inscription i WHERE i.user.username=:username")
-	Iterable<Inscription> findAllInscriptionsByUser(String username);
+	Iterable<Inscription> findAllInscriptionsByUserUsername(String username);
 
 }

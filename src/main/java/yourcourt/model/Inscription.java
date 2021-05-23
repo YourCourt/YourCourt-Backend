@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,6 +35,7 @@ public class Inscription extends BaseEntity {
   private String surnames;
   
   @NotBlank
+  @Email
   @Column(name = "email", length = 512)
   private String email;
   
@@ -50,9 +52,5 @@ public class Inscription extends BaseEntity {
   
   @ManyToOne
   private Course course;
-  
-  public String getUsername() {
-		return this.user.getUsername();
-	}
   
 }

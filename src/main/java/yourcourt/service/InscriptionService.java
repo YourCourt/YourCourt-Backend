@@ -47,8 +47,8 @@ public class InscriptionService {
       .orElseThrow(() -> new InexistentEntity("Inscription"));
   }
 
-  public Iterable<Inscription> findAllInscriptionsByUser(String username) {
-    return this.inscriptionRepository.findAllInscriptionsByUser(username);
+  public Iterable<Inscription> findAllInscriptionsByUserUsername(String username) {
+    return this.inscriptionRepository.findAllInscriptionsByUserUsername(username);
   }
 
   @Transactional

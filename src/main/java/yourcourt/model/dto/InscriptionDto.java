@@ -1,6 +1,7 @@
 package yourcourt.model.dto;
 
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
@@ -20,6 +21,7 @@ public class InscriptionDto {
 	@NotBlank(message = "Los apellidos son obligatorios")
 	private String surnames;
 
+	@Email
 	@NotBlank(message = "El email es obligatorio")
 	private String email;
 
