@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.Length;
 @Table(name = "facility_type")
 public class FacilityType extends BaseEntity {
   @NotBlank
-  @Column(name = "facility_name", nullable = false)
+  @Column(name = "type_name", nullable = false)
   @Length(max = 50)
-  private String facilityName;
+  private String typeName;
 }

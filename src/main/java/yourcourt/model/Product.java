@@ -1,18 +1,17 @@
 package yourcourt.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.Collection;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,12 +32,26 @@ public class Product extends NamedEntity {
   @NotBlank
   @Column(name = "description", length = 512)
   private String description;
-  
+
+  @Column(nullable = false)
+  @NotNull(message = "El stock es obligatorio")
+  @Min(0)
+  private Integer stock;
+
+  @Column(nullable = false)
+  @NotNull(message = "El impuesto es obligatorio")
+  @Min(0)
+  private Integer tax;
+
+  @Column(nullable = false)
+  @NotNull(message = "El precio es obligatorio")
+  @DecimalMin("0")
+  private Double price;
+
   @JsonManagedReference
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
   private Collection<ProductBookingLine> lines;
 
-  @Column(name = "product_type")
-  @Enumerated(EnumType.STRING)
+  @ManyToOne
   private ProductType productType;
 }

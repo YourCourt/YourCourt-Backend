@@ -1,6 +1,5 @@
 package yourcourt.security.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Set;
@@ -27,7 +26,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import yourcourt.model.Booking;
 import yourcourt.model.Image;
 
@@ -66,7 +64,7 @@ public class User {
   private LocalDate creationDate;
 
   @Column(name = "membership_number")
-  @Pattern(regexp = "\\b\\d{5}\\b", message = "Debe ser de 5 dÃƒÆ’Ã‚Â­gitos exactos.")
+  @Pattern(regexp = "\\b\\d{5}\\b", message = "Debe ser de 5 dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­gitos exactos.")
   @NotBlank
   private String membershipNumber;
 
@@ -78,7 +76,7 @@ public class User {
   )
   private Set<Role> roles;
 
-  @JsonManagedReference
+  
   @OrderBy("creationDate desc")
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
   private Collection<Booking> bookings;

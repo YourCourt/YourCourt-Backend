@@ -41,7 +41,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "product_booking_lines")
 public class ProductBookingLine extends BaseEntity {
   @Column(nullable = false)
-  @Min(0)
+  @Min(1)
   private Integer quantity;
 
   @Column(nullable = false)
@@ -55,4 +55,9 @@ public class ProductBookingLine extends BaseEntity {
   @JsonBackReference
   @ManyToOne
   private Product product;
+  
+  public ProductBookingLine(Integer quantity,Double discount) {
+	  this.quantity=quantity;
+	  this.discount=discount;
+  }
 }

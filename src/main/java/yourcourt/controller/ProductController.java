@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Image;
 import yourcourt.model.Product;
+import yourcourt.model.ProductType;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.Message;
 import yourcourt.model.dto.ProductDto;
@@ -66,8 +67,16 @@ public class ProductController {
     }
 
     Product newProduct = new Product();
+    ProductType productType;
+    if(productService.existsProductTypeByName(productDto.getProductType())==false) {
+    	productType = new ProductType(productDto.getProductType());
+    	productService.saveProductType(productType);
+    }else {
+    	productType = productService.findProductTypeByType(productDto.getProductType());
+    }
+    
     BeanUtils.copyProperties(productDto, newProduct);
-
+    
     Optional<Image> defaultImage = imageService.findById(1);
     if (!defaultImage.isPresent()) {
       return ResponseEntity
@@ -76,6 +85,7 @@ public class ProductController {
     }
     newProduct.setImage(defaultImage.get());
 
+    newProduct.setProductType(productType);
     Product productCreated = productService.saveProduct(newProduct);
 
     return new ResponseEntity<>(productCreated, HttpStatus.CREATED);
@@ -106,7 +116,7 @@ public class ProductController {
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id) {
     try {
-      productService.deleteProductById(id);
+    	productService.deleteProductById(id);
       return new ResponseEntity<>(new Message("Producto eliminado"), HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);

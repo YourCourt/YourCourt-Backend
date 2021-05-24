@@ -33,7 +33,8 @@ VALUES (1, 1),
  INSERT
 	INTO
 	bookings (creation_date, book_date, user_id)
-VALUES ('1999-03-04', '2022-12-31 20:00', 2),('2021-03-04', '2023-02-25 10:00', 3);
+VALUES ('1999-03-04', '2022-12-31 20:00', 2),
+('2021-03-04', '2023-02-25 10:00', 3);
 -- COURTS
  INSERT
 	INTO
@@ -45,7 +46,7 @@ VALUES('Primera pista rapida', 'Esta es nuestra primera pista rapida.', 'FAST', 
 -- FACILITIES
  INSERT
 	INTO
-	facility_type (facility_name)
+	facility_type (type_name)
 VALUES ('Parking'),
 ('Cafe'),
 ('Piscina'),
@@ -63,19 +64,22 @@ VALUES('Noticia 1', 'Esto es una noticia', '2021-03-04', '2021-03-04', 1);
 -- PRODUCTS
  INSERT
 	INTO
-	products (name, description, product_type, image_id)
-VALUES('Grip', 'Esto es un accesorio.', 'ACCESORIES', 1);
-
+	product_type (type_name)
+VALUES ('Accesorios'),
+('Raqueta'),
+('Textil'),
+('Otro');
+ INSERT
+	INTO
+	products (name, description, stock, tax, price, product_type_id, image_id)
+VALUES('Grip', 'Esto es un accesorio.', 100, 10, 20.50, 1, 1);
 -- PRODUCT BOOKINGS
  INSERT
 	INTO
 	product_booking (booking_id)
 VALUES(1);
-
 -- PRODUCT BOOKING LINES
  INSERT
 	INTO
-	product_booking_lines (quantity,discount,product_booking_id,product_id)
-VALUES(2,2.5,1,1);
-
-
+	product_booking_lines (quantity, discount, product_booking_id, product_id)
+VALUES(2, 2.5, 1, 1);

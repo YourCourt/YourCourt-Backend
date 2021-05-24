@@ -17,6 +17,7 @@
 package yourcourt.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -28,6 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import yourcourt.model.serializers.BookingSerializer;
 
 /**
  *
@@ -41,6 +43,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "product_booking")
 public class ProductBooking extends BaseEntity {
+  @JsonSerialize(using = BookingSerializer.class)
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "booking_id")
   private Booking booking;
