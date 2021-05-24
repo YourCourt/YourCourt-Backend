@@ -1,6 +1,7 @@
 package yourcourt.security.model;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,7 +13,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -23,6 +26,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
+import yourcourt.model.Booking;
 import yourcourt.model.Image;
 
 @Entity
@@ -61,7 +65,7 @@ public class User {
   private LocalDate creationDate;
 
   @Column(name = "membership_number")
-  @Pattern(regexp = "\\b\\d{5}\\b", message = "Debe ser de 5 dÃƒÂ­gitos exactos.")
+  @Pattern(regexp = "\\b\\d{5}\\b", message = "Debe ser de 5 dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­gitos exactos.")
   @NotBlank
   private String membershipNumber;
 
@@ -72,6 +76,11 @@ public class User {
     inverseJoinColumns = @JoinColumn(name = "role_id")
   )
   private Set<Role> roles;
+
+  
+  @OrderBy("creationDate desc")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Collection<Booking> bookings;
 
   @OneToOne(cascade = CascadeType.DETACH)
   private Image image;

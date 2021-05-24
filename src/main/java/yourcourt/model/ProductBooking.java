@@ -16,15 +16,20 @@
 
 package yourcourt.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.Collection;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OrderBy;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import yourcourt.model.serializers.BookingSerializer;
 
 /**
  *
@@ -36,11 +41,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "facilities")
-public class Facility extends Construction {
-	
-  @ManyToOne
-  @OrderBy("facility_name")
-  private FacilityType facilityType;
+@Table(name = "product_booking")
+public class ProductBooking extends BaseEntity {
+  @JsonSerialize(using = BookingSerializer.class)
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "booking_id")
+  private Booking booking;
 
+  @JsonManagedReference
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "productBooking")
+  private Collection<ProductBookingLine> lines;
 }

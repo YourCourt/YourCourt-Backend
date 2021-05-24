@@ -16,11 +16,13 @@
 
 package yourcourt.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
-
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,11 +38,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "facilities")
-public class Facility extends Construction {
-	
-  @ManyToOne
-  @OrderBy("facility_name")
-  private FacilityType facilityType;
+@Table(name = "product_booking_lines")
+public class ProductBookingLine extends BaseEntity {
+  @Column(nullable = false)
+  @Min(1)
+  private Integer quantity;
 
+  @Column(nullable = false)
+  @DecimalMin("0")
+  private Double discount;
+
+  @JsonBackReference
+  @ManyToOne
+  private ProductBooking productBooking;
+
+  @JsonBackReference
+  @ManyToOne
+  private Product product;
+  
+  public ProductBookingLine(Integer quantity,Double discount) {
+	  this.quantity=quantity;
+	  this.discount=discount;
+  }
 }

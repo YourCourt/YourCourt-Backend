@@ -1,7 +1,24 @@
 package yourcourt.model;
 
-public enum ProductType {
-  RACKET,
-  TEXTIL,
-  ACCESORIES
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+
+@Data
+@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "product_type")
+public class ProductType extends BaseEntity {
+  @NotBlank
+  @Column(name = "type_name", nullable = false)
+  @Length(max = 50)
+  private String typeName;
 }
