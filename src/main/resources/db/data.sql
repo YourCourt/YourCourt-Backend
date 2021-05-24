@@ -83,3 +83,17 @@ VALUES(1);
 	INTO
 	product_booking_lines (quantity, discount, product_booking_id, product_id)
 VALUES(2, 2.5, 1, 1);
+
+
+-- COURSES
+ INSERT
+	INTO
+	courses (title, description, start_date, end_date)
+VALUES('Campus de verano', 'Inscripción para el campus de vernao de nuestra escuela técnica', '2021-07-01', '2021-07-30'); --1
+
+-- INSCRIPTIONS
+ INSERT
+	INTO
+	inscriptions (name, surnames, email, phone, user_id, course_id)
+VALUES('Juan', 'Noguerol Tirado', 'ejemplo@gmail.com', '612934234', 1, 1); --1
+
