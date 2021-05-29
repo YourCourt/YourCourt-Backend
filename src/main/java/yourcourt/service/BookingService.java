@@ -23,6 +23,7 @@ import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Booking;
 import yourcourt.model.ProductBooking;
 import yourcourt.model.ProductBookingLine;
+import yourcourt.model.projections.BookingProjection;
 import yourcourt.repository.BookingRepository;
 import yourcourt.repository.ProductBookingLineRepository;
 import yourcourt.repository.ProductBookingRepository;
@@ -48,13 +49,13 @@ public class BookingService {
 
   //Booking
   @Transactional(readOnly = true)
-  public Booking findBookingById(final Long id) throws DataAccessException {
-    return this.bookingRepository.findById(id)
+  public BookingProjection findBookingById(final Long id) throws DataAccessException {
+    return this.bookingRepository.findBookingProjectionById(id)
       .orElseThrow(() -> new InexistentEntity("Reserva"));
   }
 
-  public Iterable<Booking> findAllBookings() {
-    return this.bookingRepository.findAll();
+  public Iterable<BookingProjection> findAllBookings() {
+    return this.bookingRepository.findAllBookingProjections();
   }
 
   @Transactional

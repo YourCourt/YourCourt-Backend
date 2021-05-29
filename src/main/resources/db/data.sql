@@ -29,12 +29,6 @@ VALUES (1, 1),
 (2, 2),
 (3, 2),
 (4, 2);
--- BOOKINGS
- INSERT
-	INTO
-	bookings (creation_date, book_date, user_id)
-VALUES ('1999-03-04', '2022-12-31 20:00', 2),
-('2021-03-04', '2023-02-25 10:00', 3);
 -- COURTS
  INSERT
 	INTO
@@ -69,10 +63,17 @@ VALUES ('Accesorios'),
 ('Raqueta'),
 ('Textil'),
 ('Otro');
- INSERT
+
+INSERT
 	INTO
 	products (name, description, stock, tax, price, product_type_id, image_id)
 VALUES('Grip', 'Esto es un accesorio.', 100, 10, 20.50, 1, 1);
+-- BOOKINGS
+ INSERT
+	INTO
+	bookings (creation_date, start_date, end_date, user_id, court_id)
+VALUES ('1999-03-04', '2022-12-31 20:00','2022-12-31 21:00', 2, 1),
+('2021-03-04', '2023-02-25 10:00','2023-02-25 11:00', 3, 2);
 -- PRODUCT BOOKINGS
  INSERT
 	INTO
@@ -83,17 +84,17 @@ VALUES(1);
 	INTO
 	product_booking_lines (quantity, discount, product_booking_id, product_id)
 VALUES(2, 2.5, 1, 1);
-
-
 -- COURSES
  INSERT
 	INTO
 	courses (title, description, start_date, end_date)
-VALUES('Campus de verano', 'Inscripción para el campus de vernao de nuestra escuela técnica', '2021-07-01', '2021-07-30'); --1
+VALUES('Campus de verano', 'Inscripción para el campus de vernao de nuestra escuela técnica', '2021-07-01', '2021-07-30');
+--1
 
 -- INSCRIPTIONS
  INSERT
 	INTO
 	inscriptions (name, surnames, email, phone, user_id, course_id)
-VALUES('Juan', 'Noguerol Tirado', 'ejemplo@gmail.com', '612934234', 1, 1); --1
+VALUES('Juan', 'Noguerol Tirado', 'ejemplo@gmail.com', '612934234', 1, 1);
+--1
 

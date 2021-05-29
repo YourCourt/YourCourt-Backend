@@ -17,16 +17,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Booking;
+import yourcourt.model.Court;
 import yourcourt.model.Product;
 import yourcourt.model.ProductBooking;
 import yourcourt.model.ProductBookingLine;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.BookingDto;
 import yourcourt.model.dto.Message;
+import yourcourt.model.projections.BookingProjection;
 import yourcourt.model.dto.ProductBookingLineDto;
 import yourcourt.security.model.User;
 import yourcourt.security.service.UserService;
 import yourcourt.service.BookingService;
+import yourcourt.service.CourtService;
 import yourcourt.service.ProductService;
 
 @RestController
@@ -39,7 +42,10 @@ public class BookingController {
 
   @Autowired
   private UserService userService;
-
+  
+  @Autowired
+  private CourtService courtService;
+  
   @Autowired
   private ProductService productService;
 
@@ -51,7 +57,8 @@ public class BookingController {
   @GetMapping("/{id}")
   public ResponseEntity<?> getBooking(@PathVariable("id") Long id) {
     try {
-      Booking booking = bookingService.findBookingById(id);
+    	BookingProjection booking = bookingService.findBookingById(id);
+      
       return new ResponseEntity<>(booking, HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -70,11 +77,14 @@ public class BookingController {
         .status(HttpStatus.BAD_REQUEST)
         .body(ValidationUtils.validateDto(bindingResult));
     }
+    try {
     //Booking
     LocalDate creationDate = LocalDate.now();
-    Booking newBooking = new Booking(creationDate, bookingDto.getBookDate());
+    Booking newBooking = new Booking(creationDate, bookingDto.getStartDate(), bookingDto.getEndDate());
     User user = userService.findUserById(bookingDto.getUser());
+    Court court = courtService.findCourtById(bookingDto.getCourt());
     newBooking.setUser(user);
+    newBooking.setCourt(court);
     Booking bookingCreated = bookingService.saveBooking(newBooking);
     
     //ProductBooking
@@ -97,8 +107,13 @@ public class BookingController {
       productBookingLine.setProduct(product);
       bookingService.saveProductBookingLine(productBookingLine);
     }
-
+    
     return new ResponseEntity<>(bookingCreated, HttpStatus.CREATED);
+  } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
   }
 
   @DeleteMapping("/{id}")

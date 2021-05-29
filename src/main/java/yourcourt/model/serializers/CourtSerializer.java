@@ -5,33 +5,25 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
+import yourcourt.model.Court;
 
-import yourcourt.model.ProductBooking;
-
-public class ProductBookingSerializer extends StdSerializer<ProductBooking> {
+public class CourtSerializer extends StdSerializer<Court> {
   /**
    *
    */private static final long serialVersionUID = 1L;
 
-  public ProductBookingSerializer() {
+  public CourtSerializer() {
     this(null);
   }
 
-  public ProductBookingSerializer(Class<ProductBooking> t) {
+  public CourtSerializer(Class<Court> t) {
     super(t);
   }
 
   @Override
-  public void serialize(
-    ProductBooking item,
-    JsonGenerator generator,
-    SerializerProvider provider
-  )
+  public void serialize(Court item, JsonGenerator generator, SerializerProvider provider)
     throws IOException, JsonProcessingException {
     Long id = item.getId();
-    
-
-    
 
     generator.writeObject(id);
   }

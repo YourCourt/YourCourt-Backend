@@ -56,6 +56,10 @@ public class ProductBookingLine extends BaseEntity {
   @ManyToOne
   private Product product;
   
+  public Long getProductId() {
+	  return this.product.id;
+  }
+  
   public ProductBookingLine(Integer quantity,Double discount) {
 	  this.quantity=quantity;
 	  this.discount=discount;
