@@ -17,6 +17,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import yourcourt.model.serializers.CourtSerializer;
 import yourcourt.model.serializers.ProductBookingSerializer;
 import yourcourt.model.serializers.UserSerializer;
 import yourcourt.security.model.User;
@@ -38,21 +40,31 @@ public class Booking extends BaseEntity {
   @PastOrPresent(message = "La fecha debe ser pasada o presente.")
   private LocalDate creationDate;
 
-  @Column(name = "book_date")
+  @Column(name = "start_date")
   @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm")
   @FutureOrPresent(message = "La fecha debe ser futura o presente.")
-  private LocalDateTime bookDate;
+  private LocalDateTime startDate;
+  
+  @Column(name = "end_date")
+  @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm")
+  @FutureOrPresent(message = "La fecha debe ser futura o presente.")
+  private LocalDateTime endDate;
 
   @JsonSerialize(using = UserSerializer.class)
   @ManyToOne
   private User user;
+  
+  @JsonSerialize(using = CourtSerializer.class)
+  @ManyToOne
+  private Court court;
 
   @JsonSerialize(using = ProductBookingSerializer.class)
   @OneToOne(mappedBy = "booking", optional = true, cascade = CascadeType.ALL)
   private ProductBooking productBooking;
-  
-  public Booking(LocalDate creationDate,LocalDateTime bookDate) {
+    
+  public Booking(LocalDate creationDate,LocalDateTime startDate, LocalDateTime endDate) {
 	  this.creationDate=creationDate;
-	  this.bookDate=bookDate;
+	  this.startDate=startDate;
+	  this.endDate=endDate;
   }
 }

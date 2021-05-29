@@ -25,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,6 +48,14 @@ public class ProductBooking extends BaseEntity {
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "booking_id")
   private Booking booking;
+  
+  public Double totalSum() {
+	  return this.getLines()
+	  .stream()
+      .reduce(
+        0., (partialResult, line) -> partialResult + (line.getProduct().getPrice()*line.getQuantity()), Double::sum);
+  }
+ 
 
   @JsonManagedReference
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "productBooking")

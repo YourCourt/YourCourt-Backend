@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,12 +17,18 @@ public class BookingDto {
 
   @DateTimeFormat(pattern = "yyyy/MM/dd hh:mm")
   @FutureOrPresent(message = "La fecha debe ser futura o presente.")
-  private LocalDateTime bookDate;
+  private LocalDateTime startDate;
+  
+  @DateTimeFormat(pattern = "yyyy/MM/dd hh:mm")
+  @FutureOrPresent(message = "La fecha debe ser futura o presente.")
+  private LocalDateTime endDate;
 
   @NotNull(message = "El usuario es obligatorio")
   private Long user;
   
-  @NotEmpty(message = "Las lineas son obligatorias")
+  @NotNull(message = "La pista es obligatoria")
+  private Long court;
+  
   List<ProductBookingLineDto> lines;
   
 }
