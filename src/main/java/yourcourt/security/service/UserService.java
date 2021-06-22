@@ -25,29 +25,29 @@ public class UserService {
   public List<User> findAllUsers() {
     return (List<User>) userRepository.findAll();
   }
-  
+
   public List<UserProjection> findAllUserUserProjections() {
-	    return userRepository.findAllUserUserProjections();
-	  }
+    return userRepository.findAllUserUserProjections();
+  }
 
   @Transactional(readOnly = true)
   public User findUserById(Long id) throws InexistentEntity {
-    User user = userRepository
-      .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Usuario"));
+    User user = userRepository.findById(id).orElseThrow(() -> new InexistentEntity("Usuario"));
     return user;
   }
-  
+
   @Transactional(readOnly = true)
   public UserProjection findUserProjectionById(Long id) throws InexistentEntity {
-	  UserProjection user = userRepository
-      .findUserProjectionById(id)
-      .orElseThrow(() -> new InexistentEntity("Usuario"));
+    UserProjection user = userRepository.findUserProjectionById(id).orElseThrow(() -> new InexistentEntity("Usuario"));
     return user;
   }
 
   public Optional<User> findByUsername(String username) {
     return userRepository.findByUsername(username);
+  }
+
+  public UserProjection findUserProjectionByUsername(String username) {
+    return userRepository.findUserProjectionByUsername(username).orElseThrow(() -> new InexistentEntity("Usuario"));
   }
 
   public boolean existsByUsername(String username) {
@@ -68,19 +68,15 @@ public class UserService {
   }
 
   public String getCurrentUsername() {
-	System.out.println("hola");
-    Authentication authentication = SecurityContextHolder
-      .getContext()
-      .getAuthentication();
+    System.out.println("hola");
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String currentPrincipalName = authentication.getName();
     System.out.println(currentPrincipalName);
     return currentPrincipalName;
   }
 
   public Collection<? extends GrantedAuthority> getCurrenAuths() {
-    Authentication authentication = SecurityContextHolder
-      .getContext()
-      .getAuthentication();
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     Collection<? extends GrantedAuthority> currentPrincipalName = authentication.getAuthorities();
     return currentPrincipalName;
   }
@@ -94,9 +90,7 @@ public class UserService {
 
   @Transactional
   public void deleteUserById(Long id) throws InexistentEntity {
-    User user = userRepository
-      .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Usuario"));
+    User user = userRepository.findById(id).orElseThrow(() -> new InexistentEntity("Usuario"));
     userRepository.delete(user);
   }
 }

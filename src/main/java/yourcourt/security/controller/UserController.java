@@ -54,9 +54,9 @@ public class UserController {
 
 	@Autowired
 	RoleService roleService;
-	
+
 	@Autowired
-	  private ImageService imageService;
+	private ImageService imageService;
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping()
@@ -78,12 +78,23 @@ public class UserController {
 		}
 	}
 
+	@GetMapping("/username/{username}")
+	public ResponseEntity<Object> getUserByUsername(@PathVariable String username) {
+		try {
+			UserProjection userProjection = userService.findUserProjectionByUsername(username);
+			return new ResponseEntity<>(userProjection, HttpStatus.OK);
+		} catch (InexistentEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	@PostMapping()
 	public ResponseEntity<Object> createUser(@Valid @RequestBody final NewUser newUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(bindingResult));
 		}
-
 
 		if (userService.existsByUsername(newUser.getUsername())) {
 			return new ResponseEntity<>(new Message("Nombre de usuario existente"), HttpStatus.BAD_REQUEST);
@@ -109,14 +120,14 @@ public class UserController {
 		}
 
 		user.setRoles(roles);
-		
+
 		Optional<Image> defaultImage = imageService.findById(1);
 		if (!defaultImage.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new Message("La imagen seleccionada no ha sido encontrada."));
 		}
 		user.setImage(defaultImage.get());
-		
+
 		User userCreated = userService.saveUser(user);
 		UserProjection userProjection = userService.findUserProjectionById(userCreated.getId());
 		return new ResponseEntity<>(userProjection, HttpStatus.CREATED);

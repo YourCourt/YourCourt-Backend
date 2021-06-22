@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Image;
@@ -24,6 +25,7 @@ import yourcourt.model.ProductType;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.Message;
 import yourcourt.model.dto.ProductDto;
+import yourcourt.model.projections.ProductProjection;
 import yourcourt.service.ImageService;
 import yourcourt.service.ProductService;
 
@@ -43,13 +45,28 @@ public class ProductController {
     return new ResponseEntity<>(productService.findAllProducts(), HttpStatus.OK);
   }
 
+  @GetMapping("productTypes")
+  public ResponseEntity<?> getAllProductTypess() {
+    return new ResponseEntity<>(productService.findAllProductTypes(), HttpStatus.OK);
+  }
+
   @GetMapping("/{id}")
   public ResponseEntity<?> getProduct(@PathVariable("id") Long id) {
     try {
-      Product product = productService.findProductById(id);
+      ProductProjection product = productService.findProductProjectionById(id);
       return new ResponseEntity<>(product, HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping("/productsByType")
+  public ResponseEntity<?> getProductsByProductType(@RequestParam("typeName") String typeName) {
+    try {
+      Iterable<ProductProjection> products = productService.findProductsByProductType(typeName);
+      return new ResponseEntity<>(products, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }

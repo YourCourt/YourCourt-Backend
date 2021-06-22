@@ -1,6 +1,10 @@
 package yourcourt.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -47,6 +51,12 @@ public class Product extends NamedEntity {
   @NotNull(message = "El precio es obligatorio")
   @DecimalMin("0")
   private Double price;
+
+
+  public Double totalPrice(){
+    Double price=this.getPrice()+(this.getPrice()*this.getTax().doubleValue()/100.0);
+    return Math.round(price * 100.0) / 100.0;
+  }
 
   @JsonManagedReference
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
