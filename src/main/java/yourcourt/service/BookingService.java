@@ -15,6 +15,10 @@
  */
 package yourcourt.service;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -37,25 +41,25 @@ public class BookingService {
   private ProductBookingLineRepository productBookingLineRepository;
 
   @Autowired
-  public BookingService(
-    BookingRepository bookingRepository,
-    ProductBookingRepository productBookingRepository,
-    ProductBookingLineRepository productBookingLineRepository
-  ) {
+  public BookingService(BookingRepository bookingRepository, ProductBookingRepository productBookingRepository,
+      ProductBookingLineRepository productBookingLineRepository) {
     this.bookingRepository = bookingRepository;
     this.productBookingRepository = productBookingRepository;
     this.productBookingLineRepository = productBookingLineRepository;
   }
 
-  //Booking
+  // Booking
   @Transactional(readOnly = true)
   public BookingProjection findBookingById(final Long id) throws DataAccessException {
-    return this.bookingRepository.findBookingProjectionById(id)
-      .orElseThrow(() -> new InexistentEntity("Reserva"));
+    return this.bookingRepository.findBookingProjectionById(id).orElseThrow(() -> new InexistentEntity("Reserva"));
   }
 
   public Iterable<BookingProjection> findAllBookings() {
     return this.bookingRepository.findAllBookingProjections();
+  }
+
+  public Iterable<List<String>> findBookingsFromDate(Date date, Long courtId) {
+    return this.bookingRepository.findBookingsFromDate(date,courtId);
   }
 
   @Transactional
@@ -65,50 +69,44 @@ public class BookingService {
   }
 
   public void deleteBookingById(Long id) {
-    Booking booking = bookingRepository
-      .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Reserva"));
+    Booking booking = bookingRepository.findById(id).orElseThrow(() -> new InexistentEntity("Reserva"));
     bookingRepository.delete(booking);
   }
 
-  //ProductBooking
+  // ProductBooking
   @Transactional(readOnly = true)
   public ProductBooking findProductBookingById(final Long id) throws DataAccessException {
-    return this.productBookingRepository.findById(id)
-      .orElseThrow(() -> new InexistentEntity("Reserva"));
+    return this.productBookingRepository.findById(id).orElseThrow(() -> new InexistentEntity("Reserva"));
   }
 
   @Transactional
-  public ProductBooking saveProductBooking(final ProductBooking productBooking)
-    throws DataAccessException {
+  public ProductBooking saveProductBooking(final ProductBooking productBooking) throws DataAccessException {
     ProductBooking newProductBooking = this.productBookingRepository.save(productBooking);
     return newProductBooking;
   }
 
   public void deleteProductBookingById(Long id) {
-    ProductBooking productBooking = productBookingRepository
-      .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Reserva"));
+    ProductBooking productBooking = productBookingRepository.findById(id)
+        .orElseThrow(() -> new InexistentEntity("Reserva"));
     productBookingRepository.delete(productBooking);
   }
-  //ProductBookingLine
+
+  // ProductBookingLine
   @Transactional(readOnly = true)
   public ProductBookingLine findProductBookingLineById(final Long id) throws DataAccessException {
-    return this.productBookingLineRepository.findById(id)
-      .orElseThrow(() -> new InexistentEntity("Linea de reserva"));
+    return this.productBookingLineRepository.findById(id).orElseThrow(() -> new InexistentEntity("Linea de reserva"));
   }
 
   @Transactional
   public ProductBookingLine saveProductBookingLine(final ProductBookingLine productBookingLine)
-    throws DataAccessException {
-	  ProductBookingLine newProductBookingLine = this.productBookingLineRepository.save(productBookingLine);
+      throws DataAccessException {
+    ProductBookingLine newProductBookingLine = this.productBookingLineRepository.save(productBookingLine);
     return newProductBookingLine;
   }
 
   public void deleteProductBookingLineById(Long id) {
-	  ProductBookingLine productBookingLine = productBookingLineRepository
-      .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Linea de reserva"));
-	  productBookingLineRepository.delete(productBookingLine);
+    ProductBookingLine productBookingLine = productBookingLineRepository.findById(id)
+        .orElseThrow(() -> new InexistentEntity("Linea de reserva"));
+    productBookingLineRepository.delete(productBookingLine);
   }
 }

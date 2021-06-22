@@ -19,6 +19,6 @@ public class ProductBookingLineDto {
   private Double discount;
   
   @NotNull(message = "El producto es obligatorio")
-  private Long product;
+  private Long productId;
   
 }
