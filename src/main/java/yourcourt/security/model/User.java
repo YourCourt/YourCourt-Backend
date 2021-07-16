@@ -65,7 +65,7 @@ public class User {
   private LocalDate creationDate;
 
   @Column(name = "membership_number")
-  @Pattern(regexp = "\\b\\d{5}\\b", message = "Debe ser de 5 dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­gitos exactos.")
+  @Pattern(regexp = "\\b\\d{5}\\b", message = "Debe ser de 5 digitos exactos.")
   @NotBlank
   private String membershipNumber;
 

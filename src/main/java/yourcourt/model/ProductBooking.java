@@ -53,7 +53,7 @@ public class ProductBooking extends BaseEntity {
 	  return this.getLines()
 	  .stream()
       .reduce(
-        0., (partialResult, line) -> partialResult + (line.getProduct().getPrice()*line.getQuantity()), Double::sum);
+        0., (partialResult, line) -> partialResult + (line.getProduct().getBookPrice()*line.getQuantity()), Double::sum);
   }
  
 

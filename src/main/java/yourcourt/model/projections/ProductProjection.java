@@ -17,6 +17,8 @@ public interface ProductProjection {
 
 	Double getPrice();
 
+	Double getBookPrice();
+
 	@Value("#{target.totalPrice()}")
 	Double getTotalPrice();
 
