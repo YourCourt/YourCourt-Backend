@@ -35,6 +35,10 @@ public class ProductDto {
   @DecimalMin("0")
   private Double price;
 
+  @NotNull(message= "El precio de alquiler es obligatorio")
+  @DecimalMin("0")
+  private Double bookPrice;
+
   @NotNull(message= "El tipo es obligatorio")
   private String productType;
 }

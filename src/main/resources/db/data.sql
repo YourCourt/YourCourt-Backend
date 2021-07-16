@@ -66,8 +66,8 @@ VALUES ('Accesorios'),
 
 INSERT
 	INTO
-	products (name, description, stock, tax, price, product_type_id, image_id)
-VALUES('Grip', 'Esto es un accesorio.', 100, 10, 20.50, 1, 1), ('Pelota ATP', 'Esto es una pelota de la ATP.', 500, 10, 3.50, 1, 1), ('Raqueta ATP', 'Esto es una raqueta de la ATP.', 50, 10, 30.50, 2, 1);
+	products (name, description, stock, tax, price, book_price, product_type_id, image_id)
+VALUES('Grip', 'Esto es un accesorio.', 100, 10, 20.50, 3, 1, 1), ('Pelota ATP', 'Esto es una pelota de la ATP.', 500, 10, 3.50,0.50, 1, 1), ('Raqueta ATP', 'Esto es una raqueta de la ATP.', 50, 10, 30.50,10.25, 2, 1);
 -- BOOKINGS
  INSERT
 	INTO

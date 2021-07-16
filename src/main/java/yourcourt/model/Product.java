@@ -52,6 +52,11 @@ public class Product extends NamedEntity {
   @DecimalMin("0")
   private Double price;
 
+  @Column(name = "book_price",nullable = false)
+  @NotNull(message = "El precio de alquiler es obligatorio")
+  @DecimalMin("0")
+  private Double bookPrice;
+
 
   public Double totalPrice(){
     Double price=this.getPrice()+(this.getPrice()*this.getTax().doubleValue()/100.0);
