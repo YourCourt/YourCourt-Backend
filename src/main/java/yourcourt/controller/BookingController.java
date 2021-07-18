@@ -64,7 +64,7 @@ public class BookingController {
     return new ResponseEntity<>(bookingService.findAllBookings(), HttpStatus.OK);
   }
 
-  //@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+  // @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
   @GetMapping("/{id}")
   public ResponseEntity<?> getBooking(@PathVariable("id") Long id) {
     try {
@@ -79,7 +79,8 @@ public class BookingController {
   }
 
   @GetMapping("/date")
-  public ResponseEntity<?> getBookingsByDatetime(@RequestParam("date") String dateString, @RequestParam("courtId") Long courtId) {
+  public ResponseEntity<?> getBookingsByDatetime(@RequestParam("date") String dateString,
+      @RequestParam("courtId") Long courtId) {
     try {
       Date date;
       if (dateString != null) {
@@ -91,11 +92,25 @@ public class BookingController {
         date = Date.from(Instant.now());
       }
 
-      Iterable<List<String>> bookings = bookingService.findBookingsFromDate(date,courtId);
+      Iterable<List<String>> bookings = bookingService.findBookingsFromDate(date, courtId);
 
       return new ResponseEntity<>(bookings, HttpStatus.OK);
     } catch (ParseException e) {
       return new ResponseEntity<>(new Message("El formato debe ser yyyy-MMM-dd."), HttpStatus.BAD_REQUEST);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping("/user")
+  public ResponseEntity<?> getBookingsByUser(@RequestParam("username") String username) {
+
+    try {
+      Iterable<BookingProjection> bookings = bookingService.findBookingsFromUser(username);
+
+      return new ResponseEntity<>(bookings, HttpStatus.OK);
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }

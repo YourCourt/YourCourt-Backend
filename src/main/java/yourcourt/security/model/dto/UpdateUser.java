@@ -22,7 +22,6 @@ public class UpdateUser {
 	private LocalDate birthDate;
 	
 	@NotBlank
-	@Digits(fraction = 0, integer = 10)
 	private String phone;
 
 	
