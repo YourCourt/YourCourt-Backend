@@ -21,4 +21,8 @@ public interface BookingRepository extends CrudRepository<Booking, Long> {
 
   @Query("select CONCAT(TO_CHAR(b.startDate,'HH24'),':',TO_CHAR(b.startDate,'MI')) as startDate, CONCAT(TO_CHAR(b.endDate ,'HH24'),':',TO_CHAR(b.endDate ,'MI')) as endDate from Booking b where :date=CAST(b.startDate as date) and b.court.id=:courtId")
   Iterable<List<String>> findBookingsFromDate(@Param("date") Date date, @Param("courtId") Long courtId);
+
+  @Query("SELECT b FROM Booking b where b.user.username=:username ORDER BY b.startDate, b.court.id")
+  Iterable<BookingProjection> findBookingsFromUser(@Param("username") String username);
+
 }

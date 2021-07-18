@@ -62,6 +62,10 @@ public class BookingService {
     return this.bookingRepository.findBookingsFromDate(date,courtId);
   }
 
+  public Iterable<BookingProjection> findBookingsFromUser(String username) {
+    return this.bookingRepository.findBookingsFromUser(username);
+  }
+
   @Transactional
   public Booking saveBooking(final Booking booking) throws DataAccessException {
     Booking newBooking = this.bookingRepository.save(booking);

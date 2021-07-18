@@ -33,9 +33,9 @@ VALUES (1, 1),
  INSERT
 	INTO
 	courts (name, description, court_type, image_id)
-VALUES('Primera pista rapida', 'Esta es nuestra primera pista rapida.', 'FAST', 1),
+VALUES('Primera pista rapida', 'Esta es nuestra primera pista rapida.', 'HARD', 1),
 ('Primera pista de tierra batida', 'Esta es nuestra primera pista de tierra batida.', 'CLAY', 2),
-('Segunda pista rapida', 'Esta es nuestra segunda pista rapida.', 'FAST', 1),
+('Segunda pista rapida', 'Esta es nuestra segunda pista rapida.', 'HARD', 1),
 ('Segunda pista de tierra batida', 'Esta es nuestra segunda pista de tierra batida.', 'CLAY', 2);
 -- FACILITIES
  INSERT

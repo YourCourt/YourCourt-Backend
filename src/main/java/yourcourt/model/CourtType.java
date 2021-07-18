@@ -1,6 +1,6 @@
 package yourcourt.model;
 
 public enum CourtType {
-  FAST,
+  HARD,
   CLAY
 }
