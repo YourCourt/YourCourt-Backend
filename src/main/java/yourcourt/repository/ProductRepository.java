@@ -19,6 +19,10 @@ public interface ProductRepository extends CrudRepository<Product, Long>{
   @Query("select p from Product as p where p.id=:id")
   Optional<ProductProjection> findProjectionById(@Param("id") Long id);
 	
-    @Query("select p from Product as p where p.productType.typeName=:typeName")
+  @Query("select p from Product as p where p.productType.typeName=:typeName")
   Iterable<ProductProjection> findProductsByProductType(@Param("typeName") String typeName);
+    
+    //Repository
+  @Query("select p from Product as p where p.productType.typeName=:typeName and p.bookPrice > 0.0")
+  Iterable<ProductProjection> findBookableProductsByProductType(@Param("typeName") String typeName);
 }
