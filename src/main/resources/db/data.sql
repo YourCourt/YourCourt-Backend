@@ -16,8 +16,8 @@ VALUES ('imagenPorDefecto', NULL, 'https://static.wikia.nocookie.net/mitologa/im
 ('Cafe-Bar', NULL, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYuEZuOXxXqsDQV5AvGmYWq00eeOJ76BTOaQ&usqp=CAU'), -- 11
 ('Fronton', NULL, 'https://www.caspe.es/wp-content/uploads/2020/05/frontenis.jpg'), -- 12
 ('Parking', NULL, 'https://www.metropoliabierta.com/uploads/s1/15/50/1/IMG_0354_9_1200x480.JPG'), -- 13
-('Pista de fútbol', NULL, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPcqCFGQQjY_ve9II30bIAwFkkW0fDnNdaTw&usqp=CAU') -- 14
-
+('Pista de fútbol', NULL, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPcqCFGQQjY_ve9II30bIAwFkkW0fDnNdaTw&usqp=CAU'), -- 14
+('Batido de proteinas', NULL, 'https://actualnutrition.es/192-pdt_540/proteina-whey-basic.jpg') -- 14
 
 ;
 -- USERS
@@ -104,11 +104,12 @@ VALUES ('Accesorios'),
 INSERT
 	INTO
 	products (name, description, stock, tax, price, book_price, product_type_id, image_id)
-VALUES('Grip Tecnifibre', 'Grip oficiales de tecnifibre.', 100, 10, 1.00, 3, 3, 5), 
-('Bote de bolas Tecnifibre Champion', 'Esto es una pelota de la ATP.', 100, 10, 3.50, 1.00, 3, 6), 
+VALUES('Grip Tecnifibre', 'Grip oficiales de tecnifibre.', 100, 10, 1.00, 3, 1, 5), 
+('Bote de bolas Tecnifibre Champion', 'Esto es una pelota de la ATP.', 100, 10, 3.50, 1.00, 1, 6), 
 ('Raquetero tecnifibre', 'Raquetero tecnifibre de fibra elastica, muy comodo para llevar a los torneos.', 100, 10, 74.99, 0, 3, 7),
 ('Raqueta Tecnifibre T-Fight 300', 'Raqueta oficial de tecnifibre utilizada por el número 2 del mundo, Daniil Medvedev.', 5, 10, 155.00, 9.00, 2, 8),
-('Zapatillas Lacoste', 'Zapatillas hechas gracias a la colaboración con Lacoste.', 30, 10, 120.00, 0, 3, 9);
+('Zapatillas Lacoste', 'Zapatillas hechas gracias a la colaboración con Lacoste.', 30, 10, 120.00, 0, 3, 9),
+('Batido de proteinas', 'Bote de proteinas para tener una ganancia extra de fuerza.', 20, 10, 17.55, 0, 4, 15);
 -- BOOKINGS
  INSERT
 	INTO
