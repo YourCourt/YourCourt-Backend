@@ -28,6 +28,7 @@ import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
 import yourcourt.model.Booking;
 import yourcourt.model.Image;
+import yourcourt.model.ProductPurchase;
 
 @Entity
 @Data
@@ -81,6 +82,10 @@ public class User {
   @OrderBy("creationDate desc")
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
   private Collection<Booking> bookings;
+
+  @OrderBy("creationDate desc")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Collection<ProductPurchase> purchases;
 
   @OneToOne(cascade = CascadeType.DETACH)
   private Image image;

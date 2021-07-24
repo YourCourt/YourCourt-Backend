@@ -67,6 +67,10 @@ public class Product extends NamedEntity {
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
   private Collection<ProductBookingLine> lines;
 
+  @JsonManagedReference
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+  private Collection<ProductPurchaseLine> purchaseLines;
+
   @ManyToOne
   private ProductType productType;
 }

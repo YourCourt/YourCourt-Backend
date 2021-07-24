@@ -16,21 +16,17 @@
 
 package yourcourt.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Collection;
-import javax.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import yourcourt.model.serializers.BookingSerializer;
 
 /**
  *
@@ -42,21 +38,30 @@ import yourcourt.model.serializers.BookingSerializer;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "product_booking")
-public class ProductBooking extends BaseEntity {
-  @JsonSerialize(using = BookingSerializer.class)
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "booking_id")
-  private Booking booking;
+@Table(name = "product_purchase_lines")
+public class ProductPurchaseLine extends BaseEntity {
+  @Column(nullable = false)
+  @Min(1)
+  private Integer quantity;
 
-  public Double totalSum() {
-    Double price = this.getLines().stream().reduce(0.,
-        (partialResult, line) -> partialResult + (line.getProduct().getBookPrice() * line.getQuantity()), Double::sum);
+  @Column(nullable = false)
+  @DecimalMin("0")
+  private Double discount;
 
-    return Math.round(price * 100.0) / 100.0;
+  @JsonBackReference
+  @ManyToOne
+  private ProductPurchase productPurchase;
+
+  @JsonBackReference
+  @ManyToOne
+  private Product product;
+
+  public Long getProductId() {
+    return this.product.id;
   }
 
-  @JsonManagedReference
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "productBooking")
-  private Collection<ProductBookingLine> lines;
+  public ProductPurchaseLine(Integer quantity, Double discount) {
+    this.quantity = quantity;
+    this.discount = discount;
+  }
 }
