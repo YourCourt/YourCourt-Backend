@@ -50,8 +50,7 @@ public class InscriptionService {
   
   @Transactional(readOnly = true)
   public Inscription findInscriptionByName(String name, String surnames) throws DataAccessException {
-    return this.inscriptionRepository.findInscriptionByName(name, surnames)
-      .orElseThrow(() -> new InexistentEntity("Inscripcion"));
+    return this.inscriptionRepository.findInscriptionByName(name, surnames).orElse(null);
   }
   
   @Transactional(readOnly = true)
@@ -89,7 +88,7 @@ public class InscriptionService {
 
 public InscriptionProjection findInscriptionProjectionById(Long id) {
 	return this.inscriptionRepository.findProjectionById(id)
-		      .orElseThrow(() -> new InexistentEntity("Inscription"));
+		      .orElseThrow(() -> new InexistentEntity("Inscripcion"));
 }
 
 public Iterable<InscriptionProjection> findAllInscriptionProjections() {

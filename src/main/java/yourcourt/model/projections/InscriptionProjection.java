@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 public interface InscriptionProjection {
 	
+	Long getId();
+	
 	String getName();
 	
 	String getSurnames();
