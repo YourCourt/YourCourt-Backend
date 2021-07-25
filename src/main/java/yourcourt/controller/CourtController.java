@@ -68,20 +68,27 @@ public class CourtController {
         .status(HttpStatus.BAD_REQUEST)
         .body(ValidationUtils.validateDto(bindingResult));
     }
-
-    Court newCourt = new Court();
-    BeanUtils.copyProperties(courtDto, newCourt);
     
-    Optional<Image> defaultImage = imageService.findById(1);
-	if (!defaultImage.isPresent()) {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND)
-				.body(new Message("La imagen seleccionada no ha sido encontrada."));
+	try {
+		Court newCourt = new Court();
+		BeanUtils.copyProperties(courtDto, newCourt);
+
+		Optional<Image> defaultImage = imageService.findById(1);
+		if (!defaultImage.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new Message("La imagen seleccionada no ha sido encontrada."));
+		}
+		newCourt.setImage(defaultImage.get());
+
+		Court courtCreated = courtService.saveCourt(newCourt);
+
+		return new ResponseEntity<>(courtCreated, HttpStatus.CREATED);
+	} catch (InexistentEntity e) {
+		return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+	} catch (Exception e) {
+		return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 	}
-	newCourt.setImage(defaultImage.get());
 
-    Court courtCreated = courtService.saveCourt(newCourt);
-
-    return new ResponseEntity<>(courtCreated, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")

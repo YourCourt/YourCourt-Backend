@@ -39,7 +39,7 @@ public class CourseService {
   @Transactional(readOnly = true)
   public Course findCourseById(final Long id) throws DataAccessException {
     return this.courseRepository.findById(id)
-      .orElseThrow(() -> new InexistentEntity("Course"));
+      .orElseThrow(() -> new InexistentEntity("Curso"));
   }
 
   public Iterable<Course> findAllCourses() {
@@ -61,7 +61,7 @@ public class CourseService {
   public void deleteCourseById(Long id) {
 	  Course course = courseRepository
       .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Inscription"));
+      .orElseThrow(() -> new InexistentEntity("Inscripción"));
 	  courseRepository.delete(course);
   }
 }
