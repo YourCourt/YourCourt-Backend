@@ -24,4 +24,14 @@ public class ValidationUtils {
 
     return errors;
   }
+
+  public static Map<String, List<String>> throwError(String key, String value) {
+
+    Map<String, List<String>> errors = new HashMap<>();
+    List<String> descriptions = new ArrayList<String>();
+    descriptions.add(value);
+    errors.put(key, descriptions);
+
+    return errors;
+  }
 }

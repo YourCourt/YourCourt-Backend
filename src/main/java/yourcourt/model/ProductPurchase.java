@@ -18,19 +18,25 @@ package yourcourt.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.PastOrPresent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import yourcourt.model.serializers.BookingSerializer;
+import yourcourt.model.serializers.UserSerializer;
+import yourcourt.security.model.User;
 
 /**
  *
@@ -42,21 +48,28 @@ import yourcourt.model.serializers.BookingSerializer;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "product_booking")
-public class ProductBooking extends BaseEntity {
-  @JsonSerialize(using = BookingSerializer.class)
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "booking_id")
-  private Booking booking;
+@Table(name = "product_purchase")
+public class ProductPurchase extends BaseEntity {
+
+  @Column(name = "creation_date")
+  @DateTimeFormat(pattern = "yyyy/MM/dd")
+  @PastOrPresent(message = "La fecha debe ser pasada o presente.")
+  private LocalDate creationDate;
 
   public Double totalSum() {
-    Double price = this.getLines().stream().reduce(0.,
-        (partialResult, line) -> partialResult + (line.getProduct().getBookPrice() * line.getQuantity()), Double::sum);
-
-    return Math.round(price * 100.0) / 100.0;
+    return this.getLines().stream().reduce(0.,
+        (partialResult, line) -> partialResult + (line.getProduct().totalPrice() * line.getQuantity()), Double::sum);
   }
 
   @JsonManagedReference
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "productBooking")
-  private Collection<ProductBookingLine> lines;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "productPurchase")
+  private Collection<ProductPurchaseLine> lines;
+
+  @JsonSerialize(using = UserSerializer.class)
+  @ManyToOne
+  private User user;
+
+  public ProductPurchase(LocalDate creationDate) {
+    this.creationDate = creationDate;
+  }
 }

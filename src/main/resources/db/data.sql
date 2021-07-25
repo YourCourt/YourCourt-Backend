@@ -110,6 +110,7 @@ VALUES('Grip Tecnifibre', 'Grip oficiales de tecnifibre.', 100, 10, 1.00, 3, 1, 
 ('Raqueta Tecnifibre T-Fight 300', 'Raqueta oficial de tecnifibre utilizada por el número 2 del mundo, Daniil Medvedev.', 5, 10, 155.00, 9.00, 2, 8),
 ('Zapatillas Lacoste', 'Zapatillas hechas gracias a la colaboración con Lacoste.', 30, 10, 120.00, 0, 3, 9),
 ('Batido de proteinas', 'Bote de proteinas para tener una ganancia extra de fuerza.', 20, 10, 17.55, 0, 4, 15);
+
 -- BOOKINGS
  INSERT
 	INTO
@@ -128,15 +129,46 @@ VALUES ('1999-03-04', '2022-12-31 20:00','2022-12-31 21:00', 2, 1), --1
 	INTO
 	product_booking (booking_id)
 VALUES(1), (4), (7);
+
 -- PRODUCT BOOKING LINES
  INSERT
 	INTO
 	product_booking_lines (quantity, discount, product_booking_id, product_id)
+
 VALUES(1, 2.5, 1, 2),
 (1, 2.5, 2, 2),
 (2, 2.5, 2, 4),
 (1, 2.5, 3, 1)
 ;
+
+-- PRODUCT PURCHASE
+ INSERT
+	INTO
+	product_purchase (creation_date, user_id)
+VALUES ('2000-07-15', 2), --1
+('2002-01-20', 3), --2
+('2015-11-25', 5), --3
+('2020-07-17', 8), --4
+('2017-03-01', 7), --5
+('2021-2-27', 6), --6
+('2014-06-22', 2) --7
+;
+
+-- PRODUCT PURCHASE LINES
+ INSERT
+	INTO
+	product_purchase_lines (quantity, discount, product_purchase_id, product_id)
+VALUES(1, 2.5, 1, 2),
+(1, 2.5, 2, 2),
+(2, 2.5, 2, 4),
+(1, 2.5, 3, 1),
+(3, 12.5, 4, 2),
+(5, 0.5, 5, 6),
+(2, 0.0, 6, 3),
+(1, 1.5, 7, 1),
+(1, 0.0, 7, 2)
+;
+
 -- COURSES
  INSERT
 	INTO
@@ -146,7 +178,6 @@ para todos aquellos que se quieran iniciar en el tenis y/o pádel de la forma m�
 ('Curso intensivo de verano', 'De nuevo nuestra escuela técnica inicia un intensivo para los jugadores de comepteción en el mes de Julio para que 
 puedan seguir entrenando. ¡El esfuerzo y la dedicación es lo más imporante!', '2021-07-01', '2021-07-30');
 
---1
 
 -- INSCRIPTIONS
  INSERT
