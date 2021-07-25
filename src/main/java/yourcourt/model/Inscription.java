@@ -9,6 +9,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -53,6 +55,7 @@ public class Inscription extends BaseEntity {
   @ManyToOne
   private User user;
   
+  @JsonBackReference
   @ManyToOne
   private Course course;
   

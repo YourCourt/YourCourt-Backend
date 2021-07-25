@@ -1,15 +1,19 @@
 package yourcourt.model;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,4 +49,7 @@ public class Course extends BaseEntity {
   @Column(name = "end_date", length = 512)
   private LocalDate endDate;
   
+  @JsonManagedReference
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
+  private Collection<Inscription> inscriptions;
 }

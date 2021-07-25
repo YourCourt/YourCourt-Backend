@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Inscription;
 import yourcourt.model.dto.InscriptionDto;
+import yourcourt.model.projections.InscriptionProjection;
 import yourcourt.repository.InscriptionRepository;
 
 @Service
@@ -44,7 +45,18 @@ public class InscriptionService {
   @Transactional(readOnly = true)
   public Inscription findInscriptionById(final Long id) throws DataAccessException {
     return this.inscriptionRepository.findById(id)
-      .orElseThrow(() -> new InexistentEntity("Inscription"));
+      .orElseThrow(() -> new InexistentEntity("Inscripcion"));
+  }
+  
+  @Transactional(readOnly = true)
+  public Inscription findInscriptionByName(String name, String surnames) throws DataAccessException {
+    return this.inscriptionRepository.findInscriptionByName(name, surnames)
+      .orElseThrow(() -> new InexistentEntity("Inscripcion"));
+  }
+  
+  @Transactional(readOnly = true)
+  public Iterable<Inscription> findAllInscriptionByCourseId(final Long courseId) throws DataAccessException {
+    return this.inscriptionRepository.findAllInscriptionsByCourseId(courseId);
   }
 
   public Iterable<Inscription> findAllInscriptionsByUserUsername(String username) {
@@ -66,8 +78,26 @@ public class InscriptionService {
   public void deleteInscriptionById(Long id) {
     Inscription inscription = inscriptionRepository
       .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Inscription"));
+      .orElseThrow(() -> new InexistentEntity("Inscripcion"));
     inscriptionRepository.delete(inscription);
   }
+  
+  public void deleteInscriptions(Iterable<Inscription> inscriptions) {
+	    
+	    inscriptionRepository.deleteAll(inscriptions);
+	  }
 
+public InscriptionProjection findInscriptionProjectionById(Long id) {
+	return this.inscriptionRepository.findProjectionById(id)
+		      .orElseThrow(() -> new InexistentEntity("Inscription"));
 }
+
+public Iterable<InscriptionProjection> findAllInscriptionProjections() {
+	return this.inscriptionRepository.findAllInscriptionProjections();
+}
+
+public Iterable<InscriptionProjection> findAllInscriptionProjectionsByUserUsername(String username) {
+	return this.inscriptionRepository.findAllInscriptionProjectionsByUserUsername(username);
+	}
+}
+

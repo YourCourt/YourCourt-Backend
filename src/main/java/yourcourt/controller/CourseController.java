@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import yourcourt.exceptions.user.InexistentEntity;
 import yourcourt.model.Course;
 import yourcourt.model.Image;
+import yourcourt.model.Inscription;
 import yourcourt.model.Product;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.CourseDto;
@@ -27,6 +28,7 @@ import yourcourt.model.dto.Message;
 import yourcourt.model.dto.ProductDto;
 import yourcourt.service.CourseService;
 import yourcourt.service.ImageService;
+import yourcourt.service.InscriptionService;
 import yourcourt.service.ProductService;
 
 @RestController
@@ -36,6 +38,8 @@ import yourcourt.service.ProductService;
 public class CourseController {
   @Autowired
   private CourseService courseService;
+  
+  private InscriptionService inscriptionService;
 
   @GetMapping
   public ResponseEntity<?> getAllCourses() {
@@ -45,8 +49,9 @@ public class CourseController {
   @GetMapping("/{id}")
   public ResponseEntity<?> getCourse(@PathVariable("id") Long id) {
     try {
-    	Course product = courseService.findCourseById(id);
-      return new ResponseEntity<>(product, HttpStatus.OK);
+    	Course course = courseService.findCourseById(id);
+    	return new ResponseEntity<>(course, HttpStatus.OK);
+      
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
@@ -92,13 +97,15 @@ public class CourseController {
 
     try {
     	Course courseToUpdate = courseService.findCourseById(id);
+    	
     	if(courseDto.getStartDate().isAfter(courseDto.getEndDate())) {
     		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body(new Message("La fecha de inicio no puede ser posterior a la de fin."));
     	}
+    	
     	Course courseUpdated = courseService.updateCourse(courseToUpdate, courseDto);
 
-      return new ResponseEntity<>(courseUpdated, HttpStatus.OK);
+    	return new ResponseEntity<>(courseUpdated, HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
@@ -107,10 +114,14 @@ public class CourseController {
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteCourse(@PathVariable("id") Long id) {
     try {
-      courseService.deleteCourseById(id);
-      return new ResponseEntity<>(new Message("Curso eliminado"), HttpStatus.OK);
+    	
+    	courseService.deleteCourseById(id);
+    	
+    	return new ResponseEntity<>(new Message("Curso eliminado"), HttpStatus.OK);
+    	
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+      
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }

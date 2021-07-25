@@ -1,0 +1,30 @@
+package yourcourt.model.projections;
+
+import org.springframework.beans.factory.annotation.Value;
+
+/**
+ *
+ * @author javvazzam
+ * @author juanogtir
+ */
+
+public interface InscriptionProjection {
+	
+	String getName();
+	
+	String getSurnames();
+	
+	String getEmail();
+	
+	String getPhone();
+	
+	String getObservations();
+	
+	@Value("#{target.getUser().getId()}")
+	Long getUser();
+	
+	@Value("#{target.getCourse().getId()}")
+	Long getCourse();
+  
+  
+}

@@ -26,6 +26,7 @@ import yourcourt.model.Inscription;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.InscriptionDto;
 import yourcourt.model.dto.Message;
+import yourcourt.model.projections.InscriptionProjection;
 import yourcourt.security.model.User;
 import yourcourt.security.service.UserService;
 import yourcourt.service.CourseService;
@@ -49,8 +50,9 @@ public class InscriptionController {
   @GetMapping()
   public ResponseEntity<?> getAllInscriptions() {
     try {
-    	Iterable<Inscription> inscription = inscriptionService.findAllInscriptions();
+    	Iterable<InscriptionProjection> inscription = inscriptionService.findAllInscriptionProjections();
       return new ResponseEntity<>(inscription, HttpStatus.OK);
+      
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
@@ -61,7 +63,8 @@ public class InscriptionController {
   @GetMapping("/{id}")
   public ResponseEntity<?> getInscription(@PathVariable("id") Long id) {
     try {
-    	Inscription inscription = inscriptionService.findInscriptionById(id);
+    	InscriptionProjection inscription = inscriptionService.findInscriptionProjectionById(id);
+    	
       return new ResponseEntity<>(inscription, HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -73,7 +76,7 @@ public class InscriptionController {
   @GetMapping("/user/{username}")
   public ResponseEntity<?> getAllInscriptionsFromUserUsername(@PathVariable("username") String username) {
     try {
-    	Iterable<Inscription> inscriptions = inscriptionService.findAllInscriptionsByUserUsername(username);
+    	Iterable<InscriptionProjection> inscriptions = inscriptionService.findAllInscriptionProjectionsByUserUsername(username);
       return new ResponseEntity<>(inscriptions, HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -90,27 +93,39 @@ public class InscriptionController {
         .status(HttpStatus.BAD_REQUEST)
         .body(ValidationUtils.validateDto(bindingResult));
     }
-    System.out.println("hola");
-    String username = userService.getCurrentUsername();
-    
-    System.out.println(username);
-    Optional<User> usuario = userService.findByUsername(username);
-    Course course = courseService.findCourseById(courseId);
-    
-    Inscription newInscription = new Inscription();
-    newInscription.setUser(usuario.get());
-    newInscription.setCourse(course);
-    BeanUtils.copyProperties(inscriptionDto, newInscription);
 
-    Inscription inscriptionCreated = inscriptionService.saveInscription(newInscription);
+    try {
+    	String username = userService.getCurrentUsername();
+        
+        
+        System.out.println(username);
+        Optional<User> usuario = userService.findByUsername(username);
+        Course course = courseService.findCourseById(courseId);
+        
+        Inscription newInscription = new Inscription();
+        newInscription.setUser(usuario.get());
+        newInscription.setCourse(course);
+        BeanUtils.copyProperties(inscriptionDto, newInscription);
 
-    if (inscriptionCreated == null) {
-		return ResponseEntity.status(HttpStatus.NOT_MODIFIED)
-				.body(new Message("Ha ocurrido un error a la hora de crear la inscripción."));
-	} else {
-		return new ResponseEntity<>(inscriptionCreated, HttpStatus.CREATED);
-	}
-    
+        Inscription inscriptionCreated = inscriptionService.saveInscription(newInscription);
+        
+        String name = inscriptionDto.getName();
+        String surnames = inscriptionDto.getSurnames();
+        
+        if (inscriptionService.findInscriptionByName(name, surnames)!=null) {
+        	
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    				.body(ValidationUtils.throwError(name+" "+surnames, "No se puede inscribir la misma persona"));
+        }
+        else {
+    		return new ResponseEntity<>(inscriptionCreated, HttpStatus.CREATED);
+    	}
+        
+    } catch (InexistentEntity e) {
+        return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+      } catch (Exception e) {
+        return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+      }
     
   }
 
@@ -140,7 +155,7 @@ public class InscriptionController {
   public ResponseEntity<?> deleteInscription(@PathVariable("id") Long id) {
     try {
       inscriptionService.deleteInscriptionById(id);
-      return new ResponseEntity<>(new Message("Curso eliminado"), HttpStatus.OK);
+      return new ResponseEntity<>(new Message("Inscripción eliminada"), HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
