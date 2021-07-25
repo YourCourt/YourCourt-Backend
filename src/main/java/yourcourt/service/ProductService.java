@@ -49,6 +49,11 @@ public class ProductService {
   public Iterable<ProductProjection> findProductsByProductType(final String typeName) throws DataAccessException {
     return this.productRepository.findProductsByProductType(typeName);
   }
+  
+///Servicio
+ public Iterable<ProductProjection> findBookableProductsByProductType(final String typeName) throws DataAccessException {
+    return this.productRepository.findBookableProductsByProductType(typeName);
+  }
 
   @Transactional
   public Product saveProduct(final Product product) throws DataAccessException {

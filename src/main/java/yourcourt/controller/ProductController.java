@@ -72,6 +72,16 @@ public class ProductController {
     }
   }
 
+  @GetMapping("/bookableProductsByType")
+  public ResponseEntity<?> getBookableProductsByProductType(@RequestParam("typeName") String typeName) {
+    try {
+      Iterable<ProductProjection> products = productService.findBookableProductsByProductType(typeName);
+      return new ResponseEntity<>(products, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
+  
   @PostMapping
   public ResponseEntity<?> createProduct(
     @Valid @RequestBody ProductDto productDto,

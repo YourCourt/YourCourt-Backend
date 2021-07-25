@@ -129,6 +129,7 @@ VALUES ('1999-03-04', '2022-12-31 20:00','2022-12-31 21:00', 2, 1), --1
 	INTO
 	product_booking (booking_id)
 VALUES(1), (4), (7);
+
 -- PRODUCT BOOKING LINES
  INSERT
 	INTO
@@ -176,6 +177,7 @@ VALUES('Campus de verano', 'Inscripciones abiertas para el campus de vernao de n
 para todos aquellos que se quieran iniciar en el tenis y/o pádel de la forma más divertida. ¡Inscríbete ya! (Apto para menores de 18 años)', '2021-07-01', '2021-07-30'),
 ('Curso intensivo de verano', 'De nuevo nuestra escuela técnica inicia un intensivo para los jugadores de comepteción en el mes de Julio para que 
 puedan seguir entrenando. ¡El esfuerzo y la dedicación es lo más imporante!', '2021-07-01', '2021-07-30');
+
 
 -- INSCRIPTIONS
  INSERT
