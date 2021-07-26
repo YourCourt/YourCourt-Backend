@@ -111,7 +111,7 @@ public class ProductPurchaseController {
         Product product = productService.findProductById(productId);
         Integer quantity = line.getQuantity();
         Integer currentStock = product.getStock();
-        if (currentStock < quantity) { // Check whether the product's stock is enough or not
+        if (currentStock-ValidationUtils.LOW_STOCK < quantity) { // Check whether the product's stock is enough or not
           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body(ValidationUtils.throwError("cantidad", "La cantidad debe ser menor o igual al stock disponible"));
         }

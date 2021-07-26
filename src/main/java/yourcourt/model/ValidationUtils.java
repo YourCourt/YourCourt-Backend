@@ -9,6 +9,8 @@ import org.springframework.validation.FieldError;
 
 public class ValidationUtils {
 
+  public static final Integer LOW_STOCK = 20;
+
   public static Map<String, List<String>> validateDto(BindingResult result) {
     Map<String, List<String>> errors = new HashMap<>();
 
