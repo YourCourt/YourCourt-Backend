@@ -144,7 +144,8 @@ public class BookingController {
         productBookingLine.setProductBooking(productBookingCreated);
         Product product = productService.findProductById(line.getProductId());
 
-        if (product.getStock() < line.getQuantity()) { // Check whether the product's stock is enough or not
+        Integer currentStock = product.getStock();
+        if (currentStock-ValidationUtils.LOW_STOCK < line.getQuantity()) { // Check whether the product's stock is enough or not
           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body(ValidationUtils.throwError("cantidad", "La cantidad debe ser menor o igual al stock disponible"));
         }
