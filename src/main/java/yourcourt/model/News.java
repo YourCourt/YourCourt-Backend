@@ -46,20 +46,21 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "news")
 public class News extends NamedEntity {
-  @NotBlank
-  @Column(name = "description", length = 512)
-  private String description;
 
-  @Column(name = "creation_date")
-  @DateTimeFormat(pattern = "yyyy/MM/dd")
-  private LocalDate creationDate;
+	@NotBlank
+	@Column(name = "description", length = 512)
+	private String description;
 
-  @Column(name = "edition_date")
-  @DateTimeFormat(pattern = "yyyy/MM/dd")
-  private LocalDate editionDate;
-  
-  @JsonManagedReference
-  @OrderBy("createDate desc")
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
-  private Collection<Comment> comments;
+	@Column(name = "creation_date")
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private LocalDate creationDate;
+
+	@Column(name = "edition_date")
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private LocalDate editionDate;
+
+	@JsonManagedReference
+	@OrderBy("createDate desc")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
+	private Collection<Comment> comments;
 }

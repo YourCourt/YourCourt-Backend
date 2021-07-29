@@ -65,7 +65,7 @@ public class CommentController {
             
             if (news.getComments() != null) {
             	for (Comment comment : news.getComments()) {
-        	        if (username.equals(comment.getAuthor().getUsername())) {
+        	        if (username.equals(comment.getUser().getUsername())) {
         	            return ResponseEntity.status(HttpStatus.FORBIDDEN)
         	                    .body(new Message("El usuario ya ha realizado un comentario en esta noticia"));
         	        }
@@ -85,7 +85,7 @@ public class CommentController {
             BeanUtils.copyProperties(commentDto, newComment, "itinerary");
 
             newComment.setNews(news);
-            newComment.setAuthor(author);
+            newComment.setUser(author);
             newComment.setCreateDate(LocalDateTime.now());
             Comment createdComment = commentService.save(newComment);
 
@@ -113,7 +113,7 @@ public class CommentController {
             Comment commentToDelete = foundComment.get();
             Optional<User> foundUser = userService.findByUsername(username);
 
-            if (!username.equals(commentToDelete.getAuthor().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
+            if (!username.equals(commentToDelete.getUser().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new Message("No puede eliminar un comentario de un itinerario del que no es creador"));
             }
