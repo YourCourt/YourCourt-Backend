@@ -16,6 +16,7 @@ public class ProductPurchaseDto {
   @NotNull(message = "El usuario es obligatorio")
   private Long user;
 
+  @NotNull(message = "Las líneas de compra son obligatorias")
   Collection<ProductPurchaseLineDto> lines;
 
 }

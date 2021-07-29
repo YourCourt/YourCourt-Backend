@@ -1,6 +1,5 @@
 package yourcourt.security.model.dto;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
@@ -8,10 +7,10 @@ import lombok.Data;
 @Data
 public class LoginUser {
 
-	@NotBlank
+	@NotBlank(message = "El usuario es obligatorio")
 	private String username;
 	
-	@NotBlank
+	@NotBlank(message = "La contraseña es obligatoria")
 	private String password;
 	
 }

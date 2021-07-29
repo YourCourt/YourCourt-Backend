@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.Message;
 import yourcourt.security.jwt.JwtProvider;
 import yourcourt.security.model.dto.JwtDto;
@@ -40,9 +41,9 @@ public class AuthController {
 	JwtProvider jwtProvider;
 	
 	@PostMapping("/login")
-	public ResponseEntity<Object> login(@RequestBody @Valid LoginUser loginUser, BindingResult bindingResult) {
+	public ResponseEntity<Object> login(@Valid @RequestBody final LoginUser loginUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			return new ResponseEntity<>(new Message("Binding error"), HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ValidationUtils.validateDto(bindingResult));
 		}
 		
 		Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword(), Collections.emptyList()));
