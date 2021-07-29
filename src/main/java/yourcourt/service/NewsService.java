@@ -38,7 +38,7 @@ public class NewsService {
   public Iterable<News> findAllNews() {
     return newsRepository.findAll();
   }
-
+  
   @Transactional(readOnly = true)
   public News findNewsById(final Long id) throws DataAccessException {
     return this.newsRepository.findById(id)

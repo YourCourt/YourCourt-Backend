@@ -17,8 +17,13 @@
 package yourcourt.model;
 
 import java.time.LocalDate;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -26,6 +31,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
  *
@@ -39,15 +46,21 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "news")
 public class News extends NamedEntity {
-  @NotBlank
-  @Column(name = "description", length = 512)
-  private String description;
 
-  @Column(name = "creation_date")
-  @DateTimeFormat(pattern = "yyyy/MM/dd")
-  private LocalDate creationDate;
+	@NotBlank
+	@Column(name = "description", length = 512)
+	private String description;
 
-  @Column(name = "edition_date")
-  @DateTimeFormat(pattern = "yyyy/MM/dd")
-  private LocalDate editionDate;
+	@Column(name = "creation_date")
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private LocalDate creationDate;
+
+	@Column(name = "edition_date")
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private LocalDate editionDate;
+
+	@JsonManagedReference
+	@OrderBy("createDate desc")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
+	private Collection<Comment> comments;
 }

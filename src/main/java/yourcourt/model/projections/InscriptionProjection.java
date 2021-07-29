@@ -25,8 +25,8 @@ public interface InscriptionProjection {
 	@Value("#{target.getUser().getId()}")
 	Long getUser();
 	
-	@Value("#{target.getCourse().getId()}")
-	Long getCourse();
+	@Value("#{target.getCourse()}")
+	CourseProjection getCourse();
   
   
 }

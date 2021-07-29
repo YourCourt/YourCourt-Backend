@@ -92,6 +92,14 @@ VALUES('Pepe Dominguez, Campeón provincial de Sevilla 2021',
 'Pepe Dominguez, jugador de nuestra fantástica escuela de tenis, se ha proclamado este fin de semana, campeón provincial de Sevilla
 ganando a Ramón Fuentes en una disputada final 7-5 6-4. Ahora Pepe tiene la mirada puesta en el campeonato regional para el cuál
 se ha clasificado.', '2021-03-04', '2021-03-04', 4);
+
+-- COMMENTS
+ INSERT
+ 	INTO
+ 	comments(content, create_date, user_id, news_id)
+ VALUES ('¡Enhorabuene Pepe, sigue así!', '2021-03-05', 8, 1),
+ ('Merecido esfuerzo, no cabe duda ;)', '2021-03-05', 9, 1),
+ ('¡Muchas gracias!', '2021-03-05', 5, 1);
 -- PRODUCTS
  INSERT
 	INTO
