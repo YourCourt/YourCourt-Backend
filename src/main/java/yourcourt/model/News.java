@@ -60,7 +60,7 @@ public class News extends NamedEntity {
 	private LocalDate editionDate;
 
 	@JsonManagedReference
-	@OrderBy("createDate desc")
+	@OrderBy("creationDate desc")
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
 	private Collection<Comment> comments;
 }
