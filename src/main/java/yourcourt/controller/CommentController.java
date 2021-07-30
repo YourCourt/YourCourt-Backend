@@ -1,5 +1,6 @@
 package yourcourt.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -56,12 +57,7 @@ public class CommentController {
         try {
         	String username = userService.getCurrentUsername();
 
-            if (username.equals("anonymousUser")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new Message("El usuario no tiene permiso de comentar una noticia sin registrarse"));
-            }
-
-            News news = newsService.findNewsById(commentDto.getNews());
+            News news = newsService.findNewsById(commentDto.getNewsId());
             
             if (news.getComments() != null) {
             	for (Comment comment : news.getComments()) {
@@ -82,11 +78,11 @@ public class CommentController {
             User author = findAuthor.get();
 
             Comment newComment = new Comment();
-            BeanUtils.copyProperties(commentDto, newComment, "itinerary");
+            BeanUtils.copyProperties(commentDto, newComment, "user","news");
 
             newComment.setNews(news);
             newComment.setUser(author);
-            newComment.setCreateDate(LocalDateTime.now());
+            newComment.setCreationDate(LocalDate.now());
             Comment createdComment = commentService.save(newComment);
 
             return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
@@ -112,10 +108,12 @@ public class CommentController {
 
             Comment commentToDelete = foundComment.get();
             Optional<User> foundUser = userService.findByUsername(username);
-
-            if (!username.equals(commentToDelete.getUser().getUsername()) && !(foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))) {
+            System.out.println(username.equals(commentToDelete.getUser().getUsername())==false);
+            System.out.println(foundUser.isPresent());
+            System.out.println(foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)));
+            if (username.equals(commentToDelete.getUser().getUsername())==false && (foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))==false) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new Message("No puede eliminar un comentario de un itinerario del que no es creador"));
+                        .body(new Message("No puede eliminar un comentario de una noticia del que no es creador"));
             }
             commentService.deleteById(commentToDelete.getId());
 

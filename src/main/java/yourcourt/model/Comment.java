@@ -1,5 +1,6 @@
 package yourcourt.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -16,7 +17,9 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 import yourcourt.model.serializers.UserSerializer;
@@ -25,7 +28,7 @@ import yourcourt.security.model.User;
 @Data
 @Entity
 @Table(name = "comments", indexes = {
-	@Index(columnList = "create_date desc")
+	@Index(columnList = "creation_date desc")
 })
 public class Comment {
     
@@ -38,8 +41,9 @@ public class Comment {
 	@Length(max = 1000)
 	private String content;
 
-    @Column(name = "create_date", nullable = false)
-	private LocalDateTime createDate;
+    @Column(name = "creation_date")
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
+	private LocalDate creationDate;
 
     @JsonSerialize(using = UserSerializer.class)
     @ManyToOne

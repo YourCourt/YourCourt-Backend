@@ -96,7 +96,7 @@ se ha clasificado.', '2021-03-04', '2021-03-04', 4);
 -- COMMENTS
  INSERT
  	INTO
- 	comments(content, create_date, user_id, news_id)
+ 	comments(content, creation_date, user_id, news_id)
  VALUES ('¡Enhorabuene Pepe, sigue así!', '2021-03-05', 8, 1),
  ('Merecido esfuerzo, no cabe duda ;)', '2021-03-05', 9, 1),
  ('¡Muchas gracias!', '2021-03-05', 5, 1);
