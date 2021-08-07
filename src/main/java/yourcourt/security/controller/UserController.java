@@ -26,7 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
-import yourcourt.exceptions.user.InexistentEntity;
+import yourcourt.exceptions.InexistentEntity;
+import yourcourt.exceptions.RestrictedEntity;
 import yourcourt.model.Image;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.Message;
@@ -70,9 +71,14 @@ public class UserController {
 		try {
 			User user = userService.findUserById(id);
 			UserProjection userProjection = userService.findUserProjectionById(user.getId());
+
+			ValidationUtils.accessRestrictedObjectById(user.getId(), userService, "un usuario");
+
 			return new ResponseEntity<>(userProjection, HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (RestrictedEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
 		} catch (Exception e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
@@ -82,9 +88,13 @@ public class UserController {
 	public ResponseEntity<Object> getUserByUsername(@PathVariable String username) {
 		try {
 			UserProjection userProjection = userService.findUserProjectionByUsername(username);
+			ValidationUtils.accessRestrictedObjectById(userProjection.getId(), userService, "un usuario");
+
 			return new ResponseEntity<>(userProjection, HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (RestrictedEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
 		} catch (Exception e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
@@ -147,26 +157,35 @@ public class UserController {
 			if (emailExistence && !user.getEmail().equals(userToUpdate.getEmail())) {
 				return new ResponseEntity<>(new Message("Email existente"), HttpStatus.BAD_REQUEST);
 			}
-			try {
 				User userUpdated = userService.updateUser(userToUpdate, user);
 
 				UserProjection userProjection = userService.findUserProjectionById(userUpdated.getId());
+				ValidationUtils.accessRestrictedObjectById(userProjection.getId(), userService, "un usuario");
+
 				return new ResponseEntity<>(userProjection, HttpStatus.OK);
-			} catch (Exception e) {
-				return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
-			}
+
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (RestrictedEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
+		} catch (Exception e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
 		try {
+			ValidationUtils.accessRestrictedObjectById(id, userService, "un usuario");
+
 			userService.deleteUserById(id);
 			return new ResponseEntity<>(new Message("Usuario eliminado"), HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (RestrictedEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
+		} catch (Exception e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
 

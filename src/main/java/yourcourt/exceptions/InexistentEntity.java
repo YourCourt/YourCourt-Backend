@@ -1,4 +1,4 @@
-package yourcourt.exceptions.user;
+package yourcourt.exceptions;
 
 import java.util.NoSuchElementException;
 

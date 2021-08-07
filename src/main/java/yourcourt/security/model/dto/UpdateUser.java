@@ -1,7 +1,6 @@
 package yourcourt.security.model.dto;
 
 import java.time.LocalDate;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;

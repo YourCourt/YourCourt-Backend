@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import yourcourt.exceptions.user.InexistentEntity;
+import yourcourt.exceptions.InexistentEntity;
 import yourcourt.model.Inscription;
 import yourcourt.model.dto.InscriptionDto;
 import yourcourt.model.projections.InscriptionProjection;

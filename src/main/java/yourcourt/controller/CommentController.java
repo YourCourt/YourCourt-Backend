@@ -1,7 +1,6 @@
 package yourcourt.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -21,13 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
-import yourcourt.exceptions.user.InexistentEntity;
+import yourcourt.exceptions.InexistentEntity;
+import yourcourt.exceptions.RestrictedEntity;
 import yourcourt.model.Comment;
 import yourcourt.model.News;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.CommentDto;
 import yourcourt.model.dto.Message;
-import yourcourt.security.model.RoleType;
 import yourcourt.security.model.User;
 import yourcourt.security.service.UserService;
 import yourcourt.service.CommentService;
@@ -99,7 +98,6 @@ public class CommentController {
     public ResponseEntity<?> deleteComment(@PathVariable("id") long id) {
     	
     	try {
-    		String username = userService.getCurrentUsername();
             Optional<Comment> foundComment = commentService.findById(id);
 
             if (!foundComment.isPresent()) {
@@ -107,23 +105,19 @@ public class CommentController {
             }
 
             Comment commentToDelete = foundComment.get();
-            Optional<User> foundUser = userService.findByUsername(username);
-            System.out.println(username.equals(commentToDelete.getUser().getUsername())==false);
-            System.out.println(foundUser.isPresent());
-            System.out.println(foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)));
-            if (username.equals(commentToDelete.getUser().getUsername())==false && (foundUser.isPresent() && foundUser.get().getRoles().stream().anyMatch(r->r.getRoleType().equals(RoleType.ROLE_ADMIN)))==false) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new Message("No puede eliminar un comentario de una noticia del que no es creador"));
-            }
+            ValidationUtils.accessRestrictedObjectById(commentToDelete.getUser().getId(), userService, "un comentario");
+        
             commentService.deleteById(commentToDelete.getId());
 
             return new ResponseEntity<>(new Message("Comentario eliminado"), HttpStatus.OK);
             
     	} catch (InexistentEntity e) {
-            return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-          return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
-        }
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (RestrictedEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
+		} catch (Exception e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+		}
         
     }
     

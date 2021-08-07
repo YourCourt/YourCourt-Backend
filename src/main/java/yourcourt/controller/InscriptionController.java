@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import yourcourt.exceptions.user.InexistentEntity;
+import yourcourt.exceptions.InexistentEntity;
+import yourcourt.exceptions.RestrictedEntity;
 import yourcourt.model.Course;
 import yourcourt.model.Inscription;
 import yourcourt.model.ValidationUtils;
@@ -63,11 +64,16 @@ public class InscriptionController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getInscription(@PathVariable("id") Long id) {
 		try {
+
 			InscriptionProjection inscription = inscriptionService.findInscriptionProjectionById(id);
+
+			ValidationUtils.accessRestrictedObjectById(inscription.getUser(), userService, "una inscripcion");
 
 			return new ResponseEntity<>(inscription, HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (RestrictedEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
 		} catch (Exception e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
@@ -78,9 +84,13 @@ public class InscriptionController {
 		try {
 			Iterable<InscriptionProjection> inscriptions = inscriptionService
 					.findAllInscriptionProjectionsByUserUsername(username);
+
+			ValidationUtils.accessRestrictedObjectByUsername(username, userService, "una inscripcion");
 			return new ResponseEntity<>(inscriptions, HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (RestrictedEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
 		} catch (Exception e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
@@ -142,8 +152,13 @@ public class InscriptionController {
 			InscriptionProjection inscriptionProjected = inscriptionService
 					.findInscriptionProjectionById(inscriptionUpdated.getId());
 
+			ValidationUtils.accessRestrictedObjectById(inscriptionProjected.getId(), userService, "una inscripcion");
 			return new ResponseEntity<>(inscriptionProjected, HttpStatus.OK);
 		} catch (InexistentEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (RestrictedEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
+		} catch (Exception e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -151,10 +166,14 @@ public class InscriptionController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteInscription(@PathVariable("id") Long id) {
 		try {
+			ValidationUtils.accessRestrictedObjectById(id, userService, "una inscripcion");
+
 			inscriptionService.deleteInscriptionById(id);
 			return new ResponseEntity<>(new Message("Inscripcion eliminada"), HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (RestrictedEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
 		} catch (Exception e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}

@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import yourcourt.exceptions.user.InexistentEntity;
+import yourcourt.exceptions.InexistentEntity;
 import yourcourt.model.Facility;
 import yourcourt.model.FacilityType;
 import yourcourt.model.dto.FacilityDto;
@@ -39,6 +39,10 @@ public class FacilityService {
   ) {
     this.facilityRepository = facilityRepository;
     this.facilityTypeRepository = facilityTypeRepository;
+  }
+
+  public Iterable<Facility> findAllFacilities() {
+    return facilityRepository.findAll();
   }
 
   @Transactional(readOnly = true)

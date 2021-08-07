@@ -2,9 +2,7 @@ package yourcourt.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -23,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
-import yourcourt.exceptions.user.InexistentEntity;
+import yourcourt.exceptions.InexistentEntity;
+import yourcourt.exceptions.RestrictedEntity;
 import yourcourt.model.Product;
 import yourcourt.model.ProductPurchase;
 import yourcourt.model.ProductPurchaseLine;
@@ -61,10 +60,13 @@ public class ProductPurchaseController {
   public ResponseEntity<?> getProductPurchase(@PathVariable("id") Long id) {
     try {
       ProductPurchaseProjection productPurchase = productPurchaseService.findProductPurchaseById(id);
+      ValidationUtils.accessRestrictedObjectById(productPurchase.getId(), userService, "una compra");
 
       return new ResponseEntity<>(productPurchase, HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (RestrictedEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
@@ -74,12 +76,16 @@ public class ProductPurchaseController {
   public ResponseEntity<?> getProductPurchasesByUser(@RequestParam("username") String username) {
 
     try {
+      ValidationUtils.accessRestrictedObjectByUsername(username, userService, "unas compras");
+
       Iterable<ProductPurchaseProjection> productPurchases = productPurchaseService
           .findProductPurchasesFromUser(username);
 
       return new ResponseEntity<>(productPurchases, HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (RestrictedEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
@@ -111,7 +117,7 @@ public class ProductPurchaseController {
         Product product = productService.findProductById(productId);
         Integer quantity = line.getQuantity();
         Integer currentStock = product.getStock();
-        if (currentStock-ValidationUtils.LOW_STOCK < quantity) { // Check whether the product's stock is enough or not
+        if (currentStock - ValidationUtils.LOW_STOCK < quantity) { // Check whether the product's stock is enough or not
           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body(ValidationUtils.throwError("cantidad", "La cantidad debe ser menor o igual al stock disponible"));
         }
@@ -140,10 +146,14 @@ public class ProductPurchaseController {
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteProductPurchase(@PathVariable("id") Long id) {
     try {
+      ValidationUtils.accessRestrictedObjectById(id, userService, "una compra");
+
       productPurchaseService.deleteProductPurchaseById(id);
       return new ResponseEntity<>(new Message("Compra eliminada"), HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (RestrictedEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }

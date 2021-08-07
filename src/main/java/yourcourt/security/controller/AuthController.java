@@ -1,6 +1,7 @@
 package yourcourt.security.controller;
 
 import java.util.Collections;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import yourcourt.model.ValidationUtils;
-import yourcourt.model.dto.Message;
 import yourcourt.security.jwt.JwtProvider;
 import yourcourt.security.model.dto.JwtDto;
 import yourcourt.security.model.dto.LoginUser;

@@ -25,7 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import yourcourt.exceptions.user.InexistentEntity;
+import yourcourt.exceptions.InexistentEntity;
+import yourcourt.exceptions.RestrictedEntity;
 import yourcourt.model.Booking;
 import yourcourt.model.Court;
 import yourcourt.model.Product;
@@ -69,10 +70,13 @@ public class BookingController {
   public ResponseEntity<?> getBooking(@PathVariable("id") Long id) {
     try {
       BookingProjection booking = bookingService.findBookingById(id);
+      ValidationUtils.accessRestrictedObjectById(booking.getUser(), userService, "una reserva");
 
       return new ResponseEntity<>(booking, HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (RestrictedEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
@@ -107,10 +111,13 @@ public class BookingController {
 
     try {
       Iterable<BookingProjection> bookings = bookingService.findBookingsFromUser(username);
+      ValidationUtils.accessRestrictedObjectByUsername(username, userService, "unas reservas");
 
       return new ResponseEntity<>(bookings, HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (RestrictedEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
@@ -145,7 +152,8 @@ public class BookingController {
         Product product = productService.findProductById(line.getProductId());
 
         Integer currentStock = product.getStock();
-        if (currentStock-ValidationUtils.LOW_STOCK < line.getQuantity()) { // Check whether the product's stock is enough or not
+        if (currentStock - ValidationUtils.LOW_STOCK < line.getQuantity()) { // Check whether the product's stock is
+                                                                             // enough or not
           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body(ValidationUtils.throwError("cantidad", "La cantidad debe ser menor o igual al stock disponible"));
         }
@@ -165,10 +173,14 @@ public class BookingController {
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteBooking(@PathVariable("id") Long id) {
     try {
+      ValidationUtils.accessRestrictedObjectById(id, userService, "una reserva");
+
       bookingService.deleteBookingById(id);
       return new ResponseEntity<>(new Message("Reserva eliminada"), HttpStatus.OK);
     } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (RestrictedEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.FORBIDDEN);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
