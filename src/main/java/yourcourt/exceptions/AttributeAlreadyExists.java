@@ -1,4 +1,4 @@
-package yourcourt.exceptions.user;
+package yourcourt.exceptions;
 
 public class AttributeAlreadyExists extends Exception {
 	/**

@@ -1,8 +1,6 @@
 package yourcourt.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +15,6 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
