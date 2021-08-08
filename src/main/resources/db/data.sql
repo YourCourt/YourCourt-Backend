@@ -80,7 +80,7 @@ INSERT
 	INTO
 	facilities (name, description, facility_type_id, image_id)
 VALUES('Piscina Municipal', 'Piscina municipal del club', 3, 10),
-('Cafe-Bar Sánchez', 'This is a private pool.', 2, 11),
+('Cafe-Bar Sánchez', 'Este es un establecimiento publico.', 2, 11),
 ('Frontón', 'Frontón de tenis para practicar individualmente', 4, 12),
 ('Parking', 'Parking del club. Entrtada sólo para socios.', 1, 13),
 ('Pista de fútbol', 'Pista de fútbol no reservable y disponible para todo el que quiera jugar', 4, 14);
