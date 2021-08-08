@@ -45,8 +45,8 @@ public class ProductController {
     return new ResponseEntity<>(productService.findAllProducts(), HttpStatus.OK);
   }
 
-  @GetMapping("productTypes")
-  public ResponseEntity<?> getAllProductTypess() {
+  @GetMapping("/productTypes")
+  public ResponseEntity<?> getAllProductTypes() {
     return new ResponseEntity<>(productService.findAllProductTypes(), HttpStatus.OK);
   }
 

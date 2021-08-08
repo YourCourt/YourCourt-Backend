@@ -46,6 +46,11 @@ public class FacilityController {
     return new ResponseEntity<>(facilityService.findAllFacilities(), HttpStatus.OK);
   }
 
+  @GetMapping("/facilityTypes")
+  public ResponseEntity<?> getAllFacilityTypes() {
+    return new ResponseEntity<>(facilityService.findAllFacilityTypes(), HttpStatus.OK);
+  }
+
   @GetMapping("/{id}")
   public ResponseEntity<?> getFacility(@PathVariable("id") Long id) {
     try {

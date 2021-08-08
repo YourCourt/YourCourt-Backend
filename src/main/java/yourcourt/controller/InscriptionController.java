@@ -152,7 +152,7 @@ public class InscriptionController {
 			InscriptionProjection inscriptionProjected = inscriptionService
 					.findInscriptionProjectionById(inscriptionUpdated.getId());
 
-			ValidationUtils.accessRestrictedObjectById(inscriptionProjected.getId(), userService, "una inscripcion");
+			ValidationUtils.accessRestrictedObjectById(inscriptionProjected.getUser(), userService, "una inscripcion");
 			return new ResponseEntity<>(inscriptionProjected, HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -166,7 +166,9 @@ public class InscriptionController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteInscription(@PathVariable("id") Long id) {
 		try {
-			ValidationUtils.accessRestrictedObjectById(id, userService, "una inscripcion");
+			InscriptionProjection inscriptionProjected = inscriptionService
+					.findInscriptionProjectionById(id);
+			ValidationUtils.accessRestrictedObjectById(inscriptionProjected.getUser(), userService, "una inscripcion");
 
 			inscriptionService.deleteInscriptionById(id);
 			return new ResponseEntity<>(new Message("Inscripcion eliminada"), HttpStatus.OK);

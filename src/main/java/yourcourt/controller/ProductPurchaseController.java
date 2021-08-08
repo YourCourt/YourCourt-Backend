@@ -60,7 +60,7 @@ public class ProductPurchaseController {
   public ResponseEntity<?> getProductPurchase(@PathVariable("id") Long id) {
     try {
       ProductPurchaseProjection productPurchase = productPurchaseService.findProductPurchaseById(id);
-      ValidationUtils.accessRestrictedObjectById(productPurchase.getId(), userService, "una compra");
+      ValidationUtils.accessRestrictedObjectById(productPurchase.getUser(), userService, "una compra");
 
       return new ResponseEntity<>(productPurchase, HttpStatus.OK);
     } catch (InexistentEntity e) {
@@ -146,7 +146,8 @@ public class ProductPurchaseController {
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteProductPurchase(@PathVariable("id") Long id) {
     try {
-      ValidationUtils.accessRestrictedObjectById(id, userService, "una compra");
+      ProductPurchaseProjection productPurchase = productPurchaseService.findProductPurchaseById(id);
+      ValidationUtils.accessRestrictedObjectById(productPurchase.getUser(), userService, "una compra");
 
       productPurchaseService.deleteProductPurchaseById(id);
       return new ResponseEntity<>(new Message("Compra eliminada"), HttpStatus.OK);

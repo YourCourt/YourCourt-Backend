@@ -173,7 +173,9 @@ public class BookingController {
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteBooking(@PathVariable("id") Long id) {
     try {
-      ValidationUtils.accessRestrictedObjectById(id, userService, "una reserva");
+
+      BookingProjection booking = bookingService.findBookingById(id);
+      ValidationUtils.accessRestrictedObjectById(booking.getUser(), userService, "una reserva");
 
       bookingService.deleteBookingById(id);
       return new ResponseEntity<>(new Message("Reserva eliminada"), HttpStatus.OK);
