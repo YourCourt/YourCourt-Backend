@@ -131,7 +131,8 @@ VALUES ('1999-03-04', '2022-12-31 20:00','2022-12-31 21:00', 2, 1), --1
 ('2021-03-04', '2023-02-25 15:00','2023-02-25 16:00', 3, 1), --5
 ('2021-03-04', '2023-02-25 16:00','2023-02-25 17:00', 4, 4), --6
 ('2021-03-04', '2023-02-25 18:00','2023-02-25 19:00', 5, 2), --7
-('2021-03-04', '2023-02-25 18:00','2023-02-25 19:00', 8, 1) --8
+('2021-03-04', '2023-02-25 18:00','2023-02-25 19:00', 8, 1), --8
+('2021-05-04', '2021-05-25 18:00','2021-05-25 19:00', 2, 4) --9
 ;
 -- PRODUCT BOOKINGS
  INSERT
@@ -192,18 +193,18 @@ puedan seguir entrenando. ¡El esfuerzo y la dedicación es lo más imporante!',
  INSERT
 	INTO
 	inscriptions (name, surnames, email, phone, observations, user_id, course_id)
-VALUES('Juan', 'Noguerol Tirado', 'ejemplo@gmail.com', '612934234', "Ninguna", 1, 2),
+VALUES('Juan', 'Noguerol Tirado', 'ejemplo@gmail.com', '612934234', 'Ninguna', 1, 2),
 ('Pepe', 'Dominguez Aro ', 'pepdomaro@gmail.com', '611234112', 'No puedo ir los miércoles', 5, 1),
-('Jacinto', 'Belindo Garrido', 'jacbelgar@gmail.com', '692182345', "Ninguna",  6, 2),
-('Brayan', 'Galán Domingo', 'bragaldom@gmail.com', '619543215', "Ninguna",  7, 2),
-('Eduardo', 'Botía Domingo', 'edubotdom@gmail.com', '687234567', "Ninguna",  8, 2),
+('Jacinto', 'Belindo Garrido', 'jacbelgar@gmail.com', '692182345', 'Ninguna',  6, 2),
+('Brayan', 'Galán Domingo', 'bragaldom@gmail.com', '619543215', 'Ninguna',  7, 2),
+('Eduardo', 'Botía Domingo', 'edubotdom@gmail.com', '687234567', 'Ninguna',  8, 2),
 ('Daniel', 'Arellano Martinez', 'danaremar@gmail.com', '673928345', 'No tengo raqueta de tenis',  9, 2),
-('Jose', 'Martin Sánchez', 'josmarsan@gmail.com', '645217850', "Ninguna",  10, 2),
-('Jose Manuel', 'Sánchez Ruiz', 'jossanrui@gmail.com', '685043928', "Ninguna",  11, 2),
-('Ernesto', 'Tirado Vázquez', 'erntirvaz@gmail.com', '694357185', "Ninguna",  12, 2),
+('Jose', 'Martin Sánchez', 'josmarsan@gmail.com', '645217850', 'Ninguna',  10, 2),
+('Jose Manuel', 'Sánchez Ruiz', 'jossanrui@gmail.com', '685043928', 'Ninguna',  11, 2),
+('Ernesto', 'Tirado Vázquez', 'erntirvaz@gmail.com', '694357185', 'Ninguna',  12, 2),
 ('Rodrigo', 'Velázquez Sánchez', 'rodvelsan@gmail.com', '617459735', 'No tengo nadie que me pueda recoger una vez finalizada la jornada',  13, 2),
-('Jesús', 'Parrilla de la Fuente', 'jesparfue@gmail.com', '681757154', "Ninguna",  14, 2),
-('Juan', 'real de la Casa', 'juareadel@gmail.com', '687149514', "Ninguna",  15, 2),
-('Javier', 'Rodríguez Hernández', 'javrodher@gmail.com', '604954355', "Ninguna",  16, 2),
-('Mario', 'López Salas', 'marlopsal@gmail.com', '640094012', "Ninguna",  17, 2);
+('Jesús', 'Parrilla de la Fuente', 'jesparfue@gmail.com', '681757154', 'Ninguna',  14, 2),
+('Juan', 'real de la Casa', 'juareadel@gmail.com', '687149514', 'Ninguna',  15, 2),
+('Javier', 'Rodríguez Hernández', 'javrodher@gmail.com', '604954355', 'Ninguna',  16, 2),
+('Mario', 'López Salas', 'marlopsal@gmail.com', '640094012', 'Ninguna',  17, 2);
 

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yourcourt.exceptions.InexistentEntity;
 import yourcourt.model.Course;
 import yourcourt.model.dto.CourseDto;
+import yourcourt.model.projections.CourseProjection;
 import yourcourt.repository.CourseRepository;
 
 @Service
@@ -42,20 +43,26 @@ public class CourseService {
       .orElseThrow(() -> new InexistentEntity("Curso"));
   }
 
-  public Iterable<Course> findAllCourses() {
-    return this.courseRepository.findAll();
+  @Transactional(readOnly = true)
+  public CourseProjection findCourseProjectionById(final Long id) throws DataAccessException {
+    return this.courseRepository.findCourseProjectionById(id)
+      .orElseThrow(() -> new InexistentEntity("Curso"));
+  }
+
+  public Iterable<CourseProjection> findAllCourses() {
+    return this.courseRepository.findAllCourseProjections();
   }
 
   @Transactional
-  public Course saveCourse(final Course course) throws DataAccessException {
+  public CourseProjection saveCourse(final Course course) throws DataAccessException {
 	  Course newCourse = this.courseRepository.save(course);
-    return newCourse;
+    return findCourseProjectionById(newCourse.getId());
   }
 
-  public Course updateCourse(Course courseToUpdate, CourseDto courseRequest) {
+  public CourseProjection updateCourse(Course courseToUpdate, CourseDto courseRequest) {
     BeanUtils.copyProperties(courseRequest, courseToUpdate);
     this.courseRepository.save(courseToUpdate);
-    return courseToUpdate;
+    return findCourseProjectionById(courseToUpdate.getId());
   }
 
   public void deleteCourseById(Long id) {
