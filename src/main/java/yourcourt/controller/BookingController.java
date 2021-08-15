@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -131,6 +132,11 @@ public class BookingController {
     try {
       // Booking
       LocalDate creationDate = LocalDate.now();
+      if (bookingDto.getStartDate().isBefore(LocalDateTime.now())) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ValidationUtils.throwError("fecha", "La reserva ya ha pasado"));
+
+      }
       Booking newBooking = new Booking(creationDate, bookingDto.getStartDate(), bookingDto.getEndDate());
       User user = userService.findUserById(bookingDto.getUser());
       Court court = courtService.findCourtById(bookingDto.getCourt());
@@ -175,6 +181,12 @@ public class BookingController {
     try {
 
       BookingProjection booking = bookingService.findBookingById(id);
+
+      if (booking.getStartDate().isBefore(LocalDateTime.now())) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ValidationUtils.throwError("fecha", "La reserva ya ha pasado"));
+
+      }
       ValidationUtils.accessRestrictedObjectById(booking.getUser(), userService, "una reserva");
 
       bookingService.deleteBookingById(id);

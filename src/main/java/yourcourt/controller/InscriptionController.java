@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import java.time.LocalDate;
 import yourcourt.exceptions.InexistentEntity;
 import yourcourt.exceptions.RestrictedEntity;
 import yourcourt.model.Course;
@@ -110,6 +110,11 @@ public class InscriptionController {
 			Optional<User> usuario = userService.findByUsername(username);
 			Course course = courseService.findCourseById(courseId);
 
+			if (course.getStartDate().isBefore(LocalDate.now())) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(ValidationUtils.throwError("fecha", "El curso ya ha comenzado"));
+			}
+
 			Inscription newInscription = new Inscription();
 			newInscription.setUser(usuario.get());
 			newInscription.setCourse(course);
@@ -166,8 +171,13 @@ public class InscriptionController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteInscription(@PathVariable("id") Long id) {
 		try {
-			InscriptionProjection inscriptionProjected = inscriptionService
-					.findInscriptionProjectionById(id);
+			InscriptionProjection inscriptionProjected = inscriptionService.findInscriptionProjectionById(id);
+
+			if (inscriptionProjected.getCourse().getStartDate().isBefore(LocalDate.now())) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(ValidationUtils.throwError("fecha", "El curso ya ha comenzado"));
+
+			}
 			ValidationUtils.accessRestrictedObjectById(inscriptionProjected.getUser(), userService, "una inscripcion");
 
 			inscriptionService.deleteInscriptionById(id);

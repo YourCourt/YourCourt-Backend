@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import yourcourt.model.Facility;
 import yourcourt.model.Image;
 import yourcourt.model.News;
 import yourcourt.model.Product;
+import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.Message;
 import yourcourt.security.model.User;
 import yourcourt.security.service.UserService;
@@ -39,16 +41,12 @@ import yourcourt.service.ProductService;
 @CrossOrigin
 public class ImageController {
   private static final String IMAGEN_NO_VALIDA = "No es una imagen valida";
-  private static final String IMAGEN_SUBIDA_STRING =
-    "La imagen se ha subido correctamente";
-  private static final String IMAGEN_ELIMINADA_STRING =
-    "La imagen se ha eliminado correctamente";
-  private static final String IMAGEN_NO_ENCONTRADA_STRING =
-		    "La imagen seleccionada no ha sido encontrada";
-  private static final String IMAGEN_INEXISTENTE_STRING =
-		    "La imagen era inexistente";
-  
-  private static final int DEFAULT_IMAGE =1;
+  private static final String IMAGEN_SUBIDA_STRING = "La imagen se ha subido correctamente";
+  private static final String IMAGEN_ELIMINADA_STRING = "La imagen se ha eliminado correctamente";
+  private static final String IMAGEN_NO_ENCONTRADA_STRING = "La imagen seleccionada no ha sido encontrada";
+  private static final String IMAGEN_INEXISTENTE_STRING = "La imagen era inexistente";
+
+  private static final int DEFAULT_IMAGE = 1;
   @Autowired
   private CloudinaryService cloudinaryService;
 
@@ -57,78 +55,66 @@ public class ImageController {
 
   @Autowired
   private UserService userService;
-  
+
   @Autowired
   private CourtService courtService;
-  
+
   @Autowired
   private FacilityService facilityService;
-  
+
   @Autowired
   private NewsService newsService;
-  
+
   @Autowired
   private ProductService productService;
 
-  
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
   @PostMapping("/user/{userId}")
-  public ResponseEntity<?> newUserImage(
-    @PathVariable("userId") Long userId,
-    @RequestParam MultipartFile multipartFile
-  )
-    throws IOException {
-	  try {
-		  User user = userService.findUserById(userId);
-    if (ImageIO.read(multipartFile.getInputStream()) == null) {
-      return ResponseEntity
-        .status(HttpStatus.BAD_REQUEST)
-        .body(new Message(IMAGEN_NO_VALIDA));
-    }
-    Map<?, ?> result = cloudinaryService.upload(multipartFile);
+  public ResponseEntity<?> newUserImage(@PathVariable("userId") Long userId, @RequestParam MultipartFile multipartFile)
+      throws IOException {
+    try {
+      User user = userService.findUserById(userId);
+      ValidationUtils.accessRestrictedObjectById(userId, userService, "una imagen");
+      if (ImageIO.read(multipartFile.getInputStream()) == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message(IMAGEN_NO_VALIDA));
+      }
+      Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
-    Image image = new Image(
-      (String) result.get("original_filename"),
-      (String) result.get("url"),
-      (String) result.get("public_id")
-    );
-    Image createdImage = imageService.save(image);
-    
-    Image currentImage = user.getImage();
-    user.setImage(createdImage);
-    userService.saveUser(user);
+      Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
+          (String) result.get("public_id"));
+      Image createdImage = imageService.save(image);
 
-    if (
-      currentImage != null &&
-      currentImage.getCloudinaryId() != null &&
-      currentImage.getId() != DEFAULT_IMAGE
-    ) {
-      cloudinaryService.delete(currentImage.getCloudinaryId());
-    }
-    if (currentImage != null && currentImage.getId() != DEFAULT_IMAGE) {
-      imageService.deleteById(currentImage.getId());
-    }
+      Image currentImage = user.getImage();
+      user.setImage(createdImage);
+      userService.saveUser(user);
 
-    return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
-  } catch (InexistentEntity e) {
+      if (currentImage != null && currentImage.getCloudinaryId() != null && currentImage.getId() != DEFAULT_IMAGE) {
+        cloudinaryService.delete(currentImage.getCloudinaryId());
+      }
+      if (currentImage != null && currentImage.getId() != DEFAULT_IMAGE) {
+        imageService.deleteById(currentImage.getId());
+      }
+
+      return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
+    } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
   }
-  
+
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
   @DeleteMapping("/user/{userId}")
-  public ResponseEntity<?> deleteUserImage(@PathVariable("userId") Long userId)
-    throws IOException {
+  public ResponseEntity<?> deleteUserImage(@PathVariable("userId") Long userId) throws IOException {
     try {
       User user = userService.findUserById(userId);
+      ValidationUtils.accessRestrictedObjectById(userId, userService, "una imagen");
 
       Image currentImage = user.getImage();
 
       Optional<Image> defaultImage = imageService.findById(DEFAULT_IMAGE);
       if (!defaultImage.isPresent()) {
-        return ResponseEntity
-          .status(HttpStatus.NOT_FOUND)
-          .body(new Message(IMAGEN_NO_ENCONTRADA_STRING));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(IMAGEN_NO_ENCONTRADA_STRING));
       }
       user.setImage(defaultImage.get());
       userService.saveUser(user);
@@ -139,9 +125,7 @@ public class ImageController {
       if (currentImage.getId() != DEFAULT_IMAGE) {
         imageService.deleteById(currentImage.getId());
       } else {
-        return ResponseEntity
-          .status(HttpStatus.NOT_FOUND)
-          .body(new Message(IMAGEN_INEXISTENTE_STRING));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(IMAGEN_INEXISTENTE_STRING));
       }
 
       return ResponseEntity.ok(new Message(IMAGEN_ELIMINADA_STRING));
@@ -152,185 +136,140 @@ public class ImageController {
     }
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/court/{courtId}")
-  public ResponseEntity<?> newCourtImage(
-    @PathVariable("courtId") Long courtId,
-    @RequestParam MultipartFile multipartFile
-  )
-    throws IOException {
-	  try {
-		    Court court = courtService.findCourtById(courtId);
-    if (ImageIO.read(multipartFile.getInputStream()) == null) {
-      return ResponseEntity
-        .status(HttpStatus.BAD_REQUEST)
-        .body(new Message(IMAGEN_NO_VALIDA));
-    }
-    Map<?, ?> result = cloudinaryService.upload(multipartFile);
+  public ResponseEntity<?> newCourtImage(@PathVariable("courtId") Long courtId,
+      @RequestParam MultipartFile multipartFile) throws IOException {
+    try {
+      Court court = courtService.findCourtById(courtId);
+      if (ImageIO.read(multipartFile.getInputStream()) == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message(IMAGEN_NO_VALIDA));
+      }
+      Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
-    Image image = new Image(
-      (String) result.get("original_filename"),
-      (String) result.get("url"),
-      (String) result.get("public_id")
-    );
-    Image createdImage = imageService.save(image);
-    
-    Image currentImage = court.getImage();
-    court.setImage(createdImage);
-    courtService.saveCourt(court);
+      Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
+          (String) result.get("public_id"));
+      Image createdImage = imageService.save(image);
 
-    if (
-      currentImage != null &&
-      currentImage.getCloudinaryId() != null &&
-      currentImage.getId() != DEFAULT_IMAGE
-    ) {
-      cloudinaryService.delete(currentImage.getCloudinaryId());
-    }
-    if (currentImage != null && currentImage.getId() != DEFAULT_IMAGE) {
-      imageService.deleteById(currentImage.getId());
-    }
+      Image currentImage = court.getImage();
+      court.setImage(createdImage);
+      courtService.saveCourt(court);
 
-    return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
-  } catch (InexistentEntity e) {
+      if (currentImage != null && currentImage.getCloudinaryId() != null && currentImage.getId() != DEFAULT_IMAGE) {
+        cloudinaryService.delete(currentImage.getCloudinaryId());
+      }
+      if (currentImage != null && currentImage.getId() != DEFAULT_IMAGE) {
+        imageService.deleteById(currentImage.getId());
+      }
+
+      return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
+    } catch (InexistentEntity e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
   }
-  
+
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/facility/{facilityId}")
-  public ResponseEntity<?> newFacilityImage(
-		    @PathVariable("facilityId") Long facilityId,
-		    @RequestParam MultipartFile multipartFile
-		  )
-		    throws IOException {
-			  try {
-				  Facility facility = facilityService.findFacilityById(facilityId);
-		    if (ImageIO.read(multipartFile.getInputStream()) == null) {
-		      return ResponseEntity
-		        .status(HttpStatus.BAD_REQUEST)
-		        .body(new Message(IMAGEN_NO_VALIDA));
-		    }
-		    Map<?, ?> result = cloudinaryService.upload(multipartFile);
+  public ResponseEntity<?> newFacilityImage(@PathVariable("facilityId") Long facilityId,
+      @RequestParam MultipartFile multipartFile) throws IOException {
+    try {
+      Facility facility = facilityService.findFacilityById(facilityId);
+      if (ImageIO.read(multipartFile.getInputStream()) == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message(IMAGEN_NO_VALIDA));
+      }
+      Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
-		    Image image = new Image(
-		      (String) result.get("original_filename"),
-		      (String) result.get("url"),
-		      (String) result.get("public_id")
-		    );
-		    Image createdImage = imageService.save(image);
-		    
-		    Image currentImage = facility.getImage();
-		    facility.setImage(createdImage);
-		    facilityService.saveFacility(facility);
+      Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
+          (String) result.get("public_id"));
+      Image createdImage = imageService.save(image);
 
-		    if (
-		      currentImage != null &&
-		      currentImage.getCloudinaryId() != null &&
-		      currentImage.getId() != DEFAULT_IMAGE
-		    ) {
-		      cloudinaryService.delete(currentImage.getCloudinaryId());
-		    }
-		    if (currentImage != null && currentImage.getId() != DEFAULT_IMAGE) {
-		      imageService.deleteById(currentImage.getId());
-		    }
+      Image currentImage = facility.getImage();
+      facility.setImage(createdImage);
+      facilityService.saveFacility(facility);
 
-		    return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
-		  } catch (InexistentEntity e) {
-		      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
-		    } catch (Exception e) {
-		      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
-		    }
-		  }
-  
-  @PostMapping("/news/{newsId}")  
-  public ResponseEntity<?> newNewsImage(
-		    @PathVariable("newsId") Long newsId,
-		    @RequestParam MultipartFile multipartFile
-		  )
-		    throws IOException {
-			  try {
-				  News news = newsService.findNewsById(newsId);
-		    if (ImageIO.read(multipartFile.getInputStream()) == null) {
-		      return ResponseEntity
-		        .status(HttpStatus.BAD_REQUEST)
-		        .body(new Message(IMAGEN_NO_VALIDA));
-		    }
-		    Map<?, ?> result = cloudinaryService.upload(multipartFile);
+      if (currentImage != null && currentImage.getCloudinaryId() != null && currentImage.getId() != DEFAULT_IMAGE) {
+        cloudinaryService.delete(currentImage.getCloudinaryId());
+      }
+      if (currentImage != null && currentImage.getId() != DEFAULT_IMAGE) {
+        imageService.deleteById(currentImage.getId());
+      }
 
-		    Image image = new Image(
-		      (String) result.get("original_filename"),
-		      (String) result.get("url"),
-		      (String) result.get("public_id")
-		    );
-		    Image createdImage = imageService.save(image);
-		    
-		    Image currentImage = news.getImage();
-		    news.setImage(createdImage);
-		    newsService.saveNews(news);
+      return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
 
-		    if (
-		      currentImage != null &&
-		      currentImage.getCloudinaryId() != null &&
-		      currentImage.getId() != DEFAULT_IMAGE
-		    ) {
-		      cloudinaryService.delete(currentImage.getCloudinaryId());
-		    }
-		    if (currentImage != null && currentImage.getId() != DEFAULT_IMAGE) {
-		      imageService.deleteById(currentImage.getId());
-		    }
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PostMapping("/news/{newsId}")
+  public ResponseEntity<?> newNewsImage(@PathVariable("newsId") Long newsId, @RequestParam MultipartFile multipartFile)
+      throws IOException {
+    try {
+      News news = newsService.findNewsById(newsId);
+      if (ImageIO.read(multipartFile.getInputStream()) == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message(IMAGEN_NO_VALIDA));
+      }
+      Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
-		    return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
-		  } catch (InexistentEntity e) {
-		      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
-		    } catch (Exception e) {
-		      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
-		    }
-		  }
-  
+      Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
+          (String) result.get("public_id"));
+      Image createdImage = imageService.save(image);
 
-  @PostMapping("/product/{productId}")  
-  public ResponseEntity<?> newProductImage(
-		    @PathVariable("productId") Long productId,
-		    @RequestParam MultipartFile multipartFile
-		  )
-		    throws IOException {
-			  try {
-				  Product product = productService.findProductById(productId);
-		    if (ImageIO.read(multipartFile.getInputStream()) == null) {
-		      return ResponseEntity
-		        .status(HttpStatus.BAD_REQUEST)
-		        .body(new Message(IMAGEN_NO_VALIDA));
-		    }
-		    Map<?, ?> result = cloudinaryService.upload(multipartFile);
+      Image currentImage = news.getImage();
+      news.setImage(createdImage);
+      newsService.saveNews(news);
 
-		    Image image = new Image(
-		      (String) result.get("original_filename"),
-		      (String) result.get("url"),
-		      (String) result.get("public_id")
-		    );
-		    Image createdImage = imageService.save(image);
-		    
-		    Image currentImage = product.getImage();
-		    product.setImage(createdImage);
-		    productService.saveProduct(product);
+      if (currentImage != null && currentImage.getCloudinaryId() != null && currentImage.getId() != DEFAULT_IMAGE) {
+        cloudinaryService.delete(currentImage.getCloudinaryId());
+      }
+      if (currentImage != null && currentImage.getId() != DEFAULT_IMAGE) {
+        imageService.deleteById(currentImage.getId());
+      }
 
-		    if (
-		      currentImage != null &&
-		      currentImage.getCloudinaryId() != null &&
-		      currentImage.getId() != DEFAULT_IMAGE
-		    ) {
-		      cloudinaryService.delete(currentImage.getCloudinaryId());
-		    }
-		    if (currentImage != null && currentImage.getId() != DEFAULT_IMAGE) {
-		      imageService.deleteById(currentImage.getId());
-		    }
+      return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
 
-		    return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
-		  } catch (InexistentEntity e) {
-		      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
-		    } catch (Exception e) {
-		      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
-		    }
-		  }
-	
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PostMapping("/product/{productId}")
+  public ResponseEntity<?> newProductImage(@PathVariable("productId") Long productId,
+      @RequestParam MultipartFile multipartFile) throws IOException {
+    try {
+      Product product = productService.findProductById(productId);
+      if (ImageIO.read(multipartFile.getInputStream()) == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message(IMAGEN_NO_VALIDA));
+      }
+      Map<?, ?> result = cloudinaryService.upload(multipartFile);
+
+      Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
+          (String) result.get("public_id"));
+      Image createdImage = imageService.save(image);
+
+      Image currentImage = product.getImage();
+      product.setImage(createdImage);
+      productService.saveProduct(product);
+
+      if (currentImage != null && currentImage.getCloudinaryId() != null && currentImage.getId() != DEFAULT_IMAGE) {
+        cloudinaryService.delete(currentImage.getCloudinaryId());
+      }
+      if (currentImage != null && currentImage.getId() != DEFAULT_IMAGE) {
+        imageService.deleteById(currentImage.getId());
+      }
+
+      return ResponseEntity.ok(new Message(IMAGEN_SUBIDA_STRING));
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
+
 }

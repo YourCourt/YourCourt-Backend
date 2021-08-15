@@ -23,6 +23,7 @@ import yourcourt.model.Course;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.CourseDto;
 import yourcourt.model.dto.Message;
+import yourcourt.model.projections.CourseProjection;
 import yourcourt.service.CourseService;
 
 @RestController
@@ -41,7 +42,7 @@ public class CourseController {
   @GetMapping("/{id}")
   public ResponseEntity<?> getCourse(@PathVariable("id") Long id) {
     try {
-    	Course course = courseService.findCourseById(id);
+    	CourseProjection course = courseService.findCourseProjectionById(id);
     	return new ResponseEntity<>(course, HttpStatus.OK);
       
     } catch (InexistentEntity e) {
@@ -70,7 +71,7 @@ public class CourseController {
 				.body(new Message("La fecha de inicio no puede ser posterior a la de fin."));
 	}
     
-    Course courseCreated = courseService.saveCourse(newCourse);
+    CourseProjection courseCreated = courseService.saveCourse(newCourse);
 
     return new ResponseEntity<>(courseCreated, HttpStatus.CREATED);
   }
@@ -95,7 +96,7 @@ public class CourseController {
 					.body(new Message("La fecha de inicio no puede ser posterior a la de fin."));
     	}
     	
-    	Course courseUpdated = courseService.updateCourse(courseToUpdate, courseDto);
+    	CourseProjection courseUpdated = courseService.updateCourse(courseToUpdate, courseDto);
 
     	return new ResponseEntity<>(courseUpdated, HttpStatus.OK);
     } catch (InexistentEntity e) {
