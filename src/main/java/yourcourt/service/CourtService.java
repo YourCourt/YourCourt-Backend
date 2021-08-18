@@ -23,15 +23,20 @@ import org.springframework.transaction.annotation.Transactional;
 import yourcourt.exceptions.InexistentEntity;
 import yourcourt.model.Court;
 import yourcourt.model.dto.CourtDto;
+import yourcourt.model.projections.BookingProjection;
+import yourcourt.repository.BookingRepository;
 import yourcourt.repository.CourtRepository;
 
 @Service
 public class CourtService {
   private CourtRepository courtRepository;
 
+  private BookingRepository bookingRepository;
+
   @Autowired
-  public CourtService(CourtRepository courtRepository) {
+  public CourtService(CourtRepository courtRepository, BookingRepository bookingRepository) {
     this.courtRepository = courtRepository;
+    this.bookingRepository = bookingRepository;
   }
 
   public Iterable<Court> findAllCourts() {
@@ -66,5 +71,9 @@ public class CourtService {
 
   public boolean existsCourtById(Long id) {
     return courtRepository.existsById(id);
+  }
+
+  public Iterable<BookingProjection> findBookingsByCourt(Long courtId){
+    return bookingRepository.findBookingsByCourt(courtId);
   }
 }

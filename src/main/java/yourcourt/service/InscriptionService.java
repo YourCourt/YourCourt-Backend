@@ -54,7 +54,7 @@ public class InscriptionService {
   }
   
   @Transactional(readOnly = true)
-  public Iterable<Inscription> findAllInscriptionByCourseId(final Long courseId) throws DataAccessException {
+  public Iterable<InscriptionProjection> findAllInscriptionByCourseId(final Long courseId) throws DataAccessException {
     return this.inscriptionRepository.findAllInscriptionsByCourseId(courseId);
   }
 
@@ -98,5 +98,6 @@ public Iterable<InscriptionProjection> findAllInscriptionProjections() {
 public Iterable<InscriptionProjection> findAllInscriptionProjectionsByUserUsername(String username) {
 	return this.inscriptionRepository.findAllInscriptionProjectionsByUserUsername(username);
 	}
+  
 }
 

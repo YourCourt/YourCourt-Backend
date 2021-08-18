@@ -27,6 +27,7 @@ import yourcourt.model.Image;
 import yourcourt.model.ValidationUtils;
 import yourcourt.model.dto.CourtDto;
 import yourcourt.model.dto.Message;
+import yourcourt.model.projections.BookingProjection;
 import yourcourt.service.CourtService;
 import yourcourt.service.ImageService;
 
@@ -57,6 +58,19 @@ public class CourtController {
       return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
   }
+
+  @GetMapping("/bookings/{courtId}")
+  public ResponseEntity<?> getBookingsByCourt(@PathVariable("courtId") Long courtId) {
+    try {
+      Iterable<BookingProjection> bookings = courtService.findBookingsByCourt(courtId);
+      return new ResponseEntity<>(bookings, HttpStatus.OK);
+    } catch (InexistentEntity e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+  }
+
 
   @PostMapping
   public ResponseEntity<?> createCourt(
