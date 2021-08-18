@@ -24,4 +24,8 @@ public interface BookingRepository extends CrudRepository<Booking, Long> {
   @Query("SELECT b FROM Booking b where b.user.username=:username ORDER BY b.startDate, b.court.id")
   Iterable<BookingProjection> findBookingsFromUser(@Param("username") String username);
 
+
+  @Query("SELECT b FROM Booking b where b.court.id=:courtId ORDER BY b.startDate, b.court.id")
+  Iterable<BookingProjection> findBookingsByCourt(@Param("courtId") Long courtId);
+
 }

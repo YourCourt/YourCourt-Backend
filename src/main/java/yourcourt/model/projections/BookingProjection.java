@@ -23,7 +23,7 @@ public interface BookingProjection{
 	
 	ProductBooking getProductBooking();
 	
-	@Value("#{(target.getProductBooking() != null)?target.getProductBooking().totalSum():null}")
+	@Value("#{(target.getProductBooking() != null)?target.getProductBooking().totalSum():0.0}")
 	Double getProductBookingSum();
 	
 }

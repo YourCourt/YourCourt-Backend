@@ -96,6 +96,19 @@ public class InscriptionController {
 		}
 	}
 
+	@GetMapping("/course/{courseId}")
+	public ResponseEntity<?> getAllInscriptionsFromCourse(@PathVariable("courseId") Long courseId) {
+		try {
+			Iterable<InscriptionProjection> inscriptions = inscriptionService.findAllInscriptionByCourseId(courseId);
+
+			return new ResponseEntity<>(inscriptions, HttpStatus.OK);
+		} catch (InexistentEntity e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	@PostMapping("/course/{id}")
 	public ResponseEntity<?> createInscription(@PathVariable("id") Long courseId,
 			@Valid @RequestBody InscriptionDto inscriptionDto, BindingResult bindingResult) {
