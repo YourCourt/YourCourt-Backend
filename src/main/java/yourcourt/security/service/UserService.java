@@ -19,6 +19,10 @@ import yourcourt.security.repository.UserRepository;
 @Service
 @Transactional
 public class UserService {
+  /**
+   *
+   */
+  private static final String USUARIO = "Usuario";
   @Autowired
   UserRepository userRepository;
 
@@ -32,13 +36,13 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public User findUserById(Long id) throws InexistentEntity {
-    User user = userRepository.findById(id).orElseThrow(() -> new InexistentEntity("Usuario"));
+    User user = userRepository.findById(id).orElseThrow(() -> new InexistentEntity(USUARIO));
     return user;
   }
 
   @Transactional(readOnly = true)
   public UserProjection findUserProjectionById(Long id) throws InexistentEntity {
-    UserProjection user = userRepository.findUserProjectionById(id).orElseThrow(() -> new InexistentEntity("Usuario"));
+    UserProjection user = userRepository.findUserProjectionById(id).orElseThrow(() -> new InexistentEntity(USUARIO));
     return user;
   }
 
@@ -47,7 +51,7 @@ public class UserService {
   }
 
   public UserProjection findUserProjectionByUsername(String username) {
-    return userRepository.findUserProjectionByUsername(username).orElseThrow(() -> new InexistentEntity("Usuario"));
+    return userRepository.findUserProjectionByUsername(username).orElseThrow(() -> new InexistentEntity(USUARIO));
   }
 
   public boolean existsByUsername(String username) {
@@ -68,10 +72,8 @@ public class UserService {
   }
 
   public String getCurrentUsername() {
-    System.out.println("hola");
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String currentPrincipalName = authentication.getName();
-    System.out.println(currentPrincipalName);
     return currentPrincipalName;
   }
 
@@ -90,7 +92,7 @@ public class UserService {
 
   @Transactional
   public void deleteUserById(Long id) throws InexistentEntity {
-    User user = userRepository.findById(id).orElseThrow(() -> new InexistentEntity("Usuario"));
+    User user = userRepository.findById(id).orElseThrow(() -> new InexistentEntity(USUARIO));
     userRepository.delete(user);
   }
 }

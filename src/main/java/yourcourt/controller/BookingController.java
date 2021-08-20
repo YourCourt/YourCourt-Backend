@@ -49,6 +49,10 @@ import yourcourt.service.ProductService;
 @RequestMapping("/bookings")
 @CrossOrigin
 public class BookingController {
+
+  private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+  
   @Autowired
   private BookingService bookingService;
 
@@ -61,12 +65,13 @@ public class BookingController {
   @Autowired
   private ProductService productService;
 
+  @PreAuthorize(IS_ADMIN)
   @GetMapping
   public ResponseEntity<?> getAllBookings() {
     return new ResponseEntity<>(bookingService.findAllBookings(), HttpStatus.OK);
   }
 
-  // @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @GetMapping("/{id}")
   public ResponseEntity<?> getBooking(@PathVariable("id") Long id) {
     try {
@@ -83,6 +88,7 @@ public class BookingController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @GetMapping("/date")
   public ResponseEntity<?> getBookingsByDatetime(@RequestParam("date") String dateString,
       @RequestParam("courtId") Long courtId) {
@@ -107,6 +113,7 @@ public class BookingController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @GetMapping("/user")
   public ResponseEntity<?> getBookingsByUser(@RequestParam("username") String username) {
 
@@ -124,6 +131,7 @@ public class BookingController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @PostMapping
   public ResponseEntity<?> createBooking(@Valid @RequestBody BookingDto bookingDto, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
@@ -176,6 +184,7 @@ public class BookingController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteBooking(@PathVariable("id") Long id) {
     try {

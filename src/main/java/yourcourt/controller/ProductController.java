@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +35,10 @@ import yourcourt.service.ProductService;
 @RequestMapping("/products")
 @CrossOrigin
 public class ProductController {
+
+  private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+
   @Autowired
   private ProductService productService;
 
@@ -72,6 +77,7 @@ public class ProductController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @GetMapping("/bookableProductsByType")
   public ResponseEntity<?> getBookableProductsByProductType(@RequestParam("typeName") String typeName) {
     try {
@@ -82,6 +88,7 @@ public class ProductController {
     }
   }
   
+  @PreAuthorize(IS_ADMIN)
   @PostMapping
   public ResponseEntity<?> createProduct(
     @Valid @RequestBody ProductDto productDto,
@@ -118,6 +125,7 @@ public class ProductController {
     return new ResponseEntity<>(productCreated, HttpStatus.CREATED);
   }
 
+  @PreAuthorize(IS_ADMIN)
   @PutMapping("/{id}")
   public ResponseEntity<Object> updateProduct(
     @PathVariable Long id,
@@ -140,6 +148,7 @@ public class ProductController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN)
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id) {
     try {

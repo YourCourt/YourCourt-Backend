@@ -16,6 +16,16 @@ import yourcourt.repository.ProductTypeRepository;
 
 @Service
 public class ProductService {
+  /**
+   *
+   */
+  private static final String TIPO_DE_PRODUCTO = "Tipo de producto";
+
+  /**
+   *
+   */
+  private static final String PRODUCTO = "Producto";
+
   private ProductRepository productRepository;
 
   private ProductTypeRepository productTypeRepository;
@@ -33,13 +43,13 @@ public class ProductService {
   @Transactional(readOnly = true)
   public Product findProductById(final Long id) throws DataAccessException {
     return this.productRepository.findById(id)
-      .orElseThrow(() -> new InexistentEntity("Producto"));
+      .orElseThrow(() -> new InexistentEntity(PRODUCTO));
   }
 
   @Transactional(readOnly = true)
   public ProductProjection findProductProjectionById(final Long id) throws DataAccessException {
     return this.productRepository.findProjectionById(id)
-      .orElseThrow(() -> new InexistentEntity("Producto"));
+      .orElseThrow(() -> new InexistentEntity(PRODUCTO));
   }
 
   public Iterable<Product> findAllProducts() {
@@ -83,7 +93,7 @@ public class ProductService {
   public void deleteProductById(Long id) {
     Product product = productRepository
       .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Producto"));
+      .orElseThrow(() -> new InexistentEntity(PRODUCTO));
     Long productTypeId=product.getProductType().getId();
 
     productRepository.delete(product);
@@ -98,12 +108,12 @@ public class ProductService {
   @Transactional(readOnly = true)
   public ProductType findProductTypeById(final Long id) throws DataAccessException {
     return this.productTypeRepository.findById(id)
-      .orElseThrow(() -> new InexistentEntity("Tipo de producto"));
+      .orElseThrow(() -> new InexistentEntity(TIPO_DE_PRODUCTO));
   }
 
   public ProductType findProductTypeByType(final String type) throws DataAccessException {
     return this.productTypeRepository.findProductTypeByTypeName(type)
-      .orElseThrow(() -> new InexistentEntity("Tipo de producto"));
+      .orElseThrow(() -> new InexistentEntity(TIPO_DE_PRODUCTO));
   }
 
   public Iterable<ProductType> findAllProductTypes() {
@@ -136,7 +146,7 @@ public class ProductService {
   public void deleteProductTypeById(Long id) {
     ProductType productType = productTypeRepository
       .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Tipo de producto"));
+      .orElseThrow(() -> new InexistentEntity(TIPO_DE_PRODUCTO));
     productTypeRepository.delete(productType);
   }
 }

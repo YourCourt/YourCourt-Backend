@@ -41,11 +41,20 @@ import yourcourt.security.service.RoleService;
 import yourcourt.security.service.UserService;
 import yourcourt.service.ImageService;
 
+
 @RestController
 @RequestMapping("users")
 @Api(tags = "User")
 @CrossOrigin
 public class UserController {
+
+	/**
+	 *
+	 */
+	private static final String UN_USUARIO = "un usuario";
+	private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+	private static final String IS_ANONYMOUS="!hasRole('ROLE_ADMIN') and !hasRole('ROLE_USER')";
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
@@ -59,20 +68,21 @@ public class UserController {
 	@Autowired
 	private ImageService imageService;
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize(IS_ADMIN)
 	@GetMapping()
 	public ResponseEntity<List<UserProjection>> getAllUsers() {
 		List<UserProjection> users = userService.findAllUserUserProjections();
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
+	@PreAuthorize(IS_ADMIN_OR_IS_USER)
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> getUser(@PathVariable Long id) {
 		try {
 			User user = userService.findUserById(id);
 			UserProjection userProjection = userService.findUserProjectionById(user.getId());
 
-			ValidationUtils.accessRestrictedObjectById(user.getId(), userService, "un usuario");
+			ValidationUtils.accessRestrictedObjectById(user.getId(), userService, UN_USUARIO);
 
 			return new ResponseEntity<>(userProjection, HttpStatus.OK);
 		} catch (InexistentEntity e) {
@@ -84,11 +94,12 @@ public class UserController {
 		}
 	}
 
+	@PreAuthorize(IS_ADMIN_OR_IS_USER)
 	@GetMapping("/username/{username}")
 	public ResponseEntity<Object> getUserByUsername(@PathVariable String username) {
 		try {
 			UserProjection userProjection = userService.findUserProjectionByUsername(username);
-			ValidationUtils.accessRestrictedObjectById(userProjection.getId(), userService, "un usuario");
+			ValidationUtils.accessRestrictedObjectById(userProjection.getId(), userService, UN_USUARIO);
 
 			return new ResponseEntity<>(userProjection, HttpStatus.OK);
 		} catch (InexistentEntity e) {
@@ -99,7 +110,7 @@ public class UserController {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
-
+	@PreAuthorize(IS_ANONYMOUS)
 	@PostMapping()
 	public ResponseEntity<Object> createUser(@Valid @RequestBody final NewUser newUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -123,7 +134,7 @@ public class UserController {
 
 		user.setCreationDate(LocalDate.now());
 
-		Set<Role> roles = new HashSet<Role>();
+		Set<Role> roles = new HashSet<>();
 		roles.add(roleService.getByRoleType(RoleType.ROLE_USER).get());
 		if (newUser.getRoles().contains("admin")) {
 			roles.add(roleService.getByRoleType(RoleType.ROLE_ADMIN).get());
@@ -143,6 +154,7 @@ public class UserController {
 		return new ResponseEntity<>(userProjection, HttpStatus.CREATED);
 	}
 
+	@PreAuthorize(IS_ADMIN_OR_IS_USER)
 	@PutMapping("/{id}")
 	public ResponseEntity<Object> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUser user,
 			BindingResult bindingResult) {
@@ -160,7 +172,7 @@ public class UserController {
 				User userUpdated = userService.updateUser(userToUpdate, user);
 
 				UserProjection userProjection = userService.findUserProjectionById(userUpdated.getId());
-				ValidationUtils.accessRestrictedObjectById(userProjection.getId(), userService, "un usuario");
+				ValidationUtils.accessRestrictedObjectById(userProjection.getId(), userService, UN_USUARIO);
 
 				return new ResponseEntity<>(userProjection, HttpStatus.OK);
 
@@ -173,10 +185,11 @@ public class UserController {
 		}
 	}
 
+	@PreAuthorize(IS_ADMIN)
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
 		try {
-			ValidationUtils.accessRestrictedObjectById(id, userService, "un usuario");
+			ValidationUtils.accessRestrictedObjectById(id, userService, UN_USUARIO);
 
 			userService.deleteUserById(id);
 			return new ResponseEntity<>(new Message("Usuario eliminado"), HttpStatus.OK);

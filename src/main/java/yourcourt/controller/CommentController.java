@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,6 +39,8 @@ import yourcourt.service.NewsService;
 @CrossOrigin
 public class CommentController {
 
+	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+
     @Autowired
     private CommentService commentService;
 
@@ -46,7 +49,7 @@ public class CommentController {
 
     @Autowired
     private UserService userService;
-
+    @PreAuthorize(IS_ADMIN_OR_IS_USER)
     @PostMapping
     public ResponseEntity<?> createComment(@Valid @RequestBody CommentDto commentDto, BindingResult result) {
         if (result.hasErrors()) {
@@ -94,6 +97,7 @@ public class CommentController {
         
     }
 
+    @PreAuthorize(IS_ADMIN_OR_IS_USER)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable("id") long id) {
     	

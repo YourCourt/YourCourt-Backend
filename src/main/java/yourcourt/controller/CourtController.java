@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,6 +37,9 @@ import yourcourt.service.ImageService;
 @RequestMapping("/courts")
 @CrossOrigin
 public class CourtController {
+
+  private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+
   @Autowired
   private CourtService courtService;
   
@@ -59,6 +63,7 @@ public class CourtController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN)
   @GetMapping("/bookings/{courtId}")
   public ResponseEntity<?> getBookingsByCourt(@PathVariable("courtId") Long courtId) {
     try {
@@ -71,7 +76,7 @@ public class CourtController {
     }
   }
 
-
+  @PreAuthorize(IS_ADMIN)
   @PostMapping
   public ResponseEntity<?> createCourt(
     @Valid @RequestBody CourtDto courtDto,
@@ -105,6 +110,7 @@ public class CourtController {
 
   }
 
+  @PreAuthorize(IS_ADMIN)
   @PutMapping("/{id}")
   public ResponseEntity<Object> updateCourt(
     @PathVariable Long id,
@@ -128,6 +134,7 @@ public class CourtController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN)
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteCourt(@PathVariable("id") Long id) {
     try {
