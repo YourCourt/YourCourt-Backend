@@ -29,6 +29,10 @@ import yourcourt.repository.FacilityTypeRepository;
 
 @Service
 public class FacilityService {
+  /**
+   *
+   */
+  private static final String TIPO_DE_INSTALACION = "Tipo de instalacion";
   private FacilityRepository facilityRepository;
   private FacilityTypeRepository facilityTypeRepository;
 
@@ -93,13 +97,13 @@ public class FacilityService {
   @Transactional(readOnly = true)
   public FacilityType findFacilityTypeById(final Long id) throws DataAccessException {
     return this.facilityTypeRepository.findById(id)
-      .orElseThrow(() -> new InexistentEntity("Tipo de instalacion"));
+      .orElseThrow(() -> new InexistentEntity(TIPO_DE_INSTALACION));
   }
 
   public FacilityType findFacilityTypeByType(final String type)
     throws DataAccessException {
     return this.facilityTypeRepository.findFacilityTypeByTypeName(type)
-      .orElseThrow(() -> new InexistentEntity("Tipo de instalacion"));
+      .orElseThrow(() -> new InexistentEntity(TIPO_DE_INSTALACION));
   }
 
   public Iterable<FacilityType> findAllFacilityTypes() {
@@ -132,7 +136,7 @@ public class FacilityService {
   public void deleteFacilityTypeById(Long id) {
     FacilityType facilityType = facilityTypeRepository
       .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Tipo de instalacion"));
+      .orElseThrow(() -> new InexistentEntity(TIPO_DE_INSTALACION));
     facilityTypeRepository.delete(facilityType);
   }
 }

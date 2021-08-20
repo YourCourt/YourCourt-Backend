@@ -39,7 +39,7 @@ import yourcourt.service.NewsService;
 @CrossOrigin
 public class CommentController {
 
-	private final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
 
     @Autowired
     private CommentService commentService;

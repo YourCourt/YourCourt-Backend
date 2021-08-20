@@ -38,7 +38,7 @@ import yourcourt.service.ImageService;
 @CrossOrigin
 public class CourtController {
 
-  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+  private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
 
   @Autowired
   private CourtService courtService;

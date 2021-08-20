@@ -43,8 +43,8 @@ import yourcourt.service.ProductService;
 @CrossOrigin
 public class ProductPurchaseController {
 
-  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
-	private final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+  private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
 
   @Autowired
   private ProductPurchaseService productPurchaseService;
@@ -115,7 +115,7 @@ public class ProductPurchaseController {
 
       ProductPurchase productPurchaseCreated = productPurchaseService.saveProductPurchase(newProductPurchase);
 
-      List<ProductPurchaseLine> purchaseLines = new ArrayList<ProductPurchaseLine>();
+      List<ProductPurchaseLine> purchaseLines = new ArrayList<>();
       // ProductPurchaseLine
       for (ProductPurchaseLineDto line : productPurchaseDto.getLines()) { // Update stock before creating purchase
 

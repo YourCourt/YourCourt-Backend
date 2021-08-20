@@ -36,8 +36,8 @@ import yourcourt.service.ProductService;
 @CrossOrigin
 public class ProductController {
 
-  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
-	private final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+  private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
 
   @Autowired
   private ProductService productService;

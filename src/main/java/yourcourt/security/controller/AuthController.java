@@ -33,7 +33,7 @@ import yourcourt.security.model.dto.LoginUser;
 @CrossOrigin
 public class AuthController {
 
-	private final String IS_ANONYMOUS="!hasRole('ROLE_ADMIN') and !hasRole('ROLE_USER')";
+	private static final String IS_ANONYMOUS="!hasRole('ROLE_ADMIN') and !hasRole('ROLE_USER')";
 
 	@Autowired
     AuthenticationManager authenticationManager;

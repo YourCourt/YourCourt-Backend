@@ -40,8 +40,12 @@ import yourcourt.service.InscriptionService;
 @CrossOrigin
 public class InscriptionController {
 
-	private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
-	private final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+	/**
+	 *
+	 */
+	private static final String UNA_INSCRIPCION = "una inscripcion";
+	private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
 
 	@Autowired
 	private InscriptionService inscriptionService;
@@ -73,7 +77,7 @@ public class InscriptionController {
 
 			InscriptionProjection inscription = inscriptionService.findInscriptionProjectionById(id);
 
-			ValidationUtils.accessRestrictedObjectById(inscription.getUser(), userService, "una inscripcion");
+			ValidationUtils.accessRestrictedObjectById(inscription.getUser(), userService, UNA_INSCRIPCION);
 
 			return new ResponseEntity<>(inscription, HttpStatus.OK);
 		} catch (InexistentEntity e) {
@@ -92,7 +96,7 @@ public class InscriptionController {
 			Iterable<InscriptionProjection> inscriptions = inscriptionService
 					.findAllInscriptionProjectionsByUserUsername(username);
 
-			ValidationUtils.accessRestrictedObjectByUsername(username, userService, "una inscripcion");
+			ValidationUtils.accessRestrictedObjectByUsername(username, userService, UNA_INSCRIPCION);
 			return new ResponseEntity<>(inscriptions, HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -180,7 +184,7 @@ public class InscriptionController {
 			InscriptionProjection inscriptionProjected = inscriptionService
 					.findInscriptionProjectionById(inscriptionUpdated.getId());
 
-			ValidationUtils.accessRestrictedObjectById(inscriptionProjected.getUser(), userService, "una inscripcion");
+			ValidationUtils.accessRestrictedObjectById(inscriptionProjected.getUser(), userService, UNA_INSCRIPCION);
 			return new ResponseEntity<>(inscriptionProjected, HttpStatus.OK);
 		} catch (InexistentEntity e) {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -202,7 +206,7 @@ public class InscriptionController {
 						.body(ValidationUtils.throwError("fecha", "El curso ya ha comenzado"));
 
 			}
-			ValidationUtils.accessRestrictedObjectById(inscriptionProjected.getUser(), userService, "una inscripcion");
+			ValidationUtils.accessRestrictedObjectById(inscriptionProjected.getUser(), userService, UNA_INSCRIPCION);
 
 			inscriptionService.deleteInscriptionById(id);
 			return new ResponseEntity<>(new Message("Inscripcion eliminada"), HttpStatus.OK);

@@ -41,8 +41,16 @@ import yourcourt.service.ProductService;
 @CrossOrigin
 public class ImageController {
 
-  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
-	private final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+  /**
+   *
+   */
+  private static final String PUBLIC_ID = "public_id";
+  /**
+   *
+   */
+  private static final String ORIGINAL_FILENAME = "original_filename";
+  private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
 
   private static final String IMAGEN_NO_VALIDA = "No es una imagen valida";
   private static final String IMAGEN_SUBIDA_STRING = "La imagen se ha subido correctamente";
@@ -84,8 +92,8 @@ public class ImageController {
       }
       Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
-      Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
-          (String) result.get("public_id"));
+      Image image = new Image((String) result.get(ORIGINAL_FILENAME), (String) result.get("url"),
+          (String) result.get(PUBLIC_ID));
       Image createdImage = imageService.save(image);
 
       Image currentImage = user.getImage();
@@ -151,8 +159,8 @@ public class ImageController {
       }
       Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
-      Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
-          (String) result.get("public_id"));
+      Image image = new Image((String) result.get(ORIGINAL_FILENAME), (String) result.get("url"),
+          (String) result.get(PUBLIC_ID));
       Image createdImage = imageService.save(image);
 
       Image currentImage = court.getImage();
@@ -185,8 +193,8 @@ public class ImageController {
       }
       Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
-      Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
-          (String) result.get("public_id"));
+      Image image = new Image((String) result.get(ORIGINAL_FILENAME), (String) result.get("url"),
+          (String) result.get(PUBLIC_ID));
       Image createdImage = imageService.save(image);
 
       Image currentImage = facility.getImage();
@@ -219,8 +227,8 @@ public class ImageController {
       }
       Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
-      Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
-          (String) result.get("public_id"));
+      Image image = new Image((String) result.get(ORIGINAL_FILENAME), (String) result.get("url"),
+          (String) result.get(PUBLIC_ID));
       Image createdImage = imageService.save(image);
 
       Image currentImage = news.getImage();
@@ -253,8 +261,8 @@ public class ImageController {
       }
       Map<?, ?> result = cloudinaryService.upload(multipartFile);
 
-      Image image = new Image((String) result.get("original_filename"), (String) result.get("url"),
-          (String) result.get("public_id"));
+      Image image = new Image((String) result.get(ORIGINAL_FILENAME), (String) result.get("url"),
+          (String) result.get(PUBLIC_ID));
       Image createdImage = imageService.save(image);
 
       Image currentImage = product.getImage();

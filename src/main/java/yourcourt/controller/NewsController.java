@@ -35,7 +35,7 @@ import yourcourt.service.NewsService;
 @CrossOrigin
 public class NewsController {
 
-  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+  private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
 
   @Autowired
   private NewsService newsService;

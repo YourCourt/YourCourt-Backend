@@ -33,6 +33,11 @@ import yourcourt.repository.ProductBookingRepository;
 
 @Service
 public class BookingService {
+  /**
+   *
+   */
+  private static final String RESERVA = "Reserva";
+
   private BookingRepository bookingRepository;
 
   private ProductBookingRepository productBookingRepository;
@@ -50,7 +55,7 @@ public class BookingService {
   // Booking
   @Transactional(readOnly = true)
   public BookingProjection findBookingById(final Long id) throws DataAccessException {
-    return this.bookingRepository.findBookingProjectionById(id).orElseThrow(() -> new InexistentEntity("Reserva"));
+    return this.bookingRepository.findBookingProjectionById(id).orElseThrow(() -> new InexistentEntity(RESERVA));
   }
 
   public Iterable<BookingProjection> findAllBookings() {
@@ -72,14 +77,14 @@ public class BookingService {
   }
 
   public void deleteBookingById(Long id) {
-    Booking booking = bookingRepository.findById(id).orElseThrow(() -> new InexistentEntity("Reserva"));
+    Booking booking = bookingRepository.findById(id).orElseThrow(() -> new InexistentEntity(RESERVA));
     bookingRepository.delete(booking);
   }
 
   // ProductBooking
   @Transactional(readOnly = true)
   public ProductBooking findProductBookingById(final Long id) throws DataAccessException {
-    return this.productBookingRepository.findById(id).orElseThrow(() -> new InexistentEntity("Reserva"));
+    return this.productBookingRepository.findById(id).orElseThrow(() -> new InexistentEntity(RESERVA));
   }
 
   @Transactional
@@ -90,7 +95,7 @@ public class BookingService {
 
   public void deleteProductBookingById(Long id) {
     ProductBooking productBooking = productBookingRepository.findById(id)
-        .orElseThrow(() -> new InexistentEntity("Reserva"));
+        .orElseThrow(() -> new InexistentEntity(RESERVA));
     productBookingRepository.delete(productBooking);
   }
 

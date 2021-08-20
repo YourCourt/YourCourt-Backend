@@ -33,7 +33,7 @@ import yourcourt.service.CourseService;
 @CrossOrigin
 public class CourseController {
 
-  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+  private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
 
   @Autowired
   private CourseService courseService;

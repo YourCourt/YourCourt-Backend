@@ -48,9 +48,13 @@ import yourcourt.service.ImageService;
 @CrossOrigin
 public class UserController {
 
-	private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
-	private final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
-	private final String IS_ANONYMOUS="!hasRole('ROLE_ADMIN') and !hasRole('ROLE_USER')";
+	/**
+	 *
+	 */
+	private static final String UN_USUARIO = "un usuario";
+	private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+	private static final String IS_ANONYMOUS="!hasRole('ROLE_ADMIN') and !hasRole('ROLE_USER')";
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
@@ -78,7 +82,7 @@ public class UserController {
 			User user = userService.findUserById(id);
 			UserProjection userProjection = userService.findUserProjectionById(user.getId());
 
-			ValidationUtils.accessRestrictedObjectById(user.getId(), userService, "un usuario");
+			ValidationUtils.accessRestrictedObjectById(user.getId(), userService, UN_USUARIO);
 
 			return new ResponseEntity<>(userProjection, HttpStatus.OK);
 		} catch (InexistentEntity e) {
@@ -95,7 +99,7 @@ public class UserController {
 	public ResponseEntity<Object> getUserByUsername(@PathVariable String username) {
 		try {
 			UserProjection userProjection = userService.findUserProjectionByUsername(username);
-			ValidationUtils.accessRestrictedObjectById(userProjection.getId(), userService, "un usuario");
+			ValidationUtils.accessRestrictedObjectById(userProjection.getId(), userService, UN_USUARIO);
 
 			return new ResponseEntity<>(userProjection, HttpStatus.OK);
 		} catch (InexistentEntity e) {
@@ -130,7 +134,7 @@ public class UserController {
 
 		user.setCreationDate(LocalDate.now());
 
-		Set<Role> roles = new HashSet<Role>();
+		Set<Role> roles = new HashSet<>();
 		roles.add(roleService.getByRoleType(RoleType.ROLE_USER).get());
 		if (newUser.getRoles().contains("admin")) {
 			roles.add(roleService.getByRoleType(RoleType.ROLE_ADMIN).get());
@@ -168,7 +172,7 @@ public class UserController {
 				User userUpdated = userService.updateUser(userToUpdate, user);
 
 				UserProjection userProjection = userService.findUserProjectionById(userUpdated.getId());
-				ValidationUtils.accessRestrictedObjectById(userProjection.getId(), userService, "un usuario");
+				ValidationUtils.accessRestrictedObjectById(userProjection.getId(), userService, UN_USUARIO);
 
 				return new ResponseEntity<>(userProjection, HttpStatus.OK);
 
@@ -185,7 +189,7 @@ public class UserController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
 		try {
-			ValidationUtils.accessRestrictedObjectById(id, userService, "un usuario");
+			ValidationUtils.accessRestrictedObjectById(id, userService, UN_USUARIO);
 
 			userService.deleteUserById(id);
 			return new ResponseEntity<>(new Message("Usuario eliminado"), HttpStatus.OK);

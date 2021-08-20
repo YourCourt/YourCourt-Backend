@@ -31,6 +31,10 @@ import yourcourt.repository.InscriptionRepository;
 @Service
 public class InscriptionService {
 	
+  /**
+   *
+   */
+  private static final String INSCRIPCION = "Inscripcion";
   private InscriptionRepository inscriptionRepository;
 
   @Autowired
@@ -45,7 +49,7 @@ public class InscriptionService {
   @Transactional(readOnly = true)
   public Inscription findInscriptionById(final Long id) throws DataAccessException {
     return this.inscriptionRepository.findById(id)
-      .orElseThrow(() -> new InexistentEntity("Inscripcion"));
+      .orElseThrow(() -> new InexistentEntity(INSCRIPCION));
   }
   
   @Transactional(readOnly = true)
@@ -77,7 +81,7 @@ public class InscriptionService {
   public void deleteInscriptionById(Long id) {
     Inscription inscription = inscriptionRepository
       .findById(id)
-      .orElseThrow(() -> new InexistentEntity("Inscripcion"));
+      .orElseThrow(() -> new InexistentEntity(INSCRIPCION));
     inscriptionRepository.delete(inscription);
   }
   
@@ -88,7 +92,7 @@ public class InscriptionService {
 
 public InscriptionProjection findInscriptionProjectionById(Long id) {
 	return this.inscriptionRepository.findProjectionById(id)
-		      .orElseThrow(() -> new InexistentEntity("Inscripcion"));
+		      .orElseThrow(() -> new InexistentEntity(INSCRIPCION));
 }
 
 public Iterable<InscriptionProjection> findAllInscriptionProjections() {
