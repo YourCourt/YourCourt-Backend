@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,6 +34,9 @@ import yourcourt.service.NewsService;
 @RequestMapping("/news")
 @CrossOrigin
 public class NewsController {
+
+  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+
   @Autowired
   private NewsService newsService;
   
@@ -56,6 +60,7 @@ public class NewsController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN)
   @PostMapping
   public ResponseEntity<?> createNews(
     @Valid @RequestBody NewsDto newsDto,
@@ -87,6 +92,7 @@ public class NewsController {
     return new ResponseEntity<>(newsCreated, HttpStatus.CREATED);
   }
 
+  @PreAuthorize(IS_ADMIN)
   @PutMapping("/{id}")
   public ResponseEntity<Object> updateNews(
     @PathVariable Long id,
@@ -109,6 +115,7 @@ public class NewsController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN)
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteNews(@PathVariable("id") Long id) {
     try {

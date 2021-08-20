@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,6 +36,9 @@ import yourcourt.service.ImageService;
 @RequestMapping("/facilities")
 @CrossOrigin
 public class FacilityController {
+
+  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+
   @Autowired
   private FacilityService facilityService;
 
@@ -46,6 +50,7 @@ public class FacilityController {
     return new ResponseEntity<>(facilityService.findAllFacilities(), HttpStatus.OK);
   }
 
+  @PreAuthorize(IS_ADMIN)
   @GetMapping("/facilityTypes")
   public ResponseEntity<?> getAllFacilityTypes() {
     return new ResponseEntity<>(facilityService.findAllFacilityTypes(), HttpStatus.OK);
@@ -63,6 +68,7 @@ public class FacilityController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN)
   @PostMapping
   public ResponseEntity<?> createFacility(@Valid @RequestBody FacilityDto facilityDto, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
@@ -99,6 +105,7 @@ public class FacilityController {
 
   }
 
+  @PreAuthorize(IS_ADMIN)
   @PutMapping("/{id}")
   public ResponseEntity<Object> updateFacility(@PathVariable Long id, @RequestBody FacilityDto facilityDto,
       BindingResult bindingResult) {
@@ -117,6 +124,7 @@ public class FacilityController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN)
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteFacility(@PathVariable("id") Long id) {
     try {

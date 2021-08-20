@@ -37,13 +37,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		return new JwtTokenFilter();
 	}
 	
-
-	private String	adminString	= "admin";
-	private String	userString	= "user";
-	
-	private String	apiUsers	= "api/users";
-	private String id_regex="{^[\\\\d]$}";
-	
 	@Override
 	public void configure(final AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());

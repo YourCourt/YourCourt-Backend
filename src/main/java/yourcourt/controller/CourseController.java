@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +32,9 @@ import yourcourt.service.CourseService;
 @RequestMapping("/courses")
 @CrossOrigin
 public class CourseController {
+
+  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+
   @Autowired
   private CourseService courseService;
   
@@ -52,6 +56,7 @@ public class CourseController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN)
   @PostMapping
   public ResponseEntity<?> createCourse(
     @Valid @RequestBody CourseDto courseDto,
@@ -76,6 +81,7 @@ public class CourseController {
     return new ResponseEntity<>(courseCreated, HttpStatus.CREATED);
   }
 
+  @PreAuthorize(IS_ADMIN)
   @PutMapping("/{id}")
   public ResponseEntity<Object> updateCourse(
     @PathVariable Long id,
@@ -104,6 +110,7 @@ public class CourseController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN)
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteCourse(@PathVariable("id") Long id) {
     try {

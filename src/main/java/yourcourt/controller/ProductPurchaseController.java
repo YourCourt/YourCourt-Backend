@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,6 +42,10 @@ import yourcourt.service.ProductService;
 @RequestMapping("/purchases")
 @CrossOrigin
 public class ProductPurchaseController {
+
+  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+
   @Autowired
   private ProductPurchaseService productPurchaseService;
 
@@ -50,12 +55,13 @@ public class ProductPurchaseController {
   @Autowired
   private ProductService productService;
 
+  @PreAuthorize(IS_ADMIN)
   @GetMapping
   public ResponseEntity<?> getAllProductPurchases() {
     return new ResponseEntity<>(productPurchaseService.findAllProductPurchases(), HttpStatus.OK);
   }
 
-  // @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @GetMapping("/{id}")
   public ResponseEntity<?> getProductPurchase(@PathVariable("id") Long id) {
     try {
@@ -72,6 +78,7 @@ public class ProductPurchaseController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @GetMapping("/user")
   public ResponseEntity<?> getProductPurchasesByUser(@RequestParam("username") String username) {
 
@@ -91,6 +98,7 @@ public class ProductPurchaseController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @PostMapping
   public ResponseEntity<?> createProductPurchase(@Valid @RequestBody ProductPurchaseDto productPurchaseDto,
       BindingResult bindingResult) {
@@ -143,6 +151,7 @@ public class ProductPurchaseController {
     }
   }
 
+  @PreAuthorize(IS_ADMIN)
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteProductPurchase(@PathVariable("id") Long id) {
     try {

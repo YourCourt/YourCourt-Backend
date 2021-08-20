@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +40,9 @@ import yourcourt.service.InscriptionService;
 @CrossOrigin
 public class InscriptionController {
 
+	private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+
 	@Autowired
 	private InscriptionService inscriptionService;
 
@@ -48,6 +52,7 @@ public class InscriptionController {
 	@Autowired
 	private CourseService courseService;
 
+	@PreAuthorize(IS_ADMIN)
 	@GetMapping()
 	public ResponseEntity<?> getAllInscriptions() {
 		try {
@@ -61,6 +66,7 @@ public class InscriptionController {
 		}
 	}
 
+	@PreAuthorize(IS_ADMIN_OR_IS_USER)
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getInscription(@PathVariable("id") Long id) {
 		try {
@@ -79,6 +85,7 @@ public class InscriptionController {
 		}
 	}
 
+	@PreAuthorize(IS_ADMIN_OR_IS_USER)
 	@GetMapping("/user/{username}")
 	public ResponseEntity<?> getAllInscriptionsFromUserUsername(@PathVariable("username") String username) {
 		try {
@@ -96,6 +103,7 @@ public class InscriptionController {
 		}
 	}
 
+	@PreAuthorize(IS_ADMIN)
 	@GetMapping("/course/{courseId}")
 	public ResponseEntity<?> getAllInscriptionsFromCourse(@PathVariable("courseId") Long courseId) {
 		try {
@@ -109,6 +117,7 @@ public class InscriptionController {
 		}
 	}
 
+	@PreAuthorize(IS_ADMIN_OR_IS_USER)
 	@PostMapping("/course/{id}")
 	public ResponseEntity<?> createInscription(@PathVariable("id") Long courseId,
 			@Valid @RequestBody InscriptionDto inscriptionDto, BindingResult bindingResult) {
@@ -156,6 +165,7 @@ public class InscriptionController {
 
 	}
 
+	@PreAuthorize(IS_ADMIN)
 	@PutMapping("/{id}")
 	public ResponseEntity<Object> updateInscription(@PathVariable Long id, @RequestBody InscriptionDto inscriptionDto,
 			BindingResult bindingResult) {
@@ -181,6 +191,7 @@ public class InscriptionController {
 		}
 	}
 
+	@PreAuthorize(IS_ADMIN_OR_IS_USER)
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteInscription(@PathVariable("id") Long id) {
 		try {

@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,7 +32,8 @@ import yourcourt.security.model.dto.LoginUser;
 @Api(tags = "Auth")
 @CrossOrigin
 public class AuthController {
-	
+
+	private final String IS_ANONYMOUS="!hasRole('ROLE_ADMIN') and !hasRole('ROLE_USER')";
 
 	@Autowired
     AuthenticationManager authenticationManager;
@@ -40,6 +42,7 @@ public class AuthController {
 	@Autowired
 	JwtProvider jwtProvider;
 	
+	@PreAuthorize(IS_ANONYMOUS)
 	@PostMapping("/login")
 	public ResponseEntity<Object> login(@Valid @RequestBody final LoginUser loginUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {

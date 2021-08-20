@@ -40,6 +40,10 @@ import yourcourt.service.ProductService;
 @RequestMapping("/image")
 @CrossOrigin
 public class ImageController {
+
+  private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+
   private static final String IMAGEN_NO_VALIDA = "No es una imagen valida";
   private static final String IMAGEN_SUBIDA_STRING = "La imagen se ha subido correctamente";
   private static final String IMAGEN_ELIMINADA_STRING = "La imagen se ha eliminado correctamente";
@@ -68,7 +72,7 @@ public class ImageController {
   @Autowired
   private ProductService productService;
 
-  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @PostMapping("/user/{userId}")
   public ResponseEntity<?> newUserImage(@PathVariable("userId") Long userId, @RequestParam MultipartFile multipartFile)
       throws IOException {
@@ -103,7 +107,7 @@ public class ImageController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+  @PreAuthorize(IS_ADMIN_OR_IS_USER)
   @DeleteMapping("/user/{userId}")
   public ResponseEntity<?> deleteUserImage(@PathVariable("userId") Long userId) throws IOException {
     try {
@@ -136,7 +140,7 @@ public class ImageController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize(IS_ADMIN)
   @PostMapping("/court/{courtId}")
   public ResponseEntity<?> newCourtImage(@PathVariable("courtId") Long courtId,
       @RequestParam MultipartFile multipartFile) throws IOException {
@@ -170,7 +174,7 @@ public class ImageController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize(IS_ADMIN)
   @PostMapping("/facility/{facilityId}")
   public ResponseEntity<?> newFacilityImage(@PathVariable("facilityId") Long facilityId,
       @RequestParam MultipartFile multipartFile) throws IOException {
@@ -204,7 +208,7 @@ public class ImageController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize(IS_ADMIN)
   @PostMapping("/news/{newsId}")
   public ResponseEntity<?> newNewsImage(@PathVariable("newsId") Long newsId, @RequestParam MultipartFile multipartFile)
       throws IOException {
@@ -238,7 +242,7 @@ public class ImageController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize(IS_ADMIN)
   @PostMapping("/product/{productId}")
   public ResponseEntity<?> newProductImage(@PathVariable("productId") Long productId,
       @RequestParam MultipartFile multipartFile) throws IOException {

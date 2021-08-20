@@ -41,11 +41,16 @@ import yourcourt.security.service.RoleService;
 import yourcourt.security.service.UserService;
 import yourcourt.service.ImageService;
 
+
 @RestController
 @RequestMapping("users")
 @Api(tags = "User")
 @CrossOrigin
 public class UserController {
+
+	private final String IS_ADMIN="hasRole('ROLE_ADMIN')";
+	private final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+	private final String IS_ANONYMOUS="!hasRole('ROLE_ADMIN') and !hasRole('ROLE_USER')";
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
@@ -59,13 +64,14 @@ public class UserController {
 	@Autowired
 	private ImageService imageService;
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize(IS_ADMIN)
 	@GetMapping()
 	public ResponseEntity<List<UserProjection>> getAllUsers() {
 		List<UserProjection> users = userService.findAllUserUserProjections();
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
+	@PreAuthorize(IS_ADMIN_OR_IS_USER)
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> getUser(@PathVariable Long id) {
 		try {
@@ -84,6 +90,7 @@ public class UserController {
 		}
 	}
 
+	@PreAuthorize(IS_ADMIN_OR_IS_USER)
 	@GetMapping("/username/{username}")
 	public ResponseEntity<Object> getUserByUsername(@PathVariable String username) {
 		try {
@@ -99,7 +106,7 @@ public class UserController {
 			return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
-
+	@PreAuthorize(IS_ANONYMOUS)
 	@PostMapping()
 	public ResponseEntity<Object> createUser(@Valid @RequestBody final NewUser newUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -143,6 +150,7 @@ public class UserController {
 		return new ResponseEntity<>(userProjection, HttpStatus.CREATED);
 	}
 
+	@PreAuthorize(IS_ADMIN_OR_IS_USER)
 	@PutMapping("/{id}")
 	public ResponseEntity<Object> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUser user,
 			BindingResult bindingResult) {
@@ -173,6 +181,7 @@ public class UserController {
 		}
 	}
 
+	@PreAuthorize(IS_ADMIN)
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
 		try {
