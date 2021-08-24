@@ -35,19 +35,19 @@ VALUES ('admin@admin.com', '$2y$12$FLo5uFkodDS9NwcfvHH8qunOtZaWT4pg4fNJ2DS.B0B7Z
 ('test223@ewfwef.com', '$2y$12$DtMUvLQrUSza72qTBmz1MOhSsSrGrBucXceeRnf4YFEO6v/skNUmC', 'test_username1', '1999-03-04', '2021-01-01', '11111', '654987321', 1),--2
 ('test224@ewfwef.com', '$2y$12$ewuFroLzks6thFWxZVa7EuJ/OQy2ECyLO.kMTjWe4el7kBjlzLEYK', 'test_username2', '1999-03-04', '2021-01-01', '22222', '654987331', 1),--3
 ('test225@ewfwef.com', '$2y$12$ycBsosY.gzUhlYwvEv1HcORck.zjAGalYOanA36x4wWHlqqn.u7ZW', 'test_username3', '1999-03-04', '2021-01-01', '33333', '654987341', 1), --4
-('pepdomaro@gmail.com', 'password001', 'pepdomaro01', '1999-03-04', '2021-01-01', '33333', '611234112', 1), --5
-('jacbelgar@gmail.com', 'password002', 'jacbelgar02', '2000-01-09', '2021-01-01', '12333', '692182345', 1), --6
-('bragaldom@gmail.com', 'password003', 'jacbelgar03', '2001-06-04', '2021-01-01', '56333', '619543215', 1), --7
-('edubotdom@gmail.com', 'password004', 'edubotdom04', '1998-11-01', '2021-01-01', '35433', '687234567', 1), --8
-('danaremar@gmail.com', 'password005', 'danaremar05', '1999-02-12', '2021-01-01', '33137', '673928345', 1), --9
-('josmarsan@gmail.com', 'password006', 'josmarsan06', '1999-04-11', '2021-01-01', '13437', '645217850', 1), --10
-('jossanrui@gmail.com', 'password007', 'jossanrui07', '1999-01-22', '2021-01-01', '13437', '645217850', 1), --11
-('erntirvaz@gmail.com', 'password008', 'erntirvaz08', '2002-06-04', '2021-01-01', '67451', '694357185', 1), --12
-('rodvelsan@gmail.com', 'password009', 'rodvelsan09', '2003-10-01', '2021-01-01', '43451', '617459735', 1), --13
-('jesparfue@gmail.com', 'password010', 'jesparfue10', '2002-09-30', '2021-01-01', '01928', '681757154', 1), --14
-('juareadel@gmail.com', 'password011', 'juareadel11', '2004-11-03', '2021-01-01', '81090', '681757154', 1), --15
-('javrodher@gmail.com', 'password012', 'javrodher12', '1998-03-06', '2021-01-01', '00123', '604954355', 1), --16
-('marlopsal@gmail.com', 'password013', 'marlopsal13', '2000-07-24', '2021-01-01', '10157', '640094012', 1) --17
+('pepdomaro@gmail.com', '$2a$10$tqyZCpFU4CBNWVNtFXDNYu5v4gQhThFNnsiFi1298Z/yeQPe3wMjO', 'pepdomaro01', '1999-03-04', '2021-01-01', '33333', '611234112', 1), --5
+('jacbelgar@gmail.com', '$2a$10$QiUZxHxTKk1VMobpVKJ0heVVPIcFUJj616SaQQ8iMpJa3Ys8bbqFi', 'jacbelgar02', '2000-01-09', '2021-01-01', '12333', '692182345', 1), --6
+('bragaldom@gmail.com', '$2a$10$AWps3rUi.fmfxpVq2lNV9ux/H.KR6Jb1qyib53Zo0ls3ZV6oTsBw.', 'jacbelgar03', '2001-06-04', '2021-01-01', '56333', '619543215', 1), --7
+('edubotdom@gmail.com', '$2a$10$4t3fs1Q24l2V6rDI8gggxu46cNMp7CTKFEV4bMv7gY7ADinO2ZZbK', 'edubotdom04', '1998-11-01', '2021-01-01', '35433', '687234567', 1), --8
+('danaremar@gmail.com', '$2a$10$Ox6/Vnl09AYQCDRZ3fU1B.g1NozhuT3AmTn6TEyQMPnsV02Jo2pPW', 'danaremar05', '1999-02-12', '2021-01-01', '33137', '673928345', 1), --9
+('josmarsan@gmail.com', '$2a$10$1rzwsD5sezYpYrWIFoRw3.8N.e4jIPAo.1Ph2nAdygD4g7QWxX04W', 'josmarsan06', '1999-04-11', '2021-01-01', '13437', '645217850', 1), --10
+('jossanrui@gmail.com', '$2a$10$mwL4.e7QTle6UCE.DRcvXeMdkdLVaNbo4UfCyVscY.48M4wwLPNe2', 'jossanrui07', '1999-01-22', '2021-01-01', '13437', '645217850', 1), --11
+('erntirvaz@gmail.com', '$2a$10$xxCJOvutacILKHIEKr0pR.gjR/pXsVCgXZmAfND19/rFYQMDba0HO', 'erntirvaz08', '2002-06-04', '2021-01-01', '67451', '694357185', 1), --12
+('rodvelsan@gmail.com', '$2a$10$untlkHmCjijkZ59Q.gez6.fxbs1uhEonTbSn.xpIot5oI6ut6HQye', 'rodvelsan09', '2003-10-01', '2021-01-01', '43451', '617459735', 1), --13
+('jesparfue@gmail.com', '$2a$10$Ue/Omjt9Had2getNtbzvcujNfFRAFIDyahSI0ol/CDFW7fiavEyS2', 'jesparfue10', '2002-09-30', '2021-01-01', '01928', '681757154', 1), --14
+('juareadel@gmail.com', '$2a$10$/niVgacAD74kAHkmyDuvZuup7Ack5WIK1.6ipbHtnOQ06Hnv/Mcwm', 'juareadel11', '2004-11-03', '2021-01-01', '81090', '681757154', 1), --15
+('javrodher@gmail.com', '$2a$10$l0BgScKwrxQUoBFpQCavfukOf5mM03SmEe.lx2TaNwlB9z6UxI6jm', 'javrodher12', '1998-03-06', '2021-01-01', '00123', '604954355', 1), --16
+('marlopsal@gmail.com', '$2a$10$01QQ0XJUY6COp9XXjyKA4eoilpC.O/ANFRAWGHDtOWxdTva.VsA2u', 'marlopsal13', '2000-07-24', '2021-01-01', '10157', '640094012', 1) --17
 ;
 
 INSERT
@@ -194,6 +194,7 @@ puedan seguir entrenando. ¡El esfuerzo y la dedicación es lo más imporante!',
 	INTO
 	inscriptions (name, surnames, email, phone, observations, user_id, course_id)
 VALUES('Juan', 'Noguerol Tirado', 'ejemplo@gmail.com', '612934234', 'Ninguna', 1, 2),
+('Test', 'Username', 'test0011@gmail.com', '611134244', 'Ninguna', 2, 1),
 ('Pepe', 'Dominguez Aro ', 'pepdomaro@gmail.com', '611234112', 'No puedo ir los miércoles', 5, 1),
 ('Jacinto', 'Belindo Garrido', 'jacbelgar@gmail.com', '692182345', 'Ninguna',  6, 2),
 ('Brayan', 'Galán Domingo', 'bragaldom@gmail.com', '619543215', 'Ninguna',  7, 2),
