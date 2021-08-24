@@ -57,8 +57,9 @@ public class ProductPurchase extends BaseEntity {
   private LocalDate creationDate;
 
   public Double totalSum() {
-    return this.getLines().stream().reduce(0.,
+     Double price =this.getLines().stream().reduce(0.,
         (partialResult, line) -> partialResult + (line.getProduct().totalPrice() * line.getQuantity()), Double::sum);
+        return Math.round(price * 100.0) / 100.0;
   }
 
   @JsonManagedReference
