@@ -27,7 +27,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
 import yourcourt.model.Booking;
+import yourcourt.model.Comment;
 import yourcourt.model.Image;
+import yourcourt.model.Inscription;
 import yourcourt.model.ProductPurchase;
 
 @Entity
@@ -86,6 +88,13 @@ public class User {
   @OrderBy("creationDate desc")
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
   private Collection<ProductPurchase> purchases;
+
+  @OrderBy("creationDate desc")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Collection<Comment> comments;
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Collection<Inscription> inscriptions;
 
   @OneToOne(cascade = CascadeType.DETACH)
   private Image image;
