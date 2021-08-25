@@ -149,7 +149,7 @@ public class InscriptionController {
 			String name = inscriptionDto.getName();
 			String surnames = inscriptionDto.getSurnames();
 
-			if (inscriptionService.existsInscriptionByName(name, surnames)) {
+			if (inscriptionService.existsInscriptionByName(name, surnames, courseId)) {
 
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
 						ValidationUtils.throwError(name + " " + surnames, "No se puede inscribir la misma persona"));
@@ -182,8 +182,9 @@ public class InscriptionController {
 
 			String name = inscriptionDto.getName();
 			String surnames = inscriptionDto.getSurnames();
+			Long courseId = inscriptionToUpdate.getCourse().getId();
 			// If exists once and its different from the previous one
-			if (inscriptionService.existsInscriptionByName(name, surnames)
+			if (inscriptionService.existsInscriptionByName(name, surnames, courseId)
 					&& (!inscriptionDto.getName().equals(inscriptionToUpdate.getName())
 							&& !inscriptionDto.getSurnames().equals(inscriptionToUpdate.getSurnames()))) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(

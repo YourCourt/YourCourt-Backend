@@ -58,8 +58,8 @@ public class InscriptionService {
   }
 
   @Transactional(readOnly = true)
-  public boolean   existsInscriptionByName(String name, String surnames) throws DataAccessException {
-    return this.inscriptionRepository.existsInscriptionByName(name, surnames);
+  public boolean   existsInscriptionByName(String name, String surnames, Long courseId) throws DataAccessException {
+    return this.inscriptionRepository.existsInscriptionByName(name, surnames, courseId);
   }
 
   

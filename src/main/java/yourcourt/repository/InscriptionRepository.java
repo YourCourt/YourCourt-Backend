@@ -22,8 +22,8 @@ public interface InscriptionRepository extends CrudRepository<Inscription, Long>
 	@Query("SELECT i FROM Inscription i WHERE i.name=:name AND i.surnames=:surnames")
 	Optional<Inscription> findInscriptionByName(String name, String surnames);
 
-	@Query("SELECT CASE WHEN COUNT(i)>=1 then true else false END FROM Inscription i WHERE i.name=:name AND i.surnames=:surnames")
-	boolean existsInscriptionByName(String name, String surnames);
+	@Query("SELECT CASE WHEN COUNT(i)>=1 then true else false END FROM Inscription i WHERE i.name=:name AND i.surnames=:surnames AND i.course.id=:courseId")
+	boolean existsInscriptionByName(String name, String surnames, Long courseId);
 
 	@Query("SELECT i FROM Inscription i WHERE i.id=:id")
 	Optional<InscriptionProjection> findProjectionById(Long id);
