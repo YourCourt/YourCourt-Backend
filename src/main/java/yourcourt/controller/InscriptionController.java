@@ -44,8 +44,8 @@ public class InscriptionController {
 	 *
 	 */
 	private static final String UNA_INSCRIPCION = "una inscripcion";
-	private static final String IS_ADMIN="hasRole('ROLE_ADMIN')";
-	private static final String IS_ADMIN_OR_IS_USER="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+	private static final String IS_ADMIN = "hasRole('ROLE_ADMIN')";
+	private static final String IS_ADMIN_OR_IS_USER = "hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
 
 	@Autowired
 	private InscriptionService inscriptionService;
@@ -149,7 +149,7 @@ public class InscriptionController {
 			String name = inscriptionDto.getName();
 			String surnames = inscriptionDto.getSurnames();
 
-			if (inscriptionService.findInscriptionByName(name, surnames) != null) {
+			if (inscriptionService.existsInscriptionByName(name, surnames)) {
 
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
 						ValidationUtils.throwError(name + " " + surnames, "No se puede inscribir la misma persona"));
@@ -179,6 +179,17 @@ public class InscriptionController {
 
 		try {
 			Inscription inscriptionToUpdate = inscriptionService.findInscriptionById(id);
+
+			String name = inscriptionDto.getName();
+			String surnames = inscriptionDto.getSurnames();
+			// If exists once and its different from the previous one
+			if (inscriptionService.existsInscriptionByName(name, surnames)
+					&& (!inscriptionDto.getName().equals(inscriptionToUpdate.getName())
+							&& !inscriptionDto.getSurnames().equals(inscriptionToUpdate.getSurnames()))) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+						ValidationUtils.throwError(name + " " + surnames, "No se puede inscribir la misma persona"));
+			}
+
 			Inscription inscriptionUpdated = inscriptionService.updateInscription(inscriptionToUpdate, inscriptionDto);
 
 			InscriptionProjection inscriptionProjected = inscriptionService

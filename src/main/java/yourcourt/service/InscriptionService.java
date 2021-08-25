@@ -56,6 +56,12 @@ public class InscriptionService {
   public Inscription findInscriptionByName(String name, String surnames) throws DataAccessException {
     return this.inscriptionRepository.findInscriptionByName(name, surnames).orElse(null);
   }
+
+  @Transactional(readOnly = true)
+  public boolean   existsInscriptionByName(String name, String surnames) throws DataAccessException {
+    return this.inscriptionRepository.existsInscriptionByName(name, surnames);
+  }
+
   
   @Transactional(readOnly = true)
   public Iterable<InscriptionProjection> findAllInscriptionByCourseId(final Long courseId) throws DataAccessException {
