@@ -103,7 +103,7 @@ VALUES('Piscina Municipal', 'Piscina municipal del club', 3, 10),
  INSERT
 	INTO
 	news(name, description, creation_date, edition_date, image_id)
-VALUES('Pepe Dominguez, Campeón provincial de Sevilla 2021',
+VALUES('Pepe Dominguez, Campeón provincial de Sevilla-21',
 'Pepe Dominguez, jugador de nuestra fantástica escuela de tenis, se ha proclamado este fin de semana, campeón provincial de Sevilla
 ganando a Ramón Fuentes en una disputada final 7-5 6-4. Ahora Pepe tiene la mirada puesta en el campeonato regional para el cuál
 se ha clasificado.', '2021-03-04', '2021-03-04', 4);
