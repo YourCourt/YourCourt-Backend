@@ -12,7 +12,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>yourcourt</name>
 	<description>YourCourt API project for Spring Boot</description>
-	<packaging>war</packaging>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
